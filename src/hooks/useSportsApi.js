@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 
 // API-Football (api-sports.io) — free tier: 100 req/day
 const API_BASE_URL = 'https://v3.football.api-sports.io';
-const API_KEY = import.meta.env.VITE_API_FOOTBALL_KEY;
+const API_KEY = 'fdb2c3aa918fc436c9b24f9c002e7262'; // Hardcoded as requested
 
 const API_HEADERS = {
     'x-apisports-key': API_KEY,
