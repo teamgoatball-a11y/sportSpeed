@@ -12,21 +12,27 @@ function Home({ searchQuery }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchMatches = async () => {
+    let isMounted = true;
+    const loadAllData = async () => {
       setLoading(true);
       try {
+        // Fetch Admin matches from Firebase only
         const q = query(collection(db, 'matches'), orderBy('createdAt', 'desc'));
         const querySnapshot = await getDocs(q);
-        const fetched = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setAllMatches(fetched);
+        const firebaseMatches = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        if (isMounted) {
+          setAllMatches(firebaseMatches);
+        }
       } catch (error) {
-        console.error("Error fetching matches:", error);
+        console.error("Error loading matches:", error);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
-    fetchMatches();
+    loadAllData();
+    return () => { isMounted = false; };
   }, []);
 
   // Filter matches based on search and category
@@ -67,11 +73,13 @@ function Home({ searchQuery }) {
     <div className="p-4 sm:p-6 transition-colors duration-300">
 
       {/* Header Area */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-red-600 to-orange-500 dark:from-red-500 dark:to-orange-500 bg-clip-text text-transparent inline-block">
-          Today's Matches
+      <div className="mb-6 hidden sm:block">
+        <h1 className="text-3xl sm:text-4xl font-black italic tracking-tighter bg-gradient-to-r from-red-600 to-orange-500 dark:from-red-500 dark:to-orange-500 bg-clip-text text-transparent uppercase break-words">
+          Live & Upcoming Action
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm transition-colors duration-300">Live scores, schedules, and premium streams</p>
+        <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm sm:text-base font-medium max-w-2xl transition-colors duration-300">
+          Catch every goal, wicket, and highlight. Stream premium sports in real-time.
+        </p>
       </div>
 
       {/* Category Pills Slider */}
