@@ -455,28 +455,14 @@ const MatchForm = () => {
                                 {searchMode === 'advanced' && (
                                     <form onSubmit={handleAdvancedSearch} className="flex flex-col sm:flex-row gap-3">
                                         <div className="flex-1">
-                                            <select
-                                                title="Select League"
+                                            <input
+                                                type="text"
+                                                placeholder="Search by League Name (e.g. Serie A, MLS, J1 League)"
                                                 value={searchLeague}
                                                 onChange={(e) => setSearchLeague(e.target.value)}
                                                 className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm dark:text-white"
                                                 required
-                                            >
-                                                <option value="" disabled>Select a League...</option>
-                                                <option value="English Premier League">English Premier League</option>
-                                                <option value="Spanish La Liga">Spanish La Liga</option>
-                                                <option value="Italian Serie A">Italian Serie A</option>
-                                                <option value="German Bundesliga">German Bundesliga</option>
-                                                <option value="French Ligue 1">French Ligue 1</option>
-                                                <option value="UEFA Champions League">UEFA Champions League</option>
-                                                <option value="UEFA Europa League">UEFA Europa League</option>
-                                                <option value="Portuguese Primeira Liga">Portuguese Primeira Liga</option>
-                                                <option value="Dutch Eredivisie">Dutch Eredivisie</option>
-                                                <option value="Saudi Pro League">Saudi Pro League</option>
-                                                <option value="Major League Soccer">Major League Soccer</option>
-                                                <option value="Australian A-League">Australian A-League</option>
-                                                <option value="Indian Super League">Indian Super League</option>
-                                            </select>
+                                            />
                                         </div>
                                         <div className="sm:w-48">
                                             <input
