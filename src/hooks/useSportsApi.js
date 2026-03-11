@@ -11,6 +11,45 @@ const API_HEADERS = {
 // User's timezone for correct local time display
 const TIMEZONE = 'Asia/Kolkata';
 
+// Only show top leagues + international competitions (filter out lower divisions)
+// API-Football league IDs: https://www.api-football.com/documentation-v3
+const TOP_LEAGUE_IDS = new Set([
+    // International
+    1,    // World Cup
+    4,    // Euro Championship
+    10,   // International Friendlies
+    29,   // World Cup Qualification - CONMEBOL
+    30,   // World Cup Qualification - Africa
+    31,   // World Cup Qualification - Asia
+    32,   // World Cup Qualification - Europe
+    33,   // World Cup Qualification - CONCACAF
+    // UEFA Club
+    2,    // UEFA Champions League
+    3,    // UEFA Europa League
+    848,  // UEFA Conference League
+    // Top European Leagues
+    39,   // English Premier League
+    135,  // Italian Serie A
+    140,  // Spanish La Liga
+    61,   // French Ligue 1
+    78,   // German Bundesliga
+    94,   // Portuguese Primeira Liga
+    88,   // Dutch Eredivisie
+    203,  // Turkish Süper Lig
+    144,  // Belgian Pro League
+    179,  // Scottish Premiership
+    // South America
+    11,   // Copa Libertadores
+    13,   // Copa Sudamericana
+    71,   // Brazilian Série A
+    128,  // Argentine Primera División
+    // Asia / India
+    323,  // Indian Super League
+    // Africa
+    12,   // Africa Cup of Nations
+]);
+
+
 export const useSportsApi = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -67,7 +106,10 @@ export const useSportsApi = () => {
 
             if (!data.response || data.response.length === 0) return [];
 
-            return data.response.map(fixture => {
+            // Filter to only top leagues & international competitions
+            const topFixtures = data.response.filter(f => TOP_LEAGUE_IDS.has(f.league.id));
+
+            return topFixtures.map(fixture => {
                 const { fixture: fix, teams, league, goals } = fixture;
 
                 let status = 'UPCOMING';
