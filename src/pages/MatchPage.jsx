@@ -16,20 +16,16 @@ function MatchPage() {
 
                 if (docSnap.exists()) {
                     setMatch({ id: docSnap.id, ...docSnap.data() });
+                    // Show the page immediately — don't wait for the view counter write
+                    setLoading(false);
 
-                    // Increment the view counter in Firestore
-                    // Wrapped in try/catch so permission rules don't crash the page load
-                    try {
-                        await updateDoc(docRef, {
-                            views: increment(1)
-                        });
-                    } catch (e) {
-                        console.error("Could not increment views (likely security rules):", e);
-                    }
+                    // Fire-and-forget: increment view counter in background
+                    updateDoc(docRef, { views: increment(1) }).catch(() => { });
+                } else {
+                    setLoading(false);
                 }
             } catch (error) {
                 console.error("Error fetching match:", error);
-            } finally {
                 setLoading(false);
             }
         };
@@ -92,8 +88,11 @@ function MatchPage() {
 
                         {/* Team 1 */}
                         <div className="flex-1 flex flex-col items-center text-center group">
-                            <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-gray-50 dark:bg-gray-800/80 flex items-center justify-center text-3xl font-black mb-4 border-2 border-gray-200 dark:border-gray-700/50 group-hover:border-red-500/50 dark:group-hover:border-red-500 transition-colors shadow-lg text-gray-800 dark:text-gray-200">
-                                {match.team1.substring(0, 3).toUpperCase()}
+                            <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-gray-50 dark:bg-gray-800/80 flex items-center justify-center mb-4 border-2 border-gray-200 dark:border-gray-700/50 group-hover:border-red-500/50 dark:group-hover:border-red-500 transition-colors shadow-lg overflow-hidden">
+                                {match.team1Logo ? (
+                                    <img src={match.team1Logo} alt={match.team1} className="w-14 h-14 sm:w-20 sm:h-20 object-contain drop-shadow-md" onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+                                ) : null}
+                                <span className={`text-3xl font-black text-gray-800 dark:text-gray-200 ${match.team1Logo ? 'hidden' : 'flex'}`}>{match.team1.substring(0, 3).toUpperCase()}</span>
                             </div>
                             <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">{match.team1}</h2>
                         </div>
@@ -105,13 +104,17 @@ function MatchPage() {
 
                         {/* Team 2 */}
                         <div className="flex-1 flex flex-col items-center text-center group">
-                            <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-gray-50 dark:bg-gray-800/80 flex items-center justify-center text-3xl font-black mb-4 border-2 border-gray-200 dark:border-gray-700/50 group-hover:border-red-500/50 dark:group-hover:border-red-500 transition-colors shadow-lg text-gray-800 dark:text-gray-200">
-                                {match.team2.substring(0, 3).toUpperCase()}
+                            <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-gray-50 dark:bg-gray-800/80 flex items-center justify-center mb-4 border-2 border-gray-200 dark:border-gray-700/50 group-hover:border-red-500/50 dark:group-hover:border-red-500 transition-colors shadow-lg overflow-hidden">
+                                {match.team2Logo ? (
+                                    <img src={match.team2Logo} alt={match.team2} className="w-14 h-14 sm:w-20 sm:h-20 object-contain drop-shadow-md" onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+                                ) : null}
+                                <span className={`text-3xl font-black text-gray-800 dark:text-gray-200 ${match.team2Logo ? 'hidden' : 'flex'}`}>{match.team2.substring(0, 3).toUpperCase()}</span>
                             </div>
                             <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">{match.team2}</h2>
                         </div>
 
                     </div>
+
 
                 </div>
             </div>

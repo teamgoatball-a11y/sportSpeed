@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react"
 import MatchCard from "../components/MatchCard"
 import MatchCardSkeleton from "../components/MatchCardSkeleton"
-import { collection, getDocs, query, orderBy } from 'firebase/firestore'
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore'
 import { db } from '../config/firebase'
 
 const CATEGORIES = ["All", "Live", "Football", "Cricket", "Others"]
@@ -10,36 +10,62 @@ function Home({ searchQuery }) {
   const [activeTab, setActiveTab] = useState("All")
   const [allMatches, setAllMatches] = useState([])
   const [loading, setLoading] = useState(true)
+  const [currentTime, setCurrentTime] = useState(() => new Date())
 
+  // Refresh current time every minute so auto-status updates without page reload
   useEffect(() => {
-    let isMounted = true;
-    const loadAllData = async () => {
-      setLoading(true);
-      try {
-        // Fetch Admin matches from Firebase only
-        const q = query(collection(db, 'matches'), orderBy('createdAt', 'desc'));
-        const querySnapshot = await getDocs(q);
-        const firebaseMatches = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-        if (isMounted) {
-          setAllMatches(firebaseMatches);
-        }
-      } catch (error) {
-        console.error("Error loading matches:", error);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    loadAllData();
-    return () => { isMounted = false; };
+    const timer = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => clearInterval(timer);
   }, []);
 
-  // Filter matches based on search and category
+  useEffect(() => {
+    const q = query(collection(db, 'matches'), orderBy('createdAt', 'desc'));
+
+    // onSnapshot serves from IndexedDB cache instantly (due to enableIndexedDbPersistence),
+    // then fires again when fresh data arrives from Firestore — no waiting for network!
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const matches = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setAllMatches(matches);
+      setLoading(false); // Hide skeleton as soon as first data arrives (cache or network)
+    }, (error) => {
+      console.error("Error loading matches:", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe(); // Clean up listener on unmount
+  }, []);
+
+
+  // Filter and sort matches based on search and category
   const filteredMatches = useMemo(() => {
     const searchLower = searchQuery ? searchQuery.toLowerCase() : "";
+    const now = currentTime;
 
-    return allMatches.filter(match => {
+    // Compute effective match status based on current time
+    const getEffectiveStatus = (match) => {
+      // If admin already set it to LIVE or FINISHED, respect that
+      if (match.status === 'LIVE') return 'LIVE';
+      if (match.status === 'FINISHED') return 'FINISHED';
+      if (!match.time || match.time === 'TBD') return match.status;
+      try {
+        let kickOff = new Date(`${now.toDateString()} ${match.time}`);
+        if (isNaN(kickOff.getTime())) return match.status;
+        // If time already passed today, it was meant for today (don't push to tomorrow)
+        const msSinceKickOff = now.getTime() - kickOff.getTime();
+        if (msSinceKickOff > 0 && msSinceKickOff < 2 * 60 * 60 * 1000) {
+          return 'LIVE'; // Within 2 hours of kick-off → LIVE
+        }
+        if (msSinceKickOff >= 2 * 60 * 60 * 1000) {
+          return 'FINISHED'; // More than 2 hours past → FINISHED
+        }
+        return 'UPCOMING';
+      } catch { return match.status; }
+    };
+
+    const filtered = allMatches.map(match => ({
+      ...match,
+      status: getEffectiveStatus(match) // auto-compute status from time
+    })).filter(match => {
       // 1. Search Filter
       const matchesSearch = searchLower === "" ||
         match.team1.toLowerCase().includes(searchLower) ||
@@ -51,7 +77,6 @@ function Home({ searchQuery }) {
       if (activeTab === "Live") {
         matchesCategory = match.status === "LIVE";
       } else if (activeTab !== "All") {
-        // Use explicit category if available, fallback to legacy league name matching
         if (match.category) {
           matchesCategory = match.category === activeTab;
         } else {
@@ -67,7 +92,36 @@ function Home({ searchQuery }) {
 
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, activeTab, allMatches]);
+
+    // Sort: LIVE first → UPCOMING (soonest time first) → FINISHED last
+    const statusOrder = { LIVE: 0, UPCOMING: 1, FINISHED: 2 };
+
+    const parseTime = (timeStr) => {
+      if (!timeStr || timeStr === 'TBD') return Infinity;
+      try {
+        const now = new Date();
+        let matchTime = new Date(`${now.toDateString()} ${timeStr}`);
+        if (isNaN(matchTime.getTime())) return Infinity;
+        // If this time has already passed today, treat it as tomorrow
+        if (matchTime <= now) {
+          matchTime.setDate(matchTime.getDate() + 1);
+        }
+        // Return ms until match — smaller = sooner = first
+        return matchTime.getTime() - now.getTime();
+      } catch {
+        return Infinity;
+      }
+    };
+
+    return [...filtered].sort((a, b) => {
+      const statusDiff = (statusOrder[a.status] ?? 1) - (statusOrder[b.status] ?? 1);
+      if (statusDiff !== 0) return statusDiff;
+      // Within same status, sort UPCOMING by soonest time
+      if (a.status === 'UPCOMING') return parseTime(a.time) - parseTime(b.time);
+      return 0;
+    });
+  }, [searchQuery, activeTab, allMatches, currentTime]);
+
 
   return (
     <div className="p-4 sm:p-6 transition-colors duration-300">
