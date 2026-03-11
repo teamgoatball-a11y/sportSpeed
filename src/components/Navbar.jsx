@@ -7,29 +7,32 @@ function Navbar({ searchQuery, setSearchQuery, isDarkMode, toggleTheme }) {
     return (
         <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 shadow-sm dark:shadow-md transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
+                <div className="flex items-center justify-between h-16 sm:h-20 gap-2 sm:gap-4">
 
                     <div className="flex-shrink-0 flex items-center">
-                        <Link to="/" className="flex items-center gap-2">
+                        <Link to="/" className="flex flex-col justify-center">
                             <span className="text-2xl sm:text-3xl font-black italic tracking-tighter text-gray-900 dark:text-white transition-colors duration-300">
                                 GOAT<span className="text-red-500">BALL</span>
+                            </span>
+                            <span className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide uppercase mt-0.5">
+                                Your Home for Live Sports
                             </span>
                         </Link>
                     </div>
 
                     {/* Search Bar */}
                     {isHome && (
-                        <div className="flex-1 max-w-md hidden sm:block">
+                        <div className="flex-1 min-w-0 max-w-xs sm:max-w-md lg:max-w-lg lg:ml-8 lg:mr-auto justify-end sm:justify-start">
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg className="h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-red-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-red-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
                                 </div>
                                 <input
                                     type="text"
                                     placeholder="Search teams, leagues..."
-                                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-full leading-5 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-300 placeholder-gray-500 focus:outline-none focus:bg-white dark:focus:bg-gray-700 focus:border-red-500 dark:focus:border-gray-600 focus:ring-1 focus:ring-red-500 transition-colors sm:text-sm shadow-sm"
+                                    className="block w-full pl-9 sm:pl-10 pr-3 py-1.5 sm:py-2 border border-gray-300 dark:border-gray-700 rounded-full leading-5 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-300 placeholder-gray-500 focus:outline-none focus:bg-white dark:focus:bg-gray-700 focus:border-red-500 dark:focus:border-gray-600 focus:ring-1 focus:ring-red-500 transition-colors text-xs sm:text-sm shadow-sm"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
@@ -76,25 +79,7 @@ function Navbar({ searchQuery, setSearchQuery, isDarkMode, toggleTheme }) {
 
                 </div>
 
-                {/* Mobile Search Bar */}
-                {isHome && (
-                    <div className="sm:hidden pb-4 px-2">
-                        <div className="relative group">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg className="h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-red-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </div>
-                            <input
-                                type="text"
-                                placeholder="Search teams, leagues..."
-                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg leading-5 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-300 placeholder-gray-500 focus:outline-none focus:bg-white dark:focus:bg-gray-700 focus:border-red-500 dark:focus:border-gray-600 focus:ring-1 focus:ring-red-500 transition-colors text-sm shadow-sm"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                        </div>
-                    </div>
-                )}
+
 
             </div>
         </nav>

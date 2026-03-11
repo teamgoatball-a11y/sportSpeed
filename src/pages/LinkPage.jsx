@@ -70,6 +70,7 @@ function LinkPage() {
                     <span className="text-green-700 dark:text-green-500 text-xs font-bold tracking-wide">SERVERS ONLINE</span>
                 </div>
             </div>
+            
 
             {/* Servers List */}
             {match.servers && match.servers.length > 0 ? (

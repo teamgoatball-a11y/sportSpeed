@@ -1,13 +1,16 @@
 import { Link } from "react-router-dom"
+import TeamLogo from "./TeamLogo"
 
 function MatchCard({ match }) {
   const isLive = match.status === "LIVE"
+  const CardWrapper = match.isApiMatch ? 'div' : Link;
+  const wrapperProps = match.isApiMatch ? {} : { to: `/match/${match.id}` };
 
   return (
-    <div className="group bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-lg hover:shadow-gray-200/50 dark:hover:shadow-red-900/10 transition-all duration-300 relative overflow-hidden flex flex-col h-full">
+    <CardWrapper {...wrapperProps} className={`block group bg-white dark:bg-gray-900 border border-gray-200 shadow-sm dark:border-gray-800 rounded-xl p-5 transition-all duration-300 relative overflow-hidden flex flex-col h-full ${!match.isApiMatch ? 'hover:border-red-500/30 dark:hover:border-gray-700 hover:shadow-xl hover:shadow-red-900/5 dark:hover:shadow-red-900/10 transform hover:-translate-y-1 cursor-pointer' : 'opacity-90 grayscale-[10%]'}`}>
 
       {/* Subtle hover gradient effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent dark:from-red-500/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 to-transparent dark:from-red-500/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
       {/* Header: Status and League */}
       <div className="flex justify-between items-center mb-4 relative z-10">
@@ -35,10 +38,13 @@ function MatchCard({ match }) {
         {/* Team 1 */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-sm border border-gray-200 dark:border-gray-700 font-medium text-gray-700 dark:text-gray-300">
-              {match.team1.substring(0, 2).toUpperCase()}
-            </div>
-            <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg">{match.team1}</span>
+            <TeamLogo
+              teamName={match.team1}
+              logoUrl={match.team1Logo}
+              teamId={match.team1Id}
+              className="w-8 h-8 object-contain"
+            />
+            <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg line-clamp-1">{match.team1}</span>
           </div>
           {isLive && <span className="font-mono font-bold text-gray-900 dark:text-white text-lg">0</span>}
         </div>
@@ -46,17 +52,20 @@ function MatchCard({ match }) {
         {/* Team 2 */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-sm border border-gray-200 dark:border-gray-700 font-medium text-gray-700 dark:text-gray-300">
-              {match.team2.substring(0, 2).toUpperCase()}
-            </div>
-            <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg">{match.team2}</span>
+            <TeamLogo
+              teamName={match.team2}
+              logoUrl={match.team2Logo}
+              teamId={match.team2Id}
+              className="w-8 h-8 object-contain"
+            />
+            <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg line-clamp-1">{match.team2}</span>
           </div>
           {isLive && <span className="font-mono font-bold text-gray-900 dark:text-white text-lg">0</span>}
         </div>
 
       </div>
 
-      {/* Footer: Time and Action */}
+      {/* Footer: Time */}
       <div className="mt-5 pt-4 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center relative z-10">
         <div className="text-gray-500 dark:text-gray-400 text-sm font-medium flex items-center gap-1.5">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -65,18 +74,14 @@ function MatchCard({ match }) {
           {match.time}
         </div>
 
-        <Link
-          to={`/match/${match.id}`}
-          className={`text-sm font-semibold px-4 py-1.5 rounded-full transition-colors ${isLive
-              ? 'bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-500/10 dark:text-red-400 dark:hover:bg-red-500/20'
-              : 'bg-gray-50 text-gray-600 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-            }`}
-        >
-          {isLive ? 'Watch' : 'Details'}
-        </Link>
+        {match.isApiMatch && (
+          <span className="text-xs font-semibold text-gray-400 dark:text-gray-600 bg-gray-50 dark:bg-gray-800/50 px-3 py-1 rounded-full">
+            Streams Pending
+          </span>
+        )}
       </div>
 
-    </div>
+    </CardWrapper>
   )
 }
 
