@@ -45,6 +45,8 @@ const TOP_LEAGUE_IDS = new Set([
     128,  // Argentine Primera División
     // North America
     253,  // Major League Soccer (MLS)
+    16,   // CONCACAF Champions Cup
+
     // Asia / India
     323,  // Indian Super League
     // Africa
