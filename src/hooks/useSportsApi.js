@@ -43,6 +43,8 @@ const TOP_LEAGUE_IDS = new Set([
     13,   // Copa Sudamericana
     71,   // Brazilian Série A
     128,  // Argentine Primera División
+    // North America
+    253,  // Major League Soccer (MLS)
     // Asia / India
     323,  // Indian Super League
     // Africa
@@ -86,8 +88,10 @@ export const useSportsApi = () => {
     /**
      * Core fetcher: get all fixtures for a given date string (YYYY-MM-DD)
      * ONE request returns ALL leagues — no looping needed!
+     * @param {string} dateStr The date to fetch
+     * @param {boolean} applyFilter Whether to filter down to TOP_LEAGUE_IDS (default true)
      */
-    const fetchFixturesByDate = useCallback(async (dateStr) => {
+    const fetchFixturesByDate = useCallback(async (dateStr, applyFilter = true) => {
         setLoading(true);
         setError(null);
         try {
@@ -106,8 +110,10 @@ export const useSportsApi = () => {
 
             if (!data.response || data.response.length === 0) return [];
 
-            // Filter to only top leagues & international competitions
-            const topFixtures = data.response.filter(f => TOP_LEAGUE_IDS.has(f.league.id));
+            // Filter to only top leagues & international competitions (if requested)
+            const topFixtures = applyFilter
+                ? data.response.filter(f => TOP_LEAGUE_IDS.has(f.league.id))
+                : data.response;
 
             return topFixtures.map(fixture => {
                 const { fixture: fix, teams, league, goals } = fixture;
@@ -163,14 +169,16 @@ export const useSportsApi = () => {
 
     /**
      * Advanced search: fixtures for a specific league + date
-     * Now searches by league name (filters from the full day's fixtures)
+     * Now searches across ALL leagues on that date, ignoring the TOP_LEAGUE_IDS filter.
      */
     const searchMatchByLeagueAndDate = useCallback(async (leagueName, dateString) => {
         setLoading(true);
         setError(null);
         try {
             const dateStr = formatDate(dateString);
-            const allFixtures = await fetchFixturesByDate(dateStr);
+
+            // Pass applyFilter = false to get ALL matches in the world for that date
+            const allFixtures = await fetchFixturesByDate(dateStr, false);
             setLoading(false);
 
             if (!leagueName || leagueName.trim() === '') return allFixtures;
