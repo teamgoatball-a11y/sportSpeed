@@ -1,222 +1,156 @@
 import { useState, useCallback } from 'react';
 
-// Free community tier endpoint for SportsDB
-const API_BASE_URL = 'https://www.thesportsdb.com/api/v1/json/3';
+// API-Football (api-sports.io) — free tier: 100 req/day
+const API_BASE_URL = 'https://v3.football.api-sports.io';
+const API_KEY = import.meta.env.VITE_API_FOOTBALL_KEY;
 
-// Top leagues to search for Today/Tomorrow matches.
-// Kept concise to avoid API rate-limiting (free tier: 30 req/min).
-const POPULAR_LEAGUES = [
-    "UEFA Champions League",
-    "English Premier League",
-    "Spanish La Liga",
-    "Italian Serie A",
-    "German Bundesliga",
-    "French Ligue 1",
-    "UEFA Europa League",
-    "Indian Super League",
-    "Australian A-League",
-];
+const API_HEADERS = {
+    'x-apisports-key': API_KEY,
+};
+
+// User's timezone for correct local time display
+const TIMEZONE = 'Asia/Kolkata';
 
 export const useSportsApi = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     /**
-     * Helper to format a Date object or string as YYYY-MM-DD
+     * Helper: format a Date object as YYYY-MM-DD (local date)
      */
     const formatDate = useCallback((dateInput) => {
         const d = new Date(dateInput);
-        let month = '' + (d.getMonth() + 1);
-        let day = '' + d.getDate();
         const year = d.getFullYear();
-
-        if (month.length < 2) month = '0' + month;
-        if (day.length < 2) day = '0' + day;
-
-        return [year, month, day].join('-');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }, []);
 
     /**
-     * Helper to format API UTC timestamp to user's local timezone (12h format)
+     * Helper: format API UTC timestamp to local 12-hour time
      */
     const formatLocalTime = useCallback((utcTimestamp) => {
-        if (!utcTimestamp) return "TBD";
+        if (!utcTimestamp) return 'TBD';
         try {
-            // Ensure UTC parsing by appending Z if the API missed it
-            const dateStr = utcTimestamp.endsWith('Z') ? utcTimestamp : `${utcTimestamp}Z`;
-            const date = new Date(dateStr);
-
-            // Format to 12-hour local time like "8:40 PM"
+            const date = new Date(utcTimestamp);
             return new Intl.DateTimeFormat('default', {
                 hour: 'numeric',
                 minute: '2-digit',
-                hour12: true
+                hour12: true,
+                timeZone: TIMEZONE,
             }).format(date);
-        } catch (e) {
-            return "TBD";
+        } catch {
+            return 'TBD';
         }
     }, []);
 
     /**
-     * Aggregator: Helper to search all popular leagues for a given date sequentially.
-     * Sequential (not parallel) to avoid hitting TheSportsDB's free tier rate limiter,
-     * which silently returns empty responses when too many requests fire at once.
+     * Core fetcher: get all fixtures for a given date string (YYYY-MM-DD)
+     * ONE request returns ALL leagues — no looping needed!
      */
-    const fetchTopMatchesByDate = useCallback(async (targetDateStr) => {
-        setLoading(true);
-        setError(null);
-        const allMatches = [];
-        try {
-            for (const league of POPULAR_LEAGUES) {
-                const queryParams = `${league}_${targetDateStr}`;
-                const endpoint = `${API_BASE_URL}/searchfilename.php?e=${encodeURIComponent(queryParams)}`;
-
-                try {
-                    const response = await fetch(endpoint);
-                    if (!response.ok) continue;
-                    const text = await response.text();
-                    if (!text || text.trim() === '') continue;
-                    const data = JSON.parse(text);
-                    if (!data.event) continue;
-
-                    const leagueMatches = data.event.map(event => {
-                        let matchStatus = "UPCOMING";
-                        if (event.strStatus === "Match Finished" || event.strStatus === "FT") {
-                            matchStatus = "FINISHED";
-                        } else if (event.strStatus === "In Progress" || event.strStatus === "HT" || event.strStatus === "2H") {
-                            matchStatus = "LIVE";
-                        }
-
-                        return {
-                            id: `api_${event.idEvent}`,
-                            team1: event.strHomeTeam,
-                            team2: event.strAwayTeam,
-                            team1Id: event.idHomeTeam,
-                            team2Id: event.idAwayTeam,
-                            team1Logo: event.strHomeTeamBadge || null,
-                            team2Logo: event.strAwayTeamBadge || null,
-                            league: event.strLeague,
-                            time: formatLocalTime(event.strTimestamp),
-                            date: event.dateEvent,
-                            status: matchStatus,
-                            category: 'Football',
-                            isApiMatch: true,
-                            homeScore: event.intHomeScore,
-                            awayScore: event.intAwayScore,
-                            thumb: event.strThumb
-                        };
-                    });
-                    allMatches.push(...leagueMatches);
-                } catch (e) {
-                    // Silently skip this league on error
-                }
-
-                // Small delay between requests to respect rate limits (30 req/min free tier)
-                await new Promise(resolve => setTimeout(resolve, 200));
-            }
-
-            return allMatches;
-        } catch (err) {
-            console.error("API Aggregation Error:", err);
-            setError("Failed to fetch matches for this date");
-            return [];
-        } finally {
-            setLoading(false);
-        }
-
-    }, [formatLocalTime]);
-
-    /**
-     * Fetches all events happening today for a given sport category
-     */
-    const fetchTodaysMatches = useCallback(async (date = new Date(), sport = 'Soccer') => {
-        if (sport !== 'Soccer') return [];
-        return fetchTopMatchesByDate(formatDate(date));
-    }, [fetchTopMatchesByDate, formatDate]);
-
-    /**
-     * Fetches all events happening tomorrow for a given sport category
-     */
-    const fetchTomorrowsMatches = useCallback(async (sport = 'Soccer') => {
-        if (sport !== 'Soccer') return [];
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        return fetchTopMatchesByDate(formatDate(tomorrow));
-    }, [fetchTopMatchesByDate]);
-
-    /**
-     * Advanced Search: Fetches matches for a specific date and league
-     * Uses the searchfilename endpoint which is permitted on the free tier.
-     * Format required by API: {League Name}_{YYYY-MM-DD}
-     */
-    const searchMatchByLeagueAndDate = useCallback(async (leagueName, dateString) => {
+    const fetchFixturesByDate = useCallback(async (dateStr) => {
         setLoading(true);
         setError(null);
         try {
-            const formattedDate = formatDate(dateString);
+            const response = await fetch(
+                `${API_BASE_URL}/fixtures?date=${dateStr}&timezone=${TIMEZONE}`,
+                { headers: API_HEADERS }
+            );
 
-            // The API searchfilename expects format like: "English Premier League_2014-10-20"
-            const queryParams = `${leagueName}_${formattedDate}`;
-            const endpoint = `${API_BASE_URL}/searchfilename.php?e=${encodeURIComponent(queryParams)}`;
+            if (!response.ok) throw new Error('API request failed');
 
-            const response = await fetch(endpoint);
-            if (!response.ok) throw new Error('Failed to fetch from Sports API');
+            const data = await response.json();
 
-            const text = await response.text();
-            if (!text || text.trim() === '') {
-                console.warn('Sports API returned an empty response.');
-                return [];
+            if (data.errors && Object.keys(data.errors).length > 0) {
+                throw new Error(Object.values(data.errors)[0]);
             }
 
-            let data;
-            try {
-                data = JSON.parse(text);
-            } catch (e) {
-                console.error('Sports API returned invalid JSON:', text);
-                return [];
-            }
+            if (!data.response || data.response.length === 0) return [];
 
-            if (!data.event) {
-                return [];
-            }
+            return data.response.map(fixture => {
+                const { fixture: fix, teams, league, goals } = fixture;
 
-            const formattedMatches = data.event.map(event => {
-                let matchStatus = "UPCOMING";
-                if (event.strStatus === "Match Finished" || event.strStatus === "FT") {
-                    matchStatus = "FINISHED";
-                } else if (event.strStatus === "In Progress" || event.strStatus === "HT" || event.strStatus === "2H") {
-                    matchStatus = "LIVE";
-                }
+                let status = 'UPCOMING';
+                const s = fix.status?.short;
+                if (['1H', '2H', 'HT', 'ET', 'P', 'LIVE'].includes(s)) status = 'LIVE';
+                else if (['FT', 'AET', 'PEN'].includes(s)) status = 'FINISHED';
 
                 return {
-                    id: `api_${event.idEvent}`,
-                    team1: event.strHomeTeam,
-                    team2: event.strAwayTeam,
-                    team1Id: event.idHomeTeam,
-                    team2Id: event.idAwayTeam,
-                    team1Logo: event.strHomeTeamBadge || null,
-                    team2Logo: event.strAwayTeamBadge || null,
-                    league: event.strLeague,
-                    time: formatLocalTime(event.strTimestamp),
-                    date: event.dateEvent,
-                    status: matchStatus,
-                    category: 'Football', // Assuming football for now
+                    id: `api_${fix.id}`,
+                    team1: teams.home.name,
+                    team2: teams.away.name,
+                    team1Logo: teams.home.logo || null,
+                    team2Logo: teams.away.logo || null,
+                    team1Id: teams.home.id,
+                    team2Id: teams.away.id,
+                    league: league.name,
+                    leagueLogo: league.logo || null,
+                    time: formatLocalTime(fix.date),
+                    date: dateStr,
+                    status,
+                    category: 'Football',
                     isApiMatch: true,
-                    homeScore: event.intHomeScore,
-                    awayScore: event.intAwayScore,
-                    thumb: event.strThumb
+                    homeScore: goals?.home ?? null,
+                    awayScore: goals?.away ?? null,
                 };
             });
-
-            return formattedMatches;
         } catch (err) {
-            console.error("API Search Error:", err);
+            console.error('API-Football Error:', err);
             setError(err.message);
             return [];
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [formatLocalTime]);
 
-    return { fetchTodaysMatches, fetchTomorrowsMatches, searchMatchByLeagueAndDate, loading, error };
+    /**
+     * Fetch today's fixtures — single API call, all leagues
+     */
+    const fetchTodaysMatches = useCallback(async () => {
+        return fetchFixturesByDate(formatDate(new Date()));
+    }, [fetchFixturesByDate, formatDate]);
+
+    /**
+     * Fetch tomorrow's fixtures — single API call, all leagues
+     */
+    const fetchTomorrowsMatches = useCallback(async () => {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return fetchFixturesByDate(formatDate(tomorrow));
+    }, [fetchFixturesByDate, formatDate]);
+
+    /**
+     * Advanced search: fixtures for a specific league + date
+     * Now searches by league name (filters from the full day's fixtures)
+     */
+    const searchMatchByLeagueAndDate = useCallback(async (leagueName, dateString) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const dateStr = formatDate(dateString);
+            const allFixtures = await fetchFixturesByDate(dateStr);
+            setLoading(false);
+
+            if (!leagueName || leagueName.trim() === '') return allFixtures;
+
+            // Filter by league name (case-insensitive partial match)
+            const query = leagueName.toLowerCase();
+            return allFixtures.filter(m =>
+                m.league.toLowerCase().includes(query)
+            );
+        } catch (err) {
+            console.error('Search Error:', err);
+            setError(err.message);
+            setLoading(false);
+            return [];
+        }
+    }, [fetchFixturesByDate, formatDate]);
+
+    return {
+        fetchTodaysMatches,
+        fetchTomorrowsMatches,
+        searchMatchByLeagueAndDate,
+        loading,
+        error,
+    };
 };
