@@ -7,6 +7,15 @@ function MatchPage() {
     const { id } = useParams()
     const [match, setMatch] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [currentTime, setCurrentTime] = useState(new Date())
+
+    // Update current time every minute to evaluate if match naturally becomes LIVE
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 60000);
+        return () => clearInterval(timer);
+    }, []);
 
     useEffect(() => {
         const fetchMatch = async () => {
@@ -43,7 +52,30 @@ function MatchPage() {
 
     if (!match) return <div className="p-8 text-center text-red-500 font-medium bg-red-50 dark:bg-red-500/10 rounded-2xl border border-red-200 dark:border-red-500/20 max-w-2xl mx-auto mt-10">Match not found</div>
 
-    const isLive = match.status === "LIVE"
+    const getEffectiveStatus = (m) => {
+        if (!m) return 'UPCOMING';
+        if (m.status === 'LIVE' || m.status === 'FINISHED') return m.status;
+        if (!m.time || m.time === 'TBD') return m.status;
+
+        try {
+            const now = currentTime;
+            let kickOff = new Date(`${now.toDateString()} ${m.time}`);
+            if (isNaN(kickOff.getTime())) return m.status;
+
+            const msSinceKickOff = now.getTime() - kickOff.getTime();
+            if (msSinceKickOff > 0 && msSinceKickOff < 2 * 60 * 60 * 1000) {
+                return 'LIVE';
+            }
+            if (msSinceKickOff >= 2 * 60 * 60 * 1000) {
+                return 'FINISHED';
+            }
+            return 'UPCOMING';
+        } catch {
+            return m.status;
+        }
+    };
+
+    const isLive = getEffectiveStatus(match) === "LIVE";
 
     return (
         <div className="max-w-5xl mx-auto space-y-6 sm:space-y-8 animate-fade-in transition-colors duration-300">
