@@ -18,7 +18,7 @@ const INITIAL_STATE = {
     status: 'UPCOMING',
     venue: '',
     views: 0,
-    servers: [{ name: '', url: '' }]
+    servers: []
 };
 
 const MatchForm = () => {
@@ -26,7 +26,10 @@ const MatchForm = () => {
     const navigate = useNavigate();
     const isEditing = !!id;
 
-    const [formData, setFormData] = useState(INITIAL_STATE);
+    const [formData, setFormData] = useState({
+        ...INITIAL_STATE,
+        servers: isEditing ? [] : [{ name: '', url: '' }]
+    });
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(isEditing);
 
@@ -165,7 +168,7 @@ const MatchForm = () => {
                         setFormData({
                             ...INITIAL_STATE, // ensure fields exist
                             ...data,
-                            servers: data.servers && data.servers.length > 0 ? data.servers : [{ name: '', url: '' }]
+                            servers: data.servers || []
                         });
                     } else {
                         toast.error("Match not found");
@@ -204,7 +207,7 @@ const MatchForm = () => {
         const newServers = formData.servers.filter((_, i) => i !== index);
         setFormData(prev => ({
             ...prev,
-            servers: newServers.length > 0 ? newServers : [{ name: '', url: '' }]
+            servers: newServers
         }));
     };
 

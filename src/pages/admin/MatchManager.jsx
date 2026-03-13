@@ -222,7 +222,7 @@ const MatchManager = () => {
 
                                         <td className="px-6 py-4">
                                             <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                                                {match.servers?.length || 0} Links
+                                                {(match.servers?.filter(s => s.name?.trim() || s.url?.trim()).length || 0)} Links
                                             </span>
                                         </td>
 

@@ -73,9 +73,9 @@ function LinkPage() {
             
 
             {/* Servers List */}
-            {match.servers && match.servers.length > 0 ? (
+            {match.servers && match.servers.filter(s => s.name?.trim() || s.url?.trim()).length > 0 ? (
                 <div className="space-y-4">
-                    {match.servers.map((server, index) => {
+                    {match.servers.filter(s => s.name?.trim() || s.url?.trim()).map((server, index) => {
                         // Mocking different qualities and pings for visual variety
                         const quality = index === 0 ? '1080p60' : index === 1 ? '1080p' : '720p';
                         const ping = index === 0 ? '12ms' : index === 1 ? '24ms' : '45ms';
