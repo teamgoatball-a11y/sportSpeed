@@ -65,13 +65,24 @@ function MatchCard({ match }) {
 
       </div>
 
-      {/* Footer: Time */}
+      {/* Footer: Time + Date */}
       <div className="mt-5 pt-4 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center relative z-10">
-        <div className="text-gray-500 dark:text-gray-400 text-sm font-medium flex items-center gap-1.5">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          {match.time}
+        <div className="flex flex-col gap-0.5">
+          <div className="text-gray-500 dark:text-gray-400 text-sm font-medium flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {match.time}
+          </div>
+          {match.date && (() => {
+            const today = new Date().toISOString().slice(0, 10);
+            if (match.date === today) {
+              return <span className="text-xs text-green-500 dark:text-green-400 font-semibold pl-0.5">Today</span>;
+            }
+            const d = new Date(match.date + 'T00:00:00');
+            const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            return <span className="text-xs text-orange-400 dark:text-orange-400 font-semibold pl-0.5">{label}</span>;
+          })()}
         </div>
 
         {match.isApiMatch && (

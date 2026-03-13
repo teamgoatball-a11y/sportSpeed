@@ -14,6 +14,7 @@ const INITIAL_STATE = {
     league: '',
     category: 'Football',
     time: '',
+    date: '',
     status: 'UPCOMING',
     venue: '',
     views: 0,
@@ -29,6 +30,10 @@ const MatchForm = () => {
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(isEditing);
 
+    // Bulk Import State
+    const [selectedApiMatches, setSelectedApiMatches] = useState([]);
+    const [bulkImporting, setBulkImporting] = useState(false);
+
     // API Auto-fill State
     const { fetchTodaysMatches, fetchTomorrowsMatches, searchMatchByLeagueAndDate, loading: apiLoading } = useSportsApi();
     const [apiMatches, setApiMatches] = useState([]);
@@ -41,6 +46,7 @@ const MatchForm = () => {
         try {
             const matches = await fetchTodaysMatches();
             setApiMatches(matches);
+            setSelectedApiMatches([]); // Clear selection on new search
             if (matches.length === 0) toast.error("No matches found for today.");
         } catch (e) {
             toast.error("Failed to fetch matches");
@@ -51,6 +57,7 @@ const MatchForm = () => {
         try {
             const matches = await fetchTomorrowsMatches();
             setApiMatches(matches);
+            setSelectedApiMatches([]); // Clear selection on new search
             if (matches.length === 0) toast.error("No matches found for tomorrow.");
         } catch (e) {
             toast.error("Failed to fetch matches");
@@ -63,6 +70,7 @@ const MatchForm = () => {
         try {
             const matches = await searchMatchByLeagueAndDate(searchLeague, searchDate);
             setApiMatches(matches);
+            setSelectedApiMatches([]); // Clear selection on new search
             if (matches.length === 0) toast.error("No matches found for that league on that date.");
         } catch (err) {
             toast.error("Failed to search matches");
@@ -70,18 +78,80 @@ const MatchForm = () => {
     };
 
     const handleSelectApiMatch = (match) => {
+        // If we are in bulk mode (adding new), we toggle selection instead of auto-fill
+        if (!isEditing) {
+            toggleApiMatchSelection(match);
+            return;
+        }
+
         setFormData(prev => ({
             ...prev,
             team1: match.team1,
             team2: match.team2,
-            team1Logo: match.team1Logo || '', // Save the fetched API logos into our state to push to Firebase
+            team1Logo: match.team1Logo || '',
             team2Logo: match.team2Logo || '',
             league: match.league,
             time: match.time,
+            date: match.date || '',  // ← save match date so Home.jsx can use it
             category: match.category,
         }));
         setShowApiModal(false);
         toast.success(`Auto-filled details for ${match.team1} vs ${match.team2}`);
+    };
+
+    const toggleApiMatchSelection = (match) => {
+        setSelectedApiMatches(prev => {
+            const isSelected = prev.some(m => m.id === match.id);
+            if (isSelected) {
+                return prev.filter(m => m.id !== match.id);
+            } else {
+                return [...prev, match];
+            }
+        });
+    };
+
+    const handleBulkImport = async () => {
+        if (selectedApiMatches.length === 0) return;
+        setBulkImporting(true);
+        let successCount = 0;
+        let failCount = 0;
+
+        try {
+            for (const match of selectedApiMatches) {
+                const matchData = {
+                    ...INITIAL_STATE,
+                    team1: match.team1,
+                    team2: match.team2,
+                    team1Logo: match.team1Logo || '',
+                    team2Logo: match.team2Logo || '',
+                    league: match.league,
+                    time: match.time,
+                    date: match.date || '',
+                    category: match.category,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                };
+
+                try {
+                    await addDoc(collection(db, 'matches'), matchData);
+                    successCount++;
+                } catch (e) {
+                    console.error("Error importing match:", e);
+                    failCount++;
+                }
+            }
+
+            if (successCount > 0) {
+                toast.success(`Successfully imported ${successCount} matches!`);
+                navigate('/admin/dashboard');
+            }
+            if (failCount > 0) {
+                toast.error(`Failed to import ${failCount} matches.`);
+            }
+        } finally {
+            setBulkImporting(false);
+            setShowApiModal(false);
+        }
     };
 
     useEffect(() => {
@@ -293,6 +363,18 @@ const MatchForm = () => {
                             </div>
 
                             <div className="space-y-2">
+                                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Match Date</label>
+                                <input
+                                    type="date"
+                                    name="date"
+                                    value={formData.date}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all text-gray-900 dark:text-white"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
                                 <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Start Time</label>
                                 <input
                                     type="text"
@@ -301,7 +383,7 @@ const MatchForm = () => {
                                     onChange={handleChange}
                                     required
                                     className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all text-gray-900 dark:text-white"
-                                    placeholder="e.g. Today, 20:00 GMT"
+                                    placeholder="e.g. 8:00 PM"
                                 />
                             </div>
 
@@ -413,9 +495,11 @@ const MatchForm = () => {
                                 <div>
                                     <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                         <Search size={18} className="text-indigo-500" />
-                                        TheSportsDB API Search
+                                        API Match Selection
                                     </h3>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Find matches directly from the database.</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                        {isEditing ? 'Selection fills the form below.' : 'Select multiple matches to import in bulk.'}
+                                    </p>
                                 </div>
                                 <button type="button" onClick={() => setShowApiModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-2">✕</button>
                             </div>
@@ -522,29 +606,59 @@ const MatchForm = () => {
 
                                 {!apiLoading && apiMatches.length > 0 && (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-3">
-                                        {apiMatches.map(m => (
-                                            <button
-                                                key={m.id}
-                                                type="button"
-                                                onClick={() => handleSelectApiMatch(m)}
-                                                className="text-left p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all flex flex-col gap-2 group"
-                                            >
-                                                <div className="flex justify-between items-start w-full">
-                                                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide group-hover:text-indigo-500 transition-colors">
-                                                        {m.league}
-                                                    </span>
-                                                    <span className="text-xs font-semibold bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md dark:text-gray-300">
-                                                        {m.time}
-                                                    </span>
-                                                </div>
-                                                <div className="text-sm sm:text-base font-bold text-gray-900 dark:text-white leading-tight">
-                                                    {m.team1} <span className="text-gray-400 font-normal mx-1">vs</span> {m.team2}
-                                                </div>
-                                            </button>
-                                        ))}
+                                        {apiMatches.map(m => {
+                                            const isSelected = selectedApiMatches.some(sel => sel.id === m.id);
+                                            return (
+                                                <button
+                                                    key={m.id}
+                                                    type="button"
+                                                    onClick={() => handleSelectApiMatch(m)}
+                                                    className={`text-left p-4 bg-white dark:bg-gray-800 border rounded-xl hover:shadow-md transition-all flex flex-col gap-2 group relative ${isSelected ? 'border-indigo-500 ring-2 ring-indigo-500/20 shadow-indigo-500/10' : 'border-gray-200 dark:border-gray-700 hover:border-indigo-400 dark:hover:border-indigo-500'}`}
+                                                >
+                                                    {!isEditing && (
+                                                        <div className={`absolute top-3 right-3 w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${isSelected ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600'}`}>
+                                                            {isSelected && <Save size={12} />}
+                                                        </div>
+                                                    )}
+                                                    <div className="flex justify-between items-start w-full pr-8">
+                                                        <span className={`text-xs font-bold uppercase tracking-wide group-hover:text-indigo-500 transition-colors ${isSelected ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                                                            {m.league}
+                                                        </span>
+                                                        <span className="text-xs font-semibold bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md dark:text-gray-300">
+                                                            {m.time}
+                                                        </span>
+                                                    </div>
+                                                    <div className="text-sm sm:text-base font-bold text-gray-900 dark:text-white leading-tight">
+                                                        {m.team1} <span className="text-gray-400 font-normal mx-1">vs</span> {m.team2}
+                                                    </div>
+                                                    {m.date && <div className="text-[10px] text-gray-500 dark:text-gray-500 font-medium">{m.date}</div>}
+                                                </button>
+                                            )
+                                        })}
                                     </div>
                                 )}
                             </div>
+
+                            {/* Modal Footer (Bulk Action) */}
+                            {!isEditing && apiMatches.length > 0 && (
+                                <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center justify-between">
+                                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                        <span className="text-indigo-600 dark:text-indigo-400 font-bold">{selectedApiMatches.length}</span> matches selected
+                                    </div>
+                                    <button
+                                        type="button"
+                                        disabled={selectedApiMatches.length === 0 || bulkImporting}
+                                        onClick={handleBulkImport}
+                                        className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-white font-bold text-sm transition-all shadow-md ${selectedApiMatches.length === 0 || bulkImporting
+                                            ? 'bg-gray-400 cursor-not-allowed shadow-none'
+                                            : 'bg-indigo-600 hover:bg-indigo-500 hover:shadow-indigo-600/30 hover:-translate-y-0.5'
+                                            }`}
+                                    >
+                                        {bulkImporting ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+                                        {bulkImporting ? 'Importing...' : `Import ${selectedApiMatches.length} Matches`}
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )

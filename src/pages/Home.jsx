@@ -41,16 +41,18 @@ function Home({ searchQuery }) {
     const searchLower = searchQuery ? searchQuery.toLowerCase() : "";
     const now = currentTime;
 
-    // Compute effective match status based on current time
+    // Compute effective match status based on current time + match date
     const getEffectiveStatus = (match) => {
       // If admin already set it to LIVE or FINISHED, respect that
       if (match.status === 'LIVE') return 'LIVE';
       if (match.status === 'FINISHED') return 'FINISHED';
+      // If no date is stored, don't auto-compute — leave as UPCOMING
+      if (!match.date) return match.status;
       if (!match.time || match.time === 'TBD') return match.status;
       try {
-        let kickOff = new Date(`${now.toDateString()} ${match.time}`);
+        // Combine exact match date + time for accurate comparison
+        let kickOff = new Date(`${match.date} ${match.time}`);
         if (isNaN(kickOff.getTime())) return match.status;
-        // If time already passed today, it was meant for today (don't push to tomorrow)
         const msSinceKickOff = now.getTime() - kickOff.getTime();
         if (msSinceKickOff > 0 && msSinceKickOff < 2 * 60 * 60 * 1000) {
           return 'LIVE'; // Within 2 hours of kick-off → LIVE
@@ -96,18 +98,20 @@ function Home({ searchQuery }) {
     // Sort: LIVE first → UPCOMING (soonest time first) → FINISHED last
     const statusOrder = { LIVE: 0, UPCOMING: 1, FINISHED: 2 };
 
-    const parseTime = (timeStr) => {
+    const parseTime = (timeStr, dateStr) => {
       if (!timeStr || timeStr === 'TBD') return Infinity;
       try {
-        const now = new Date();
-        let matchTime = new Date(`${now.toDateString()} ${timeStr}`);
-        if (isNaN(matchTime.getTime())) return Infinity;
-        // If this time has already passed today, treat it as tomorrow
-        if (matchTime <= now) {
-          matchTime.setDate(matchTime.getDate() + 1);
+        const nowRef = new Date();
+        // Prefer the match's actual date so tomorrow's matches sort after today's
+        let matchTime = dateStr
+          ? new Date(`${dateStr} ${timeStr}`)
+          : new Date(`${nowRef.toDateString()} ${timeStr}`);
+        if (isNaN(matchTime.getTime())) {
+          matchTime = new Date(`${nowRef.toDateString()} ${timeStr}`);
+          if (isNaN(matchTime.getTime())) return Infinity;
         }
         // Return ms until match — smaller = sooner = first
-        return matchTime.getTime() - now.getTime();
+        return matchTime.getTime() - nowRef.getTime();
       } catch {
         return Infinity;
       }
@@ -116,8 +120,8 @@ function Home({ searchQuery }) {
     return [...filtered].sort((a, b) => {
       const statusDiff = (statusOrder[a.status] ?? 1) - (statusOrder[b.status] ?? 1);
       if (statusDiff !== 0) return statusDiff;
-      // Within same status, sort UPCOMING by soonest time
-      if (a.status === 'UPCOMING') return parseTime(a.time) - parseTime(b.time);
+      // Within same status, sort UPCOMING by soonest time (pass date for accuracy)
+      if (a.status === 'UPCOMING') return parseTime(a.time, a.date) - parseTime(b.time, b.date);
       return 0;
     });
   }, [searchQuery, activeTab, allMatches, currentTime]);

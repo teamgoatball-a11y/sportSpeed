@@ -8,6 +8,8 @@ import toast from 'react-hot-toast';
 const MatchManager = () => {
     const [matches, setMatches] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedIds, setSelectedIds] = useState(new Set());
+    const [isBulkDeleting, setIsBulkDeleting] = useState(false);
     const navigate = useNavigate();
 
     const fetchMatches = async () => {
@@ -37,10 +39,66 @@ const MatchManager = () => {
             try {
                 await deleteDoc(doc(db, 'matches', matchId));
                 toast.success("Match deleted successfully");
+                setSelectedIds(prev => {
+                    const next = new Set(prev);
+                    next.delete(matchId);
+                    return next;
+                });
                 fetchMatches(); // Refresh list
             } catch (error) {
                 console.error("Error deleting match: ", error);
                 toast.error("Failed to delete match");
+            }
+        }
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedIds.size === matches.length) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(matches.map(m => m.id)));
+        }
+    };
+
+    const toggleSelectMatch = (id) => {
+        setSelectedIds(prev => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
+    };
+
+    const handleBulkDelete = async () => {
+        if (selectedIds.size === 0) return;
+        
+        if (window.confirm(`Are you sure you want to delete ${selectedIds.size} matches?`)) {
+            setIsBulkDeleting(true);
+            let successCount = 0;
+            let failCount = 0;
+
+            try {
+                const idsArray = Array.from(selectedIds);
+                for (const id of idsArray) {
+                    try {
+                        await deleteDoc(doc(db, 'matches', id));
+                        successCount++;
+                    } catch (e) {
+                        console.error(`Error deleting match ${id}:`, e);
+                        failCount++;
+                    }
+                }
+
+                if (successCount > 0) {
+                    toast.success(`Successfully deleted ${successCount} matches`);
+                    fetchMatches();
+                }
+                if (failCount > 0) {
+                    toast.error(`Failed to delete ${failCount} matches`);
+                }
+                setSelectedIds(new Set());
+            } finally {
+                setIsBulkDeleting(false);
             }
         }
     };
@@ -55,6 +113,16 @@ const MatchManager = () => {
                     <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Manage all live streams and schedules</p>
                 </div>
                 <div className="flex gap-3">
+                    {selectedIds.size > 0 && (
+                        <button
+                            onClick={handleBulkDelete}
+                            disabled={isBulkDeleting}
+                            className="flex items-center gap-2 px-4 py-2.5 bg-orange-100 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-500/20 rounded-xl font-medium transition-colors border border-orange-200 dark:border-orange-500/30"
+                        >
+                            <Trash2 size={20} />
+                            {isBulkDeleting ? 'Deleting...' : `Delete ${selectedIds.size} Selected`}
+                        </button>
+                    )}
                     <button
                         onClick={fetchMatches}
                         className="p-2.5 text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
@@ -93,6 +161,14 @@ const MatchManager = () => {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-800 text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                    <th className="px-6 py-4 w-10">
+                                        <input
+                                            type="checkbox"
+                                            checked={matches.length > 0 && selectedIds.size === matches.length}
+                                            onChange={toggleSelectAll}
+                                            className="w-4 h-4 rounded border-gray-300 text-red-600 focus:ring-red-500 cursor-pointer"
+                                        />
+                                    </th>
                                     <th className="px-6 py-4">Teams</th>
                                     <th className="px-6 py-4">League</th>
                                     <th className="px-6 py-4">Status & Time</th>
@@ -103,8 +179,15 @@ const MatchManager = () => {
                             </thead>
                             <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
                                 {matches.map((match) => (
-                                    <tr key={match.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/20 transition-colors group">
-
+                                    <tr key={match.id} className={`hover:bg-gray-50 dark:hover:bg-gray-800/20 transition-colors group ${selectedIds.has(match.id) ? 'bg-red-50/30 dark:bg-red-500/5' : ''}`}>
+                                        <td className="px-6 py-4">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedIds.has(match.id)}
+                                                onChange={() => toggleSelectMatch(match.id)}
+                                                className="w-4 h-4 rounded border-gray-300 text-red-600 focus:ring-red-500 cursor-pointer"
+                                            />
+                                        </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <div>

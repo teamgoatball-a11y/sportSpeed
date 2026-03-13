@@ -33,16 +33,16 @@ const TOP_LEAGUE_IDS = new Set([
     140,  // Spanish La Liga
     61,   // French Ligue 1
     78,   // German Bundesliga
-    94,   // Portuguese Primeira Liga
-    88,   // Dutch Eredivisie
+    //94,   // Portuguese Primeira Liga
+    //88,   // Dutch Eredivisie
     203,  // Turkish Süper Lig
-    144,  // Belgian Pro League
-    179,  // Scottish Premiership
+    //144,  // Belgian Pro League
+    //179,  // Scottish Premiership
     // South America
     11,   // Copa Libertadores
-    13,   // Copa Sudamericana
-    71,   // Brazilian Série A
-    128,  // Argentine Primera División
+    // 13,   // Copa Sudamericana
+    // 71,   // Brazilian Série A
+    // 128,  // Argentine Primera División
     // North America
     253,  // Major League Soccer (MLS)
     16,   // CONCACAF Champions Cup
