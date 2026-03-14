@@ -17,6 +17,7 @@ import AdminLogin from './pages/admin/AdminLogin'
 import DashboardLayout from './pages/admin/DashboardLayout'
 import MatchManager from './pages/admin/MatchManager'
 import MatchForm from './pages/admin/MatchForm'
+import ScrollToTop from './components/ScrollToTop'
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -29,6 +30,7 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <Toaster position="top-right" />
         {/* Root wrapper handles dark class and global bg/text colors */}
         <div className={`min-h-screen font-sans flex flex-col flex-1 transition-colors duration-300 ${isDarkMode ? 'dark bg-slate-950 text-slate-50' : 'bg-gray-50 text-gray-900'}`}>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Edit2, Trash2, RefreshCw } from 'lucide-react';
+import { Plus, Edit2, Trash2, RefreshCw, Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const MatchManager = () => {
@@ -100,6 +100,63 @@ const MatchManager = () => {
             } finally {
                 setIsBulkDeleting(false);
             }
+        }
+    };
+
+    const handleShare = (match) => {
+        // Parse time (e.g., "05:00 PM")
+        const parseTime = (timeStr) => {
+            const [time, modifier] = timeStr.split(' ');
+            let [hours, minutes] = time.split(':');
+            if (hours === '12') hours = '00';
+            if (modifier === 'PM') hours = parseInt(hours, 10) + 12;
+            const date = new Date();
+            date.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+            return date;
+        };
+
+        const formatTime = (date) => {
+            return date.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+        };
+
+        const generateHashtag = (str) => {
+            if (!str) return '';
+            // For ISL specifically
+            if (str.toLowerCase().includes('indian super league')) return '#ISL';
+            return '#' + str.replace(/\s+/g, '');
+        };
+
+        try {
+            const istTime = parseTime(match.time);
+            
+            // UAE is IST - 1.5 hours
+            const uaeTime = new Date(istTime.getTime() - (1.5 * 60 * 60 * 1000));
+            // KSA is IST - 2.5 hours
+            const ksaTime = new Date(istTime.getTime() - (2.5 * 60 * 60 * 1000));
+
+            const shareUrl = `https://goatball.online/match/${match.id}`;
+            const leagueHashtag = generateHashtag(match.league);
+            const team1Hashtag = generateHashtag(match.team1);
+            const team2Hashtag = generateHashtag(match.team2);
+
+            const message = `🚨 **MATCHDAY** 🚨
+🔴 **${match.team1.toUpperCase()} 🆚 ${match.team2.toUpperCase()} 🟡**
+⚽**${match.league.toUpperCase()}**
+
+**IND** | ${match.time} **UAE** | ${formatTime(uaeTime)} | **KSA** | ${formatTime(ksaTime)}
+
+📺 **LIVE LINK 👇🏻**
+${shareUrl}
+━━━━━━━━━━━━━━
+
+Visit : goatball.online for more .
+${leagueHashtag} ${team1Hashtag} ${team2Hashtag} ⚽`;
+
+            navigator.clipboard.writeText(message);
+            toast.success("Share link copied to clipboard!");
+        } catch (error) {
+            console.error("Error sharing match:", error);
+            toast.error("Failed to generate share link");
         }
     };
 
@@ -237,7 +294,14 @@ const MatchManager = () => {
                                         </td>
 
                                         <td className="px-6 py-4 text-right">
-                                            <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                            <div className="flex justify-end gap-2 transition-opacity duration-200">
+                                                <button
+                                                    onClick={() => handleShare(match)}
+                                                    className="p-2 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 rounded-lg transition-colors border border-transparent hover:border-emerald-200 dark:hover:border-emerald-500/20"
+                                                    title="Share Match"
+                                                >
+                                                    <Share2 size={18} />
+                                                </button>
                                                 <Link
                                                     to={`/admin/matches/edit/${match.id}`}
                                                     className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors border border-transparent hover:border-blue-200 dark:hover:border-blue-500/20"

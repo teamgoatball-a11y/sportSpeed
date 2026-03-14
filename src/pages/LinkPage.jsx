@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import AdBanner from "../components/AdBanner"
 
 function LinkPage() {
     const { id } = useParams()
@@ -63,14 +64,18 @@ function LinkPage() {
                     </h1>
                     <p className="text-gray-500 dark:text-gray-400 text-sm mt-1 transition-colors duration-300">Available Streaming Servers</p>
                 </div>
-
+            
+            
                 {/* Status indicator */}
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-500/10 rounded-full border border-green-200 dark:border-green-500/20 w-fit">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
                     <span className="text-green-700 dark:text-green-500 text-xs font-bold tracking-wide">SERVERS ONLINE</span>
                 </div>
             </div>
-            
+
+            {/* Ad Banner */}
+            <AdBanner />
+              <AdBanner />
 
             {/* Servers List */}
             {match.servers && match.servers.filter(s => s.name?.trim() || s.url?.trim()).length > 0 ? (
@@ -133,14 +138,17 @@ function LinkPage() {
                                     <div className="hidden sm:flex items-center text-gray-400 dark:text-gray-600 group-hover:text-red-500 transition-colors transform group-hover:translate-x-1">
                                         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                        </svg>
+                                        </svg> 
                                     </div>
-
+                              
                                 </div>
+                               
                             </a>
                         );
                     })}
+                    <AdBanner />
                 </div>
+                
             ) : (
                 <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-12 text-center transition-colors duration-300">
                     <svg className="w-16 h-16 mx-auto text-gray-300 dark:text-gray-700 mb-4 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -148,6 +156,7 @@ function LinkPage() {
                     </svg>
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors duration-300">Servers Starting Up</h3>
                     <p className="text-gray-500 dark:text-gray-400 transition-colors duration-300">Links will be populated automatically when the match is closer to kick-off.</p>
+                
                 </div>
             )}
 

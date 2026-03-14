@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { doc, getDoc, updateDoc, increment } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import AdBanner from "../components/AdBanner"
 
 function MatchPage() {
     const { id } = useParams()
@@ -162,7 +163,7 @@ function MatchPage() {
                     <p className="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase tracking-wider mb-1">League</p>
                     <p className="text-gray-900 dark:text-white font-semibold text-lg">{match.league}</p>
                 </div>
-
+                   <AdBanner />
                 {/* Detail Card 2: Time */}
                 <div className="bg-white/60 dark:bg-gray-900/40 backdrop-blur-md rounded-2xl p-6 border border-gray-200/50 dark:border-gray-800/50 text-center transition-colors duration-300">
                     <div className="w-10 h-10 mx-auto bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-3">
@@ -171,7 +172,7 @@ function MatchPage() {
                     <p className="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase tracking-wider mb-1">Kick-off Time</p>
                     <p className="text-gray-900 dark:text-white font-semibold text-lg">{match.time}</p>
                 </div>
-
+                <AdBanner />
                 {/* Detail Card 3: Venue */}
                 <div className="bg-white/60 dark:bg-gray-900/40 backdrop-blur-md rounded-2xl p-6 border border-gray-200/50 dark:border-gray-800/50 text-center transition-colors duration-300">
                     <div className="w-10 h-10 mx-auto bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-3">
@@ -182,6 +183,9 @@ function MatchPage() {
                 </div>
 
             </div>
+
+            {/* Ad Banner */}
+            <AdBanner />
 
             {/* Main Action Area */}
             <div className="text-center pt-8 pb-12">

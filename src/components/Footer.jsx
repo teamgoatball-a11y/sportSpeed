@@ -12,7 +12,7 @@ function Footer() {
                     <div className="col-span-1 md:col-span-2">
                         <Link to="/" className="inline-block mb-4">
                             <span className="text-2xl font-black italic tracking-tighter text-gray-900 dark:text-white transition-colors duration-300">
-                                SPORTS<span className="text-red-500">LIVE</span>
+                                GOAT<span className="text-red-500">BALL</span>
                             </span>
                         </Link>
                         <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-sm transition-colors duration-300">
@@ -50,7 +50,7 @@ function Footer() {
                 {/* Copyright */}
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                     <p className="text-gray-500 dark:text-gray-500 text-sm text-center md:text-left transition-colors duration-300">
-                        &copy; {currentYear} SportsLive. All rights reserved. This site does not host any streams.
+                        &copy; {currentYear} GOATBALL. All rights reserved. This site does not host any streams.
                     </p>
                 </div>
 
