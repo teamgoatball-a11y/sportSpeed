@@ -13,6 +13,7 @@ function WatchPage() {
     const [server, setServer] = useState(null)
     const [loading, setLoading] = useState(true)
     const videoRef = useRef(null)
+    const playerWrapperRef = useRef(null)
 
     const [isPlaying, setIsPlaying] = useState(true)
     const [isMuted, setIsMuted] = useState(true)
@@ -51,13 +52,14 @@ function WatchPage() {
     }
 
     const toggleFullScreen = () => {
-        if (videoRef.current) {
-            if (videoRef.current.requestFullscreen) {
-                videoRef.current.requestFullscreen();
-            } else if (videoRef.current.webkitRequestFullscreen) {
-                videoRef.current.webkitRequestFullscreen();
-            } else if (videoRef.current.msRequestFullscreen) {
-                videoRef.current.msRequestFullscreen();
+        const element = playerWrapperRef.current;
+        if (element) {
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
             }
         }
     }
@@ -162,7 +164,7 @@ function WatchPage() {
             <AdBanner />
 
             {/* Video Player Area */}
-            <div className="w-full bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-800">
+            <div ref={playerWrapperRef} className="w-full bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-800">
                 {server.url.includes('<iframe') ? (
                     <div 
                         className="w-full aspect-video flex items-center justify-center [&>iframe]:w-full [&>iframe]:h-full [&>iframe]:aspect-video"
@@ -181,31 +183,33 @@ function WatchPage() {
                 )}
             </div>
 
-            {/* Custom Video Controls (Only for native video streams, not iframes) */}
-            {!server.url.includes('<iframe') && (
-                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 flex flex-wrap items-center justify-center gap-4 sm:gap-6 shadow-sm animate-fade-in">
-                    <button 
-                        onClick={togglePlay}
-                        className="flex items-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition-all transform hover:scale-105 active:scale-95"
-                    >
-                        {isPlaying ? <><Pause size={20} /> Pause</> : <><Play size={20} /> Play</>}
-                    </button>
-                    
-                    <button 
-                        onClick={toggleMute}
-                        className="flex items-center gap-2 px-6 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-white rounded-xl font-bold transition-all transform hover:scale-105 active:scale-95 border border-gray-200 dark:border-gray-700"
-                    >
-                        {isMuted ? <><VolumeX size={20} /> Unmute</> : <><Volume2 size={20} /> Mute</>}
-                    </button>
+            {/* Custom Video Controls */}
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 flex flex-wrap items-center justify-center gap-4 sm:gap-6 shadow-sm animate-fade-in">
+                {!server.url.includes('<iframe') && (
+                    <>
+                        <button 
+                            onClick={togglePlay}
+                            className="flex items-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition-all transform hover:scale-105 active:scale-95"
+                        >
+                            {isPlaying ? <><Pause size={20} /> Pause</> : <><Play size={20} /> Play</>}
+                        </button>
+                        
+                        <button 
+                            onClick={toggleMute}
+                            className="flex items-center gap-2 px-6 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-white rounded-xl font-bold transition-all transform hover:scale-105 active:scale-95 border border-gray-200 dark:border-gray-700"
+                        >
+                            {isMuted ? <><VolumeX size={20} /> Unmute</> : <><Volume2 size={20} /> Mute</>}
+                        </button>
+                    </>
+                )}
 
-                    <button 
-                        onClick={toggleFullScreen}
-                        className="flex items-center gap-2 px-6 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-white rounded-xl font-bold transition-all transform hover:scale-105 active:scale-95 border border-gray-200 dark:border-gray-700"
-                    >
-                        <Maximize size={20} /> Full Screen
-                    </button>
-                </div>
-            )}
+                <button 
+                    onClick={toggleFullScreen}
+                    className="flex items-center gap-2 px-6 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-white rounded-xl font-bold transition-all transform hover:scale-105 active:scale-95 border border-gray-200 dark:border-gray-700"
+                >
+                    <Maximize size={20} /> Full Screen
+                </button>
+            </div>
             
             <AdBanner />
         </div>
