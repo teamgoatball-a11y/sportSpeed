@@ -6,6 +6,7 @@ import './App.css'
 import Home from './pages/Home'
 import MatchPage from './pages/MatchPage'
 import LinkPage from './pages/LinkPage'
+import WatchPage from './pages/WatchPage'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import { Toaster } from 'react-hot-toast'
@@ -64,6 +65,7 @@ function App() {
                     <Route path="/" element={<Home searchQuery={searchQuery} />} />
                     <Route path="/match/:id" element={<MatchPage />} />
                     <Route path="/link/:id" element={<LinkPage />} />
+                    <Route path="/watch/:id/:serverIndex" element={<WatchPage />} />
                   </Routes>
                 </main>
                 <Footer />

@@ -446,10 +446,10 @@ const MatchForm = () => {
                                                 <LinkIcon size={14} />
                                             </div>
                                             <input
-                                                type="url"
+                                                type="text"
                                                 value={server.url}
                                                 onChange={(e) => handleServerChange(index, 'url', e.target.value)}
-                                                placeholder="https://example.com/stream.m3u8"
+                                                placeholder="https://... OR <iframe src='...'></iframe>"
                                                 className="w-full pl-9 pr-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none text-sm text-gray-900 dark:text-white"
                                             />
                                         </div>

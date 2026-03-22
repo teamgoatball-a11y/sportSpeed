@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react"
 import MatchCard from "../components/MatchCard"
 import MatchCardSkeleton from "../components/MatchCardSkeleton"
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore'
+import { collection, query, orderBy, onSnapshot, limit } from 'firebase/firestore'
 import { db } from '../config/firebase'
 
 const CATEGORIES = ["All", "Live", "Football", "Cricket", "Others"]
@@ -19,7 +19,7 @@ function Home({ searchQuery }) {
   }, []);
 
   useEffect(() => {
-    const q = query(collection(db, 'matches'), orderBy('createdAt', 'desc'));
+    const q = query(collection(db, 'matches'), orderBy('createdAt', 'desc'), limit(100));
 
     // onSnapshot serves from IndexedDB cache instantly (due to enableIndexedDbPersistence),
     // then fires again when fresh data arrives from Firestore — no waiting for network!

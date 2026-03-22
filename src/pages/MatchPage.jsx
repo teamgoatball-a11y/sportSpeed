@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
-import { doc, getDoc, updateDoc, increment } from 'firebase/firestore'
+import { doc, onSnapshot, updateDoc, increment } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import AdBanner from "../components/AdBanner"
 
@@ -19,28 +19,26 @@ function MatchPage() {
     }, []);
 
     useEffect(() => {
-        const fetchMatch = async () => {
-            try {
-                const docRef = doc(db, 'matches', id);
-                const docSnap = await getDoc(docRef);
+        const docRef = doc(db, 'matches', id);
+        
+        // Fire-and-forget: increment view counter in background
+        updateDoc(docRef, { views: increment(1) }).catch(() => { });
 
-                if (docSnap.exists()) {
-                    setMatch({ id: docSnap.id, ...docSnap.data() });
-                    // Show the page immediately — don't wait for the view counter write
-                    setLoading(false);
-
-                    // Fire-and-forget: increment view counter in background
-                    updateDoc(docRef, { views: increment(1) }).catch(() => { });
-                } else {
-                    setLoading(false);
-                }
-            } catch (error) {
-                console.error("Error fetching match:", error);
-                setLoading(false);
+        // onSnapshot returns data from IndexedDB local cache instantly,
+        // then updates if server has a newer version.
+        const unsubscribe = onSnapshot(docRef, (docSnap) => {
+            if (docSnap.exists()) {
+                setMatch({ id: docSnap.id, ...docSnap.data() });
+            } else {
+                setMatch(null);
             }
-        };
+            setLoading(false);
+        }, (error) => {
+            console.error("Error listening to match:", error);
+            setLoading(false);
+        });
 
-        fetchMatch();
+        return () => unsubscribe();
     }, [id])
 
     if (loading) {
@@ -163,7 +161,7 @@ function MatchPage() {
                     <p className="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase tracking-wider mb-1">League</p>
                     <p className="text-gray-900 dark:text-white font-semibold text-lg">{match.league}</p>
                 </div>
-                   <AdBanner />
+
                 {/* Detail Card 2: Time */}
                 <div className="bg-white/60 dark:bg-gray-900/40 backdrop-blur-md rounded-2xl p-6 border border-gray-200/50 dark:border-gray-800/50 text-center transition-colors duration-300">
                     <div className="w-10 h-10 mx-auto bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-3">
@@ -172,7 +170,7 @@ function MatchPage() {
                     <p className="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase tracking-wider mb-1">Kick-off Time</p>
                     <p className="text-gray-900 dark:text-white font-semibold text-lg">{match.time}</p>
                 </div>
-                <AdBanner />
+
                 {/* Detail Card 3: Venue */}
                 <div className="bg-white/60 dark:bg-gray-900/40 backdrop-blur-md rounded-2xl p-6 border border-gray-200/50 dark:border-gray-800/50 text-center transition-colors duration-300">
                     <div className="w-10 h-10 mx-auto bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-3">

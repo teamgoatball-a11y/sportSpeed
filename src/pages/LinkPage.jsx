@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react"
-import { useParams, Link } from "react-router-dom"
+import { useParams, Link, useNavigate } from "react-router-dom"
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import AdBanner from "../components/AdBanner"
 
 function LinkPage() {
     const { id } = useParams()
+    const navigate = useNavigate()
     const [match, setMatch] = useState(null)
     const [loading, setLoading] = useState(true)
 
@@ -75,7 +76,7 @@ function LinkPage() {
 
             {/* Ad Banner */}
             <AdBanner />
-              <AdBanner />
+            <AdBanner />
 
             {/* Servers List */}
             {match.servers && match.servers.filter(s => s.name?.trim() || s.url?.trim()).length > 0 ? (
@@ -86,13 +87,21 @@ function LinkPage() {
                         const ping = index === 0 ? '12ms' : index === 1 ? '24ms' : '45ms';
                         const isBest = index === 0;
 
+                        const isIframe = server.url?.includes('<iframe');
+                        const isM3u8 = server.url?.includes('.m3u8');
+                        const isWatchable = isIframe || isM3u8;
+
                         return (
-                            <a
+                            <button
                                 key={server.name}
-                                href={server.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`block group relative overflow-hidden rounded-2xl border transition-all duration-300 transform hover:-translate-y-1 ${isBest
+                                onClick={(e) => {
+                                    if (isWatchable) {
+                                        navigate(`/watch/${match.id}/${index}`);
+                                    } else {
+                                        window.open(server.url, '_blank');
+                                    }
+                                }}
+                                className={`block w-full text-left group relative overflow-hidden rounded-2xl border transition-all duration-300 transform hover:-translate-y-1 ${isBest
                                     ? 'bg-red-50 dark:bg-gray-900 border-red-200 dark:border-red-900/50 hover:border-red-400 dark:hover:border-red-500 shadow-md shadow-red-100 dark:shadow-red-900/20'
                                     : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600 shadow-sm hover:shadow-md'
                                     }`}
@@ -123,6 +132,15 @@ function LinkPage() {
                                             {server.name}
                                         </h3>
                                         <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-2 sm:mt-0">
+                                            {isWatchable ? (
+                                                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-2.5 py-1 rounded-md">
+                                                    Play Inline
+                                                </span>
+                                            ) : (
+                                                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2.5 py-1 rounded-md">
+                                                    Opens New Tab
+                                                </span>
+                                            )}
                                             <span className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2.5 py-1 rounded-md transition-colors duration-300">
                                                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                                                 {quality}
@@ -143,7 +161,7 @@ function LinkPage() {
                               
                                 </div>
                                
-                            </a>
+                            </button>
                         );
                     })}
                     <AdBanner />
