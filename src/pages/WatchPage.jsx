@@ -51,18 +51,53 @@ function WatchPage() {
         }
     }
 
-    const toggleFullScreen = () => {
+    const toggleFullScreen = async () => {
         const element = playerWrapperRef.current;
         if (element) {
-            if (element.requestFullscreen) {
-                element.requestFullscreen();
-            } else if (element.webkitRequestFullscreen) {
-                element.webkitRequestFullscreen();
-            } else if (element.msRequestFullscreen) {
-                element.msRequestFullscreen();
+            try {
+                if (element.requestFullscreen) {
+                    await element.requestFullscreen();
+                } else if (element.webkitRequestFullscreen) {
+                    await element.webkitRequestFullscreen();
+                } else if (element.msRequestFullscreen) {
+                    await element.msRequestFullscreen();
+                }
+                
+                // Attempt to auto-rotate and lock to landscape on mobile
+                if (window.screen && window.screen.orientation && window.screen.orientation.lock) {
+                    await window.screen.orientation.lock('landscape').catch(() => {
+                        console.log("Orientation lock not supported or failed.");
+                    });
+                }
+            } catch (error) {
+                console.error("Error attempting full screen:", error);
             }
         }
     }
+
+    // Automatically unlock screen orientation when user exits fullscreen mode
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            const isFullscreen = document.fullscreenElement || document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement;
+            if (!isFullscreen) {
+                if (window.screen && window.screen.orientation && window.screen.orientation.unlock) {
+                    window.screen.orientation.unlock();
+                }
+            }
+        }
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+        return () => {
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+            document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+        }
+    }, [])
 
     // Setup HLS player when server changes
     useEffect(() => {
