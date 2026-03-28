@@ -400,7 +400,7 @@ const MatchForm = () => {
                                 >
                                     <option value="UPCOMING">UPCOMING</option>
                                     <option value="LIVE">LIVE NOW</option>
-                                    <option value="COMPLETED">COMPLETED</option>
+                                    <option value="FINISHED">FINISHED</option>
                                 </select>
                             </div>
 

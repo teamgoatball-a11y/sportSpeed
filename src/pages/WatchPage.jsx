@@ -3,12 +3,13 @@ import { useParams, Link, useNavigate } from "react-router-dom"
 import { doc, getDoc, onSnapshot } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import AdBanner from "../components/AdBanner"
+import SmartLinkAd from "../components/SmartLinkAd"
+import MediumBanner from "../components/MediumBanner"
 import Hls from 'hls.js'
 import { Play, Pause, Volume2, VolumeX, Maximize } from 'lucide-react'
 
 function WatchPage() {
     const { id, serverIndex } = useParams()
-    const navigate = useNavigate()
     const [match, setMatch] = useState(null)
     const [server, setServer] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -197,6 +198,7 @@ function WatchPage() {
             </div>
 
             <AdBanner />
+            <SmartLinkAd />
 
             {/* Video Player Area */}
             <div ref={playerWrapperRef} className="w-full bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-800">
@@ -247,6 +249,7 @@ function WatchPage() {
             </div>
             
             <AdBanner />
+            <MediumBanner />
         </div>
     )
 }

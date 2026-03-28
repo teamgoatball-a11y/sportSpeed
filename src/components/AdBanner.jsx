@@ -1,40 +1,65 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-const AdBanner = () => {
-  const adContainerRef = useRef(null);
+const AdBanner = ({ adKey = 'e6a4234b769abb757681ea0c40c89cbd', height = 50, width = 320 }) => {
+    const wrapperRef = useRef(null);
+    const bannerRef = useRef(null);
+    const scriptLoaded = useRef(false);
+    const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    // Only run if the container exists and hasn't been populated yet
-    if (adContainerRef.current && adContainerRef.current.childNodes.length === 0) {
-      // Set options globally as some ad scripts expect this
-      window.atOptions = {
-        'key' : 'e6a4234b769abb757681ea0c40c89cbd',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-      };
+    // Step 1: Watch for the banner to enter the viewport
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    observer.disconnect(); // stop watching once visible
+                }
+            },
+            { rootMargin: '150px' } // start loading 150px before it's visible
+        );
 
-      const script = document.createElement('script');
-      script.src = 'https://www.highperformanceformat.com/e6a4234b769abb757681ea0c40c89cbd/invoke.js';
-      script.async = true;
-      
-      // Append to the container
-      adContainerRef.current.appendChild(script);
-    }
-  }, []);
+        if (wrapperRef.current) {
+            observer.observe(wrapperRef.current);
+        }
 
-  return (
-    <div className="w-full flex flex-col items-center justify-center my-8">
-      <span className="text-[10px] font-bold text-gray-400 dark:text-gray-600 tracking-widest uppercase mb-2">Advertisement</span>
-      <div 
-        ref={adContainerRef} 
-        className="min-h-[50px] min-w-[320px] max-w-full overflow-hidden transition-all duration-300"
-      >
-        {/* The ad script will inject its iframe here */}
-      </div>
-    </div>
-  );
+        return () => observer.disconnect();
+    }, []);
+
+    // Step 2: Only inject scripts once it's visible
+    useEffect(() => {
+        if (!isVisible || !bannerRef.current || scriptLoaded.current) return;
+
+        const conf = document.createElement('script');
+        const invoke = document.createElement('script');
+
+        conf.innerHTML = `
+            atOptions = {
+                'key' : '${adKey}',
+                'format' : 'iframe',
+                'height' : ${height},
+                'width' : ${width},
+                'params' : {}
+            };
+        `;
+        invoke.src = `https://www.highperformanceformat.com/${adKey}/invoke.js`;
+
+        bannerRef.current.appendChild(conf);
+        bannerRef.current.appendChild(invoke);
+        scriptLoaded.current = true;
+    }, [isVisible, adKey, height, width]);
+
+    return (
+        <div ref={wrapperRef} className="w-full flex flex-col items-center justify-center my-4">
+            <span className="text-[10px] font-bold text-gray-400 dark:text-gray-600 tracking-widest uppercase mb-2">Advertisement</span>
+            <div
+                ref={bannerRef}
+                className="w-full max-w-full overflow-hidden flex justify-center items-center transition-all duration-300"
+                style={{ minHeight: `${height}px` }}
+            >
+                {/* Ad loads here when scrolled into view */}
+            </div>
+        </div>
+    );
 };
 
 export default AdBanner;

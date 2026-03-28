@@ -3,6 +3,8 @@ import { useParams, Link } from "react-router-dom"
 import { doc, onSnapshot, updateDoc, increment } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import AdBanner from "../components/AdBanner"
+import SmartLinkAd from "../components/SmartLinkAd"
+import MediumBanner from "../components/MediumBanner"
 
 function MatchPage() {
     const { id } = useParams()
@@ -88,6 +90,8 @@ function MatchPage() {
                     <span className="font-medium">Back to Matches</span>
                 </Link>
             </div>
+
+            <AdBanner />
 
             {/* Hero Banner Area */}
             <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl p-6 sm:p-12 border border-gray-200 dark:border-gray-800 shadow-xl shadow-gray-200/50 dark:shadow-2xl relative overflow-hidden transition-colors duration-300">
@@ -182,8 +186,8 @@ function MatchPage() {
 
             </div>
 
-            {/* Ad Banner */}
-            <AdBanner />
+            <MediumBanner />
+            <SmartLinkAd />
 
             {/* Main Action Area */}
             <div className="text-center pt-8 pb-12">

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import MatchPage from './pages/MatchPage'
 import LinkPage from './pages/LinkPage'
 import WatchPage from './pages/WatchPage'
+import AdGateway from './pages/AdGateway'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import { Toaster } from 'react-hot-toast'
@@ -19,6 +20,7 @@ import DashboardLayout from './pages/admin/DashboardLayout'
 import MatchManager from './pages/admin/MatchManager'
 import MatchForm from './pages/admin/MatchForm'
 import ScrollToTop from './components/ScrollToTop'
+import SocialBarAd from './components/SocialBarAd'
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -31,6 +33,7 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <SocialBarAd />
         <ScrollToTop />
         <Toaster position="top-right" />
         {/* Root wrapper handles dark class and global bg/text colors */}
@@ -65,6 +68,7 @@ function App() {
                     <Route path="/" element={<Home searchQuery={searchQuery} />} />
                     <Route path="/match/:id" element={<MatchPage />} />
                     <Route path="/link/:id" element={<LinkPage />} />
+                    <Route path="/go/:matchId/:serverIndex" element={<AdGateway />} />
                     <Route path="/watch/:id/:serverIndex" element={<WatchPage />} />
                   </Routes>
                 </main>

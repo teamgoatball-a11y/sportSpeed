@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react"
 import MatchCard from "../components/MatchCard"
 import MatchCardSkeleton from "../components/MatchCardSkeleton"
+import AdBanner from "../components/AdBanner"
+import SmartLinkAd from "../components/SmartLinkAd"
 import { collection, query, orderBy, onSnapshot, limit } from 'firebase/firestore'
 import { db } from '../config/firebase'
 
@@ -158,6 +160,8 @@ function Home({ searchQuery }) {
           ))}
         </div>
       </div>
+
+      <SmartLinkAd />
 
       {/* Main Content Area */}
       {loading ? (

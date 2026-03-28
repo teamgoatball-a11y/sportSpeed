@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom"
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import AdBanner from "../components/AdBanner"
+import SmartLinkAd from "../components/SmartLinkAd"
 
 function LinkPage() {
     const { id } = useParams()
@@ -76,7 +77,7 @@ function LinkPage() {
 
             {/* Ad Banner */}
             <AdBanner />
-            <AdBanner />
+            <SmartLinkAd />
 
             {/* Servers List */}
             {match.servers && match.servers.filter(s => s.name?.trim() || s.url?.trim()).length > 0 ? (
@@ -92,15 +93,9 @@ function LinkPage() {
                         const isWatchable = isIframe || isM3u8;
 
                         return (
-                            <button
-                                key={server.name}
-                                onClick={(e) => {
-                                    if (isWatchable) {
-                                        navigate(`/watch/${match.id}/${index}`);
-                                    } else {
-                                        window.open(server.url, '_blank');
-                                    }
-                                }}
+                            <React.Fragment key={server.name || index}>
+                                <button
+                                    onClick={() => navigate(`/go/${match.id}/${index}`)}
                                 className={`block w-full text-left group relative overflow-hidden rounded-2xl border transition-all duration-300 transform hover:-translate-y-1 ${isBest
                                     ? 'bg-red-50 dark:bg-gray-900 border-red-200 dark:border-red-900/50 hover:border-red-400 dark:hover:border-red-500 shadow-md shadow-red-100 dark:shadow-red-900/20'
                                     : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600 shadow-sm hover:shadow-md'
@@ -162,6 +157,8 @@ function LinkPage() {
                                 </div>
                                
                             </button>
+                            <AdBanner />
+                            </React.Fragment>
                         );
                     })}
                     <AdBanner />
