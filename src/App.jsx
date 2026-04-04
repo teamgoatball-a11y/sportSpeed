@@ -21,6 +21,7 @@ import MatchManager from './pages/admin/MatchManager'
 import MatchForm from './pages/admin/MatchForm'
 import ScrollToTop from './components/ScrollToTop'
 import SocialBarAd from './components/SocialBarAd'
+import PopUnderAd from './components/PopUnderAd'
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -33,7 +34,6 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <SocialBarAd />
         <ScrollToTop />
         <Toaster position="top-right" />
         {/* Root wrapper handles dark class and global bg/text colors */}
@@ -57,6 +57,8 @@ function App() {
             {/* Public App Layout */}
             <Route path="/*" element={
               <>
+                <SocialBarAd />
+                {/* <PopUnderAd /> */}
                 <Navbar
                   searchQuery={searchQuery}
                   setSearchQuery={setSearchQuery}
