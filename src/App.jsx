@@ -8,6 +8,9 @@ import MatchPage from './pages/MatchPage'
 import LinkPage from './pages/LinkPage'
 import WatchPage from './pages/WatchPage'
 import AdGateway from './pages/AdGateway'
+import NewsPage from './pages/NewsPage'
+import ArticlePage from './pages/ArticlePage'
+import StaticPage from './pages/StaticPage'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import { Toaster } from 'react-hot-toast'
@@ -19,13 +22,15 @@ import AdminLogin from './pages/admin/AdminLogin'
 import DashboardLayout from './pages/admin/DashboardLayout'
 import MatchManager from './pages/admin/MatchManager'
 import MatchForm from './pages/admin/MatchForm'
+import ArticleManager from './pages/admin/ArticleManager'
+import ArticleForm from './pages/admin/ArticleForm'
 import ScrollToTop from './components/ScrollToTop'
 import SocialBarAd from './components/SocialBarAd'
 import PopUnderAd from './components/PopUnderAd'
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [isDarkMode, setIsDarkMode] = useState(true) // Default to dark mode
+  const [isDarkMode, setIsDarkMode] = useState(false) // Specer is Light-first
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode)
@@ -36,8 +41,8 @@ function App() {
       <BrowserRouter>
         <ScrollToTop />
         <Toaster position="top-right" />
-        {/* Root wrapper handles dark class and global bg/text colors */}
-        <div className={`min-h-screen font-sans flex flex-col flex-1 transition-colors duration-300 ${isDarkMode ? 'dark bg-slate-950 text-slate-50' : 'bg-gray-50 text-gray-900'}`}>
+        {/* Specer pure white background base */}
+        <div className={`min-h-screen font-sans flex flex-col flex-1 transition-colors duration-500 ${isDarkMode ? 'dark bg-[#111] text-slate-50' : 'bg-[#f8f9fa] text-gray-900'}`}>
           <Routes>
             {/* Admin Routes (No public Navbar/Footer) */}
             <Route path="/admin/login" element={<AdminLogin />} />
@@ -52,6 +57,9 @@ function App() {
               <Route path="matches" element={<MatchManager />} />
               <Route path="matches/new" element={<MatchForm />} />
               <Route path="matches/edit/:id" element={<MatchForm />} />
+              <Route path="articles" element={<ArticleManager />} />
+              <Route path="articles/new" element={<ArticleForm />} />
+              <Route path="articles/edit/:id" element={<ArticleForm />} />
             </Route>
 
             {/* Public App Layout */}
@@ -72,6 +80,9 @@ function App() {
                     <Route path="/link/:id" element={<LinkPage />} />
                     <Route path="/go/:matchId/:serverIndex" element={<AdGateway />} />
                     <Route path="/watch/:id/:serverIndex" element={<WatchPage />} />
+                    <Route path="/news" element={<NewsPage />} />
+                    <Route path="/news/:slug" element={<ArticlePage />} />
+                    <Route path="/p/:pageId" element={<StaticPage />} />
                   </Routes>
                 </main>
                 <Footer />

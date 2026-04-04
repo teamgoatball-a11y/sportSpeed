@@ -7,29 +7,26 @@ function MatchCard({ match }) {
   const wrapperProps = match.isApiMatch ? {} : { to: `/match/${match.id}` };
 
   return (
-    <CardWrapper {...wrapperProps} className={`block group bg-white dark:bg-gray-900 border border-gray-200 shadow-sm dark:border-gray-800 rounded-xl p-5 transition-all duration-300 relative overflow-hidden flex flex-col h-full ${!match.isApiMatch ? 'hover:border-red-500/30 dark:hover:border-gray-700 hover:shadow-xl hover:shadow-red-900/5 dark:hover:shadow-red-900/10 transform hover:-translate-y-1 cursor-pointer' : 'opacity-90 grayscale-[10%]'}`}>
-
-      {/* Subtle hover gradient effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 to-transparent dark:from-red-500/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+    <CardWrapper {...wrapperProps} className={`block group bg-white dark:bg-[#1a1a1a] border border-gray-200/80 dark:border-gray-800 rounded-sm p-4 sm:p-5 transition-all duration-300 relative flex flex-col h-full ${!match.isApiMatch ? 'hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] hover:border-gray-300 dark:hover:border-gray-700 cursor-pointer' : 'opacity-90 grayscale-[10%]'}`}>
 
       {/* Header: Status and League */}
       <div className="flex justify-between items-center mb-4 relative z-10">
         <div className="flex items-center gap-2">
           {isLive ? (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-red-500/10 dark:bg-red-500/20 rounded-full border border-red-500/30">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-[#f00000] text-white rounded-[2px]">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
               </span>
-              <span className="text-red-600 dark:text-red-500 text-xs font-bold tracking-wider">LIVE</span>
+              <span className="text-[10px] font-bold tracking-widest uppercase">LIVE</span>
             </div>
           ) : (
-            <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs font-semibold rounded-full border border-gray-200 dark:border-gray-700">
+            <span className="px-2 py-0.5 bg-black text-white text-[10px] font-bold tracking-widest uppercase rounded-[2px] dark:bg-gray-800">
               UPCOMING
             </span>
           )}
         </div>
-        <span className="text-gray-400 dark:text-gray-500 text-xs font-medium tracking-wide uppercase">{match.league}</span>
+        <span className="text-gray-400 dark:text-gray-500 text-[11px] font-bold tracking-wider uppercase text-right truncate max-w-[50%]">{match.league}</span>
       </div>
 
       {/* Teams Area */}
@@ -42,11 +39,11 @@ function MatchCard({ match }) {
               teamName={match.team1}
               logoUrl={match.team1Logo}
               teamId={match.team1Id}
-              className="w-8 h-8 object-contain"
+              className="w-7 h-7 object-contain"
             />
-            <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg line-clamp-1">{match.team1}</span>
+            <span className="font-bold text-gray-900 dark:text-gray-100 text-[15px] line-clamp-1">{match.team1}</span>
           </div>
-          {isLive && <span className="font-mono font-bold text-gray-900 dark:text-white text-lg">0</span>}
+          {isLive && <span className="font-black text-[#f00000] text-lg">0</span>}
         </div>
 
         {/* Team 2 */}
@@ -56,17 +53,17 @@ function MatchCard({ match }) {
               teamName={match.team2}
               logoUrl={match.team2Logo}
               teamId={match.team2Id}
-              className="w-8 h-8 object-contain"
+              className="w-7 h-7 object-contain"
             />
-            <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg line-clamp-1">{match.team2}</span>
+            <span className="font-bold text-gray-900 dark:text-gray-100 text-[15px] line-clamp-1">{match.team2}</span>
           </div>
-          {isLive && <span className="font-mono font-bold text-gray-900 dark:text-white text-lg">0</span>}
+          {isLive && <span className="font-black text-[#f00000] text-lg">0</span>}
         </div>
 
       </div>
 
       {/* Footer: Time + Date */}
-      <div className="mt-5 pt-4 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center relative z-10">
+      <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center relative z-10">
         <div className="flex flex-col gap-0.5">
           <div className="text-gray-500 dark:text-gray-400 text-sm font-medium flex items-center gap-1.5">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -85,10 +82,15 @@ function MatchCard({ match }) {
           })()}
         </div>
 
-        {match.isApiMatch && (
+        {match.isApiMatch ? (
           <span className="text-xs font-semibold text-gray-400 dark:text-gray-600 bg-gray-50 dark:bg-gray-800/50 px-3 py-1 rounded-full">
             Streams Pending
           </span>
+        ) : (
+          <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 px-2.5 py-1 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+            <span className="text-xs font-semibold">{match.views || 0}</span>
+          </div>
         )}
       </div>
 

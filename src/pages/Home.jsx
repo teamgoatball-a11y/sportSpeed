@@ -3,8 +3,11 @@ import MatchCard from "../components/MatchCard"
 import MatchCardSkeleton from "../components/MatchCardSkeleton"
 import AdBanner from "../components/AdBanner"
 import SmartLinkAd from "../components/SmartLinkAd"
+import ArticleCard from "../components/ArticleCard"
+import { useArticles } from "../hooks/useArticles"
 import { collection, query, orderBy, onSnapshot, limit } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import { Link } from 'react-router-dom'
 
 const CATEGORIES = ["All", "Live", "Football", "Cricket", "Others"]
 
@@ -13,6 +16,12 @@ function Home({ searchQuery }) {
   const [allMatches, setAllMatches] = useState([])
   const [loading, setLoading] = useState(true)
   const [currentTime, setCurrentTime] = useState(() => new Date())
+
+  // Fetch latest 3 news articles
+  const { articles: latestNews, loading: newsLoading } = useArticles({
+    publishedOnly: true,
+    limitCount: 3
+  });
 
   // Refresh current time every minute so auto-status updates without page reload
   useEffect(() => {
@@ -133,13 +142,10 @@ function Home({ searchQuery }) {
     <div className="p-4 sm:p-6 transition-colors duration-300">
 
       {/* Header Area */}
-      <div className="mb-6 hidden sm:block">
-        <h1 className="text-3xl sm:text-4xl font-black italic tracking-tighter bg-gradient-to-r from-red-600 to-orange-500 dark:from-red-500 dark:to-orange-500 bg-clip-text text-transparent uppercase break-words">
-          Live & Upcoming Action
+      <div className="mb-6 mt-4 hidden sm:block">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111] dark:text-white mb-2 uppercase tracking-wide">
+          Match <span className="border-b-[3px] border-[#f00000] pb-1">Center</span>
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm sm:text-base font-medium max-w-2xl transition-colors duration-300">
-          Catch every goal, wicket, and highlight. Stream premium sports in real-time.
-        </p>
       </div>
 
       {/* Category Pills Slider */}
@@ -149,9 +155,9 @@ function Home({ searchQuery }) {
             <button
               key={category}
               onClick={() => setActiveTab(category)}
-              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap ${activeTab === category
-                ? "bg-red-600 text-white shadow-md shadow-red-600/30 border border-red-600"
-                : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-gray-700 shadow-sm"
+              className={`px-4 py-1.5 text-sm font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap ${activeTab === category
+                ? "bg-white text-[#111] shadow-[0_2px_10px_rgba(0,0,0,0.05)] border-b-2 border-[#f00000]"
+                : "bg-transparent text-gray-500 hover:text-gray-900 border-b-2 border-transparent"
                 }`}
             >
               {category === "Live" && <span className="mr-2 text-red-500">•</span>}
@@ -198,6 +204,52 @@ function Home({ searchQuery }) {
               Clear Filters
             </button>
           )}
+        </div>
+      )}
+
+      {/* Latest News Section */}
+      {!searchQuery && activeTab === "All" && (
+        <div className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800 animate-fade-in">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-wide uppercase mb-2">
+                Latest <span className="border-b-[3px] border-[#f00000] pb-1">News</span>
+              </h2>
+            </div>
+            <Link to="/news" className="hidden sm:flex text-sm font-semibold text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 items-center gap-1 group">
+              View All News <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
+            </Link>
+          </div>
+
+          {newsLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="rounded-2xl bg-gray-200 dark:bg-gray-800 overflow-hidden">
+                  <div className="aspect-video bg-gray-300 dark:bg-gray-700"></div>
+                  <div className="p-4 space-y-3">
+                    <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-3/4"></div>
+                    <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-full"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : latestNews.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1 sm:gap-6">
+              {latestNews.map((article, i) => (
+                <ArticleCard key={article.id} article={article} variant={i < 4 ? 'featured' : 'grid'} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-200 dark:border-gray-800">
+              <p className="text-gray-500 dark:text-gray-400">No news articles published yet.</p>
+            </div>
+          )}
+
+          <div className="mt-6 text-center sm:hidden">
+             <Link to="/news" className="inline-flex text-sm font-semibold text-red-600 dark:text-red-500 border border-red-200 dark:border-red-500/30 bg-red-50 dark:bg-red-500/10 px-6 py-2 rounded-full hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors">
+              Explore All News
+            </Link>
+          </div>
         </div>
       )}
 

@@ -5,7 +5,7 @@ function Navbar({ searchQuery, setSearchQuery, isDarkMode, toggleTheme }) {
     const isHome = location.pathname === "/"
 
     return (
-        <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 shadow-sm dark:shadow-md transition-colors duration-300">
+        <nav className="bg-white dark:bg-[#111] border-b border-gray-100 dark:border-gray-800 sticky top-0 z-50 shadow-sm transition-all duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16 sm:h-20 gap-2 sm:gap-4">
 
@@ -51,8 +51,9 @@ function Navbar({ searchQuery, setSearchQuery, isDarkMode, toggleTheme }) {
                     <div className="hidden lg:flex items-center ml-auto gap-4">
                         <div className="flex items-baseline space-x-1">
                             <Link to="/" className="text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-full text-sm font-medium transition-colors">Home</Link>
-                            <a href="#" className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-not-allowed hidden xl:block">Football</a>
-                            <a href="#" className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-not-allowed hidden xl:block">Cricket</a>
+                            <Link to="/news" className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">News</Link>
+                            <Link to="/" className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-4 py-2 rounded-full text-sm font-medium transition-colors hidden xl:block">Football</Link>
+                            <Link to="/" className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-4 py-2 rounded-full text-sm font-medium transition-colors hidden xl:block">Cricket</Link>
                         </div>
                     </div>
 
