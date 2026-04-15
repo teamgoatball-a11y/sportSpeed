@@ -6,7 +6,7 @@ import MediumBanner from '../components/MediumBanner'
 import SmartLinkAd from '../components/SmartLinkAd'
 import AdBanner from '../components/AdBanner'
 
-const COUNTDOWN_SECONDS = 5;
+const COUNTDOWN_SECONDS = 2;
 
 function AdGateway() {
     const { matchId, serverIndex } = useParams()

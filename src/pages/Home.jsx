@@ -4,6 +4,7 @@ import MatchCardSkeleton from "../components/MatchCardSkeleton"
 import AdBanner from "../components/AdBanner"
 import SmartLinkAd from "../components/SmartLinkAd"
 import ArticleCard from "../components/ArticleCard"
+import HighlightCard from "../components/HighlightCard"
 import { useArticles } from "../hooks/useArticles"
 import { collection, query, orderBy, onSnapshot, limit } from 'firebase/firestore'
 import { db } from '../config/firebase'
@@ -16,6 +17,8 @@ function Home({ searchQuery }) {
   const [allMatches, setAllMatches] = useState([])
   const [loading, setLoading] = useState(true)
   const [currentTime, setCurrentTime] = useState(() => new Date())
+  const [homeHighlights, setHomeHighlights] = useState([]);
+  const [highlightsLoading, setHighlightsLoading] = useState(true);
 
   // Fetch latest 3 news articles
   const { articles: latestNews, loading: newsLoading } = useArticles({
@@ -44,6 +47,16 @@ function Home({ searchQuery }) {
     });
 
     return () => unsubscribe(); // Clean up listener on unmount
+  }, []);
+
+  // Fetch Latest 4 Highlights for Home
+  useEffect(() => {
+    const q = query(collection(db, 'highlights'), orderBy('createdAt', 'desc'), limit(4));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setHomeHighlights(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setHighlightsLoading(false);
+    });
+    return () => unsubscribe();
   }, []);
 
 
@@ -204,6 +217,53 @@ function Home({ searchQuery }) {
               Clear Filters
             </button>
           )}
+        </div>
+      )}
+
+      {/* Recent Highlights Section */}
+      {!searchQuery && activeTab === "All" && homeHighlights.length > 0 && (
+        <div className="mt-16 animate-fade-in">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-wide uppercase italic font-display">
+              Latest <span className="text-red-600">Highlights</span>
+            </h2>
+            <Link to="/highlights" className="text-sm font-semibold text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 flex items-center gap-1 group">
+              View All <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {homeHighlights.map((highlight) => (
+              <HighlightCard key={highlight.id} highlight={highlight} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Highlights Hub Banner (Always show if no highlights yet or as secondary CTA) */}
+      {!searchQuery && activeTab === "All" && homeHighlights.length === 0 && (
+        <div className="mt-16 animate-fade-in">
+          <Link to="/highlights" className="group block relative overflow-hidden rounded-[2rem] bg-gray-900 border border-gray-800 shadow-2xl transition-all hover:border-red-500/50">
+            <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 to-transparent z-10 group-hover:from-red-600/30 transition-colors"></div>
+            
+            <div className="relative z-20 p-8 sm:p-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
+              <div className="space-y-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full">
+                  <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+                  Coming Soon
+                </div>
+                <h2 className="text-3xl sm:text-5xl font-black text-white italic tracking-tighter uppercase leading-none">
+                  Match <span className="text-red-600">Highlights</span> Hub
+                </h2>
+                <p className="text-gray-400 font-medium text-sm sm:text-base max-w-md">
+                  We are building a manual gallery of official goals and match recaps. Stay tuned!
+                </p>
+              </div>
+              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-gray-900 group-hover:bg-red-600 group-hover:text-white transition-all">
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </div>
+            </div>
+          </Link>
         </div>
       )}
 

@@ -46,6 +46,9 @@ function ArticlePage() {
                 const docData = snap.docs[0];
                 const articleData = { id: docData.id, ...docData.data() };
                 setArticle(articleData);
+                if (articleData.title) {
+                    document.title = `${articleData.title} | GOATBALL News`;
+                }
 
                 // Fetch related articles (same category, excluding current)
                 if (articleData.category) {
@@ -86,6 +89,10 @@ function ArticlePage() {
 
         fetchArticle();
         window.scrollTo(0, 0);
+
+        return () => {
+            document.title = "GOATBALL — Live Sports, Highlights & News";
+        };
     }, [slug]);
 
     if (loading) {

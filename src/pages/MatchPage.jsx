@@ -23,14 +23,31 @@ function MatchPage() {
     useEffect(() => {
         const docRef = doc(db, 'matches', id);
         
-        // Fire-and-forget: increment view counter in background
-        updateDoc(docRef, { views: increment(1) }).catch(() => { });
+        // Increment view count if not already viewed in this session
+        const viewedKey = `viewed_match_${id}`;
+        if (!sessionStorage.getItem(viewedKey)) {
+            updateDoc(docRef, { 
+                views: increment(1) 
+            })
+            .then(() => {
+                sessionStorage.setItem(viewedKey, 'true');
+                // Optimistically update local state if match object already exists
+                setMatch(prev => prev ? { ...prev, views: (prev.views || 0) + 1 } : null);
+            })
+            .catch((err) => { 
+                console.error("Error updating match views:", err);
+            });
+        }
 
         // onSnapshot returns data from IndexedDB local cache instantly,
         // then updates if server has a newer version.
         const unsubscribe = onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
-                setMatch({ id: docSnap.id, ...docSnap.data() });
+                const data = { id: docSnap.id, ...docSnap.data() };
+                setMatch(data);
+                if (data.team1 && data.team2) {
+                    document.title = `${data.team1} vs ${data.team2} - Live Stream | GOATBALL`;
+                }
             } else {
                 setMatch(null);
             }
@@ -40,7 +57,10 @@ function MatchPage() {
             setLoading(false);
         });
 
-        return () => unsubscribe();
+        return () => {
+            unsubscribe();
+            document.title = "GOATBALL — Live Sports, Highlights & News";
+        };
     }, [id])
 
     if (loading) {

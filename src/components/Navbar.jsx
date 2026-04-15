@@ -5,17 +5,17 @@ function Navbar({ searchQuery, setSearchQuery, isDarkMode, toggleTheme }) {
     const isHome = location.pathname === "/"
 
     return (
-        <nav className="bg-white dark:bg-[#111] border-b border-gray-100 dark:border-gray-800 sticky top-0 z-50 shadow-sm transition-all duration-300">
+        <nav className="glass sticky top-[40px] z-50 transition-all duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16 sm:h-20 gap-2 sm:gap-4">
 
                     <div className="flex-shrink-0 flex items-center">
-                        <Link to="/" className="flex flex-col justify-center">
-                            <span className="text-2xl sm:text-3xl font-black italic tracking-tighter text-gray-900 dark:text-white transition-colors duration-300">
-                                GOAT<span className="text-red-500">BALL</span>
+                        <Link to="/" className="flex flex-col justify-center group">
+                            <span className="text-2xl sm:text-3xl font-black italic tracking-tighter text-gray-900 dark:text-white transition-colors duration-300 font-display">
+                                GOAT<span className="text-red-600 group-hover:text-red-500 transition-colors">BALL</span>
                             </span>
-                            <span className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide uppercase mt-0.5">
-                                Your Home for Live Sports
+                            <span className="text-[10px] sm:text-xs text-gray-400 dark:text-gray-500 font-bold tracking-widest uppercase mt-0.5 ml-0.5">
+                                Elite Sports Hub
                             </span>
                         </Link>
                     </div>
@@ -50,10 +50,11 @@ function Navbar({ searchQuery, setSearchQuery, isDarkMode, toggleTheme }) {
 
                     <div className="hidden lg:flex items-center ml-auto gap-4">
                         <div className="flex items-baseline space-x-1">
-                            <Link to="/" className="text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-full text-sm font-medium transition-colors">Home</Link>
-                            <Link to="/news" className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">News</Link>
-                            <Link to="/" className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-4 py-2 rounded-full text-sm font-medium transition-colors hidden xl:block">Football</Link>
-                            <Link to="/" className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-4 py-2 rounded-full text-sm font-medium transition-colors hidden xl:block">Cricket</Link>
+                            <Link to="/" className={`px-5 py-2 rounded-full text-sm font-bold uppercase tracking-wider transition-all duration-300 ${isHome ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500'}`}>Home</Link>
+                            <Link to="/news" className={`px-5 py-2 rounded-full text-sm font-bold uppercase tracking-wider transition-all duration-300 ${location.pathname.startsWith('/news') ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500'}`}>News</Link>
+                            <Link to="/highlights" className={`px-5 py-2 rounded-full text-sm font-bold uppercase tracking-wider transition-all duration-300 ${location.pathname.startsWith('/highlights') ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500'}`}>Highlights</Link>
+                            <Link to="/" className="text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider transition-colors hidden xl:block">Football</Link>
+                            <Link to="/" className="text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider transition-colors hidden xl:block">Cricket</Link>
                         </div>
                     </div>
 

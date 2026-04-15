@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, updateDoc, increment } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import AdBanner from "../components/AdBanner"
 import SmartLinkAd from "../components/SmartLinkAd"
@@ -18,7 +18,24 @@ function LinkPage() {
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
-                    setMatch({ id: docSnap.id, ...docSnap.data() });
+                    const articleData = { id: docSnap.id, ...docSnap.data() };
+                    setMatch(articleData);
+
+                    // Increment view count if not already viewed in this session
+                    const viewedKey = `viewed_match_${id}`;
+                    if (!sessionStorage.getItem(viewedKey)) {
+                        updateDoc(docRef, { 
+                            views: increment(1) 
+                        })
+                        .then(() => {
+                            sessionStorage.setItem(viewedKey, 'true');
+                            // Optimistically update local state
+                            setMatch(prev => prev ? { ...prev, views: (prev.views || 0) + 1 } : null);
+                        })
+                        .catch((err) => { 
+                            console.error("Error updating match views:", err);
+                        });
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching match:", error);

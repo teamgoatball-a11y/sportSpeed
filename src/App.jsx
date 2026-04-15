@@ -1,7 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import Home from './pages/Home'
 import MatchPage from './pages/MatchPage'
@@ -11,8 +9,13 @@ import AdGateway from './pages/AdGateway'
 import NewsPage from './pages/NewsPage'
 import ArticlePage from './pages/ArticlePage'
 import StaticPage from './pages/StaticPage'
+import HighlightsPage from './pages/HighlightsPage'
+import HighlightPlayerPage from './pages/HighlightPlayerPage'
+import HighlightsManager from './pages/admin/HighlightsManager'
+import NotFound from './pages/NotFound'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import ScoreTicker from './components/ScoreTicker'
 import { Toaster } from 'react-hot-toast'
 
 // Admin / Auth Imports
@@ -65,6 +68,7 @@ function App() {
             {/* Public App Layout */}
             <Route path="/*" element={
               <>
+                <ScoreTicker />
                 <SocialBarAd />
                 {/* <PopUnderAd /> */}
                 <Navbar
@@ -82,7 +86,11 @@ function App() {
                     <Route path="/watch/:id/:serverIndex" element={<WatchPage />} />
                     <Route path="/news" element={<NewsPage />} />
                     <Route path="/news/:slug" element={<ArticlePage />} />
+                    <Route path="/highlights" element={<HighlightsPage />} />
+                    <Route path="/highlights/:slug" element={<HighlightPlayerPage />} />
+                    <Route path="/admin/highlights" element={<HighlightsManager />} />
                     <Route path="/p/:pageId" element={<StaticPage />} />
+                    <Route path="*" element={<NotFound />} />
                   </Routes>
                 </main>
                 <Footer />
