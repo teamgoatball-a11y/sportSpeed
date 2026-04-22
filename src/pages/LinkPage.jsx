@@ -4,6 +4,7 @@ import { doc, getDoc, updateDoc, increment } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import AdBanner from "../components/AdBanner"
 import SmartLinkAd from "../components/SmartLinkAd"
+import WhatsAppPrompt from "../components/WhatsAppPrompt"
 
 function LinkPage() {
     const { id } = useParams()
@@ -99,6 +100,10 @@ function LinkPage() {
                         <span className="text-green-700 dark:text-green-500 text-xs font-bold tracking-wide">SERVERS ONLINE</span>
                     </div>
                 </div>
+            </div>
+
+            <div className="pt-2">
+                <WhatsAppPrompt />
             </div>
 
             {/* Ad Banner */}

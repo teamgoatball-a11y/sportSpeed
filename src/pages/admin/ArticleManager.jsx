@@ -157,7 +157,7 @@ const ArticleManager = () => {
                                                     className={`p-2 rounded-lg transition-colors border border-transparent ${article.published
                                                         ? 'text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-500/10 hover:border-yellow-200 dark:hover:border-yellow-500/20'
                                                         : 'text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 hover:border-emerald-200 dark:hover:border-emerald-500/20'
-                                                    }`}
+                                                        }`}
                                                     title={article.published ? 'Unpublish' : 'Publish'}
                                                 >
                                                     {article.published ? <EyeOff size={18} /> : <Eye size={18} />}

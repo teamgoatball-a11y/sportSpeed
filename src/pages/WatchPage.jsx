@@ -7,6 +7,7 @@ import SmartLinkAd from "../components/SmartLinkAd"
 import MediumBanner from "../components/MediumBanner"
 import Hls from 'hls.js'
 import { Play, Pause, Volume2, VolumeX, Maximize } from 'lucide-react'
+import WhatsAppPrompt from "../components/WhatsAppPrompt"
 
 function WatchPage() {
     const { id, serverIndex } = useParams()
@@ -258,6 +259,8 @@ function WatchPage() {
                     </p>
                 </div>
             </div>
+
+            <WhatsAppPrompt />
 
             <AdBanner />
             <SmartLinkAd />

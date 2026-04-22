@@ -7,6 +7,7 @@ import siteSettings from '../config/siteSettings'
 import AdBanner from "../components/AdBanner"
 import SmartLinkAd from "../components/SmartLinkAd"
 import MediumBanner from "../components/MediumBanner"
+import WhatsAppPrompt from "../components/WhatsAppPrompt"
 
 function MatchPage() {
     const { id } = useParams()
@@ -226,6 +227,10 @@ function MatchPage() {
 
             {/* Main Action Area */}
             <div className="text-center pt-8 pb-12">
+                
+                {/* WhatsApp Group Prompt */}
+                <WhatsAppPrompt />
+
                 {isLive ? (
                     <Link
                         to={`/link/${match.id}`}

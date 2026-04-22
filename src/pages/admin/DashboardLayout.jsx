@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { LayoutDashboard, LogOut, ShieldAlert, Video } from 'lucide-react';
+import { LayoutDashboard, LogOut, ShieldAlert, Video, Settings } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const DashboardLayout = () => {
@@ -66,6 +66,17 @@ const DashboardLayout = () => {
                     >
                         <Video size={20} />
                         Highlights
+                    </Link>
+
+                    <Link
+                        to="/admin/settings"
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${location.pathname.includes('/admin/settings')
+                                ? 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-500 font-semibold'
+                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white font-medium'
+                            }`}
+                    >
+                        <Settings size={20} />
+                        Settings
                     </Link>
 
                     <Link

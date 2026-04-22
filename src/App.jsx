@@ -38,6 +38,7 @@ const MatchForm = lazy(() => import('./pages/admin/MatchForm'))
 const ArticleManager = lazy(() => import('./pages/admin/ArticleManager'))
 const ArticleForm = lazy(() => import('./pages/admin/ArticleForm'))
 const HighlightsManager = lazy(() => import('./pages/admin/HighlightsManager'))
+const SettingsManager = lazy(() => import('./pages/admin/SettingsManager'))
 
 /**
  * Loading Fallback: Using a grid of skeletons for home or a generic spinner
@@ -71,6 +72,7 @@ function AppContent() {
           <Route path="articles" element={<ArticleManager />} />
           <Route path="articles/new" element={<ArticleForm />} />
           <Route path="articles/edit/:id" element={<ArticleForm />} />
+          <Route path="settings" element={<SettingsManager />} />
         </Route>
 
         {/* Public App Layout */}
