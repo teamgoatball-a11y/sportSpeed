@@ -173,11 +173,32 @@ function WatchPage() {
         let hls;
 
         if (Hls.isSupported()) {
-            hls = new Hls();
+            hls = new Hls({
+                debug: false,
+            });
             hls.loadSource(server.url);
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, function() {
                 video.play().catch(e => console.log("Auto-play prevented", e));
+            });
+            
+            // Add Error Handling
+            hls.on(Hls.Events.ERROR, function (event, data) {
+                if (data.fatal) {
+                    switch (data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            console.error("HLS Network Error: This is usually caused by CORS (Cross-Origin Resource Sharing) restrictions on the streaming server, or Mixed Content (HTTP vs HTTPS).", data);
+                            hls.startLoad(); // Try to recover
+                            break;
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                            console.error("HLS Media Error", data);
+                            hls.recoverMediaError(); // Try to recover
+                            break;
+                        default:
+                            hls.destroy();
+                            break;
+                    }
+                }
             });
         }
         // Native HLS support (Safari)
