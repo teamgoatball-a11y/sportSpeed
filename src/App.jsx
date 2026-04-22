@@ -1,85 +1,89 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { lazy, Suspense } from 'react'
 import './App.css'
-import Home from './pages/Home'
-import MatchPage from './pages/MatchPage'
-import LinkPage from './pages/LinkPage'
-import WatchPage from './pages/WatchPage'
-import AdGateway from './pages/AdGateway'
-import NewsPage from './pages/NewsPage'
-import ArticlePage from './pages/ArticlePage'
-import StaticPage from './pages/StaticPage'
-import HighlightsPage from './pages/HighlightsPage'
-import HighlightPlayerPage from './pages/HighlightPlayerPage'
-import HighlightsManager from './pages/admin/HighlightsManager'
-import NotFound from './pages/NotFound'
+import { Toaster } from 'react-hot-toast'
+
+// Context & Auth
+import { AuthProvider } from './context/AuthContext'
+import { UIProvider, useUI } from './context/UIContext'
+import ProtectedRoute from './components/ProtectedRoute'
+
+// Shared Components
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ScoreTicker from './components/ScoreTicker'
-import { Toaster } from 'react-hot-toast'
-
-// Admin / Auth Imports
-import { AuthProvider } from './context/AuthContext'
-import ProtectedRoute from './components/ProtectedRoute'
-import AdminLogin from './pages/admin/AdminLogin'
-import DashboardLayout from './pages/admin/DashboardLayout'
-import MatchManager from './pages/admin/MatchManager'
-import MatchForm from './pages/admin/MatchForm'
-import ArticleManager from './pages/admin/ArticleManager'
-import ArticleForm from './pages/admin/ArticleForm'
 import ScrollToTop from './components/ScrollToTop'
 import SocialBarAd from './components/SocialBarAd'
-import PopUnderAd from './components/PopUnderAd'
+import ErrorBoundary from './components/ErrorBoundary'
+import MatchCardSkeleton from './components/MatchCardSkeleton'
 
-function App() {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [isDarkMode, setIsDarkMode] = useState(false) // Specer is Light-first
+// Lazy Pages
+const Home = lazy(() => import('./pages/Home'))
+const MatchPage = lazy(() => import('./pages/MatchPage'))
+const LinkPage = lazy(() => import('./pages/LinkPage'))
+const WatchPage = lazy(() => import('./pages/WatchPage'))
+const AdGateway = lazy(() => import('./pages/AdGateway'))
+const NewsPage = lazy(() => import('./pages/NewsPage'))
+const ArticlePage = lazy(() => import('./pages/ArticlePage'))
+const StaticPage = lazy(() => import('./pages/StaticPage'))
+const HighlightsPage = lazy(() => import('./pages/HighlightsPage'))
+const HighlightPlayerPage = lazy(() => import('./pages/HighlightPlayerPage'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode)
-  }
+// Admin Lazy Pages
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'))
+const DashboardLayout = lazy(() => import('./pages/admin/DashboardLayout'))
+const MatchManager = lazy(() => import('./pages/admin/MatchManager'))
+const MatchForm = lazy(() => import('./pages/admin/MatchForm'))
+const ArticleManager = lazy(() => import('./pages/admin/ArticleManager'))
+const ArticleForm = lazy(() => import('./pages/admin/ArticleForm'))
+const HighlightsManager = lazy(() => import('./pages/admin/HighlightsManager'))
+
+/**
+ * Loading Fallback: Using a grid of skeletons for home or a generic spinner
+ */
+const PageLoader = () => (
+  <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
+    {[1, 2, 3, 4].map(i => <MatchCardSkeleton key={i} />)}
+  </div>
+)
+
+function AppContent() {
+  const { isDarkMode } = useUI()
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <ScrollToTop />
-        <Toaster position="top-right" />
-        {/* Specer pure white background base */}
-        <div className={`min-h-screen font-sans flex flex-col flex-1 transition-colors duration-500 ${isDarkMode ? 'dark bg-[#111] text-slate-50' : 'bg-[#f8f9fa] text-gray-900'}`}>
-          <Routes>
-            {/* Admin Routes (No public Navbar/Footer) */}
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }>
-              {/* Redirect /admin to dashboard */}
-              <Route index element={<MatchManager />} />
-              <Route path="dashboard" element={<MatchManager />} />
-              <Route path="matches" element={<MatchManager />} />
-              <Route path="matches/new" element={<MatchForm />} />
-              <Route path="matches/edit/:id" element={<MatchForm />} />
-              <Route path="articles" element={<ArticleManager />} />
-              <Route path="articles/new" element={<ArticleForm />} />
-              <Route path="articles/edit/:id" element={<ArticleForm />} />
-            </Route>
+    <div className={`min-h-screen font-sans flex flex-col flex-1 transition-colors duration-500 ${isDarkMode ? 'dark bg-[#111] text-slate-50' : 'bg-[#f8f9fa] text-gray-900'}`}>
+      <Routes>
+        {/* Admin Routes (No public Navbar/Footer) */}
+        <Route path="/admin/login" element={<Suspense fallback={<PageLoader />}><AdminLogin /></Suspense>} />
+        <Route path="/admin" element={
+          <ProtectedRoute>
+            <Suspense fallback={<PageLoader />}>
+              <DashboardLayout />
+            </Suspense>
+          </ProtectedRoute>
+        }>
+          <Route index element={<MatchManager />} />
+          <Route path="dashboard" element={<MatchManager />} />
+          <Route path="matches" element={<MatchManager />} />
+          <Route path="matches/new" element={<MatchForm />} />
+          <Route path="matches/edit/:id" element={<MatchForm />} />
+          <Route path="articles" element={<ArticleManager />} />
+          <Route path="articles/new" element={<ArticleForm />} />
+          <Route path="articles/edit/:id" element={<ArticleForm />} />
+        </Route>
 
-            {/* Public App Layout */}
-            <Route path="/*" element={
-              <>
-                <ScoreTicker />
-                <SocialBarAd />
-                {/* <PopUnderAd /> */}
-                <Navbar
-                  searchQuery={searchQuery}
-                  setSearchQuery={setSearchQuery}
-                  isDarkMode={isDarkMode}
-                  toggleTheme={toggleTheme}
-                />
-                <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex-1 w-full flex flex-col">
+        {/* Public App Layout */}
+        <Route path="/*" element={
+          <>
+            <ScoreTicker />
+            <SocialBarAd />
+            <Navbar />
+            <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex-1 w-full flex flex-col">
+              <ErrorBoundary>
+                <Suspense fallback={<PageLoader />}>
                   <Routes>
-                    <Route path="/" element={<Home searchQuery={searchQuery} />} />
+                    <Route path="/" element={<Home />} />
                     <Route path="/match/:id" element={<MatchPage />} />
                     <Route path="/link/:id" element={<LinkPage />} />
                     <Route path="/go/:matchId/:serverIndex" element={<AdGateway />} />
@@ -92,13 +96,27 @@ function App() {
                     <Route path="/p/:pageId" element={<StaticPage />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
-                </main>
-                <Footer />
-              </>
-            } />
-          </Routes>
-        </div>
-      </BrowserRouter>
+                </Suspense>
+              </ErrorBoundary>
+            </main>
+            <Footer />
+          </>
+        } />
+      </Routes>
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <UIProvider>
+        <BrowserRouter>
+          <ScrollToTop />
+          <Toaster position="top-right" />
+          <AppContent />
+        </BrowserRouter>
+      </UIProvider>
     </AuthProvider>
   )
 }

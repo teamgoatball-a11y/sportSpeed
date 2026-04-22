@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react"
+import { Helmet } from "react-helmet-async"
+import { useUI } from "../context/UIContext"
+import siteSettings from "../config/siteSettings"
 import MatchCard from "../components/MatchCard"
 import MatchCardSkeleton from "../components/MatchCardSkeleton"
 import AdBanner from "../components/AdBanner"
@@ -12,7 +15,8 @@ import { Link } from 'react-router-dom'
 
 const CATEGORIES = ["All", "Live", "Football", "Cricket", "Others"]
 
-function Home({ searchQuery }) {
+function Home() {
+  const { searchQuery } = useUI()
   const [activeTab, setActiveTab] = useState("All")
   const [allMatches, setAllMatches] = useState([])
   const [loading, setLoading] = useState(true)
@@ -153,6 +157,15 @@ function Home({ searchQuery }) {
 
   return (
     <div className="p-4 sm:p-6 transition-colors duration-300">
+      <Helmet>
+        <title>{siteSettings.seo.defaultTitle}</title>
+        <meta name="description" content={siteSettings.seo.defaultDescription} />
+        <meta name="keywords" content={siteSettings.seo.keywords} />
+        <meta property="og:title" content={siteSettings.seo.defaultTitle} />
+        <meta property="og:description" content={siteSettings.seo.defaultDescription} />
+        <meta property="og:url" content={siteSettings.url} />
+        <meta property="og:type" content="website" />
+      </Helmet>
 
       {/* Header Area */}
       <div className="mb-6 mt-4 hidden sm:block">
@@ -199,7 +212,7 @@ function Home({ searchQuery }) {
         </div>
       ) : (
         /* Empty State */
-        <div className="text-center py-20 bg-gray-100 dark:bg-gray-900/50 rounded-2xl border border-gray-200 dark:border-gray-800 animate-fade-in transition-colors duration-300">
+        <div className="text-center py-20 bg-gray-100 dark:bg-gray-900/50 rounded-2xl border border-black animate-fade-in transition-colors duration-300">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4 transition-colors duration-300">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
           </svg>
@@ -243,7 +256,7 @@ function Home({ searchQuery }) {
       {/* Highlights Hub Banner (Always show if no highlights yet or as secondary CTA) */}
       {!searchQuery && activeTab === "All" && homeHighlights.length === 0 && (
         <div className="mt-16 animate-fade-in">
-          <Link to="/highlights" className="group block relative overflow-hidden rounded-[2rem] bg-gray-900 border border-gray-800 shadow-2xl transition-all hover:border-red-500/50">
+          <Link to="/highlights" className="group block relative overflow-hidden rounded-[2rem] bg-gray-900 border border-black shadow-2xl transition-all hover:border-red-500/50">
             <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 to-transparent z-10 group-hover:from-red-600/30 transition-colors"></div>
             
             <div className="relative z-20 p-8 sm:p-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
@@ -300,7 +313,7 @@ function Home({ searchQuery }) {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-200 dark:border-gray-800">
+            <div className="text-center py-12 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-black">
               <p className="text-gray-500 dark:text-gray-400">No news articles published yet.</p>
             </div>
           )}

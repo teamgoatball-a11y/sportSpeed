@@ -50,7 +50,7 @@ function ArticleCard({ article, variant = 'grid' }) {
 
     if (variant === 'list') {
         return (
-            <Link to={`/news/${article.slug}`} className="group flex items-center gap-4 py-4 bg-white dark:bg-[#111] transition-all">
+            <Link to={`/news/${article.slug}`} className="group flex items-center gap-4 py-4 bg-white dark:bg-[#111] border border-black px-4 rounded-xl transition-all">
                 <div className="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 bg-gray-100 dark:bg-gray-800 overflow-hidden relative">
                      <img
                         src={article.coverImage}
@@ -80,7 +80,7 @@ function ArticleCard({ article, variant = 'grid' }) {
 
     // Default 'grid' variant - standard vertical card for Specer "Popular Post" grid style
     return (
-        <Link to={`/news/${article.slug}`} className="group flex flex-col bg-white dark:bg-[#111] overflow-hidden">
+        <Link to={`/news/${article.slug}`} className="group flex flex-col bg-white dark:bg-[#111] overflow-hidden border border-black rounded-xl transition-all">
             <div className="relative overflow-hidden aspect-[4/3] bg-gray-100 dark:bg-gray-800 w-full">
                 <img
                     src={article.coverImage}

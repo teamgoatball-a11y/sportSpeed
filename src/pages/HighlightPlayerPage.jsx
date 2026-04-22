@@ -165,7 +165,7 @@ function HighlightPlayerPage() {
                 <Link to="/highlights" className="flex items-center gap-2 text-gray-400 hover:text-red-500 font-bold uppercase text-[10px] tracking-widest transition-colors group">
                     <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Back
                 </Link>
-                <button onClick={handleShare} className="flex items-center gap-2 p-2 px-4 rounded-full border border-gray-200 dark:border-gray-800 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all text-[10px] font-black uppercase tracking-widest">
+                <button onClick={handleShare} className="flex items-center gap-2 p-2 px-4 rounded-full border border-black text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all text-[10px] font-black uppercase tracking-widest">
                     <Share2 size={12} /> Share
                 </button>
             </div>
@@ -174,7 +174,7 @@ function HighlightPlayerPage() {
                 
                 {/* Main Player */}
                 <div className="lg:col-span-2 space-y-4">
-                    <div ref={containerRef} className="bg-black rounded-[2rem] overflow-hidden shadow-2xl relative group border border-gray-100 dark:border-gray-800/50">
+                    <div ref={containerRef} className="bg-black rounded-[2rem] overflow-hidden shadow-2xl relative group border border-black">
                         {/* Video Layer - Pointer Events None to disable native interactions */}
                         <div className="aspect-video w-full flex items-center justify-center pointer-events-none">
                             {isYoutube ? (
@@ -216,7 +216,7 @@ function HighlightPlayerPage() {
                     </div>
 
                     {/* Premium Control Bar */}
-                    <div className="grid grid-cols-5 gap-2 sm:gap-4 p-2 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm mx-2">
+                    <div className="grid grid-cols-5 gap-2 sm:gap-4 p-2 bg-white dark:bg-gray-900 rounded-3xl border border-black shadow-sm mx-2">
                         {/* Step Back */}
                         <button 
                             onClick={() => handleSeek(-10)}
@@ -266,7 +266,7 @@ function HighlightPlayerPage() {
                     {/* Info */}
                     <div className="p-4 sm:p-2 space-y-3">
                         <div className="flex items-center gap-2">
-                            <span className="px-3 py-1 bg-red-50 dark:bg-red-500/5 text-red-600 dark:text-red-500 rounded-full text-[9px] font-black uppercase tracking-widest border border-red-100 dark:border-red-500/10">
+                            <span className="px-3 py-1 bg-red-50 dark:bg-red-500/5 text-red-600 dark:text-red-500 rounded-full text-[9px] font-black uppercase tracking-widest border border-black">
                                 <Trophy size={10} className="inline mr-1" /> {currentHighlight.competition}
                             </span>
                         </div>

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import siteSettings from '../config/siteSettings';
 import { useArticles } from '../hooks/useArticles';
 
 function Footer() {
@@ -18,10 +19,10 @@ function Footer() {
                     <div>
                         <Link to="/" className="inline-block mb-6 flex items-center gap-3">
                              <div className="w-10 h-10 bg-[#f00000] text-white rounded-full flex items-center justify-center font-black italic text-xl">
-                                G
+                                {siteSettings.name.charAt(0)}
                              </div>
                             <span className="text-2xl font-extrabold tracking-widest text-white uppercase">
-                                GOATBALL
+                                {siteSettings.name}
                             </span>
                         </Link>
                         
@@ -50,10 +51,10 @@ function Footer() {
                         </ul>
 
                         <div className="flex items-center gap-2">
-                            <a href="#" className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center hover:bg-[#f00000] hover:border-[#f00000] hover:text-white transition-all text-sm">f</a>
-                            <a href="#" className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center hover:bg-[#f00000] hover:border-[#f00000] hover:text-white transition-all text-sm">t</a>
-                            <a href="#" className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center hover:bg-[#f00000] hover:border-[#f00000] hover:text-white transition-all text-sm">in</a>
-                            <a href="#" className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center hover:bg-[#f00000] hover:border-[#f00000] hover:text-white transition-all text-sm">ig</a>
+                            <a href={siteSettings.social.facebook.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center hover:bg-[#f00000] hover:border-[#f00000] hover:text-white transition-all text-sm">f</a>
+                            <a href={siteSettings.social.twitter.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center hover:bg-[#f00000] hover:border-[#f00000] hover:text-white transition-all text-sm text-[10px]">𝕏</a>
+                            <a href={siteSettings.social.youtube.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center hover:bg-[#f00000] hover:border-[#f00000] hover:text-white transition-all text-sm">yt</a>
+                            <a href={siteSettings.social.instagram.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center hover:bg-[#f00000] hover:border-[#f00000] hover:text-white transition-all text-sm">ig</a>
                         </div>
                     </div>
 

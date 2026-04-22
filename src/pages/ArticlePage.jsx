@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { collection, query, where, getDocs, limit, orderBy, doc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import siteSettings from '../config/siteSettings';
 import { Calendar, Clock, ArrowLeft, Tag, User, Eye } from 'lucide-react';
 import ArticleCard from '../components/ArticleCard';
 
@@ -46,9 +48,6 @@ function ArticlePage() {
                 const docData = snap.docs[0];
                 const articleData = { id: docData.id, ...docData.data() };
                 setArticle(articleData);
-                if (articleData.title) {
-                    document.title = `${articleData.title} | GOATBALL News`;
-                }
 
                 // Fetch related articles (same category, excluding current)
                 if (articleData.category) {
@@ -89,10 +88,6 @@ function ArticlePage() {
 
         fetchArticle();
         window.scrollTo(0, 0);
-
-        return () => {
-            document.title = "GOATBALL — Live Sports, Highlights & News";
-        };
     }, [slug]);
 
     if (loading) {
@@ -118,6 +113,18 @@ function ArticlePage() {
 
     return (
         <article className="max-w-4xl mx-auto py-8 px-4 sm:px-6 animate-fade-in w-full">
+            <Helmet>
+                <title>{article.title} | {siteSettings.name}</title>
+                <meta name="description" content={article.excerpt || article.content?.substring(0, 160)} />
+                <meta property="og:title" content={`${article.title} | ${siteSettings.name}`} />
+                <meta property="og:description" content={article.excerpt || article.content?.substring(0, 160)} />
+                {article.coverImage && <meta property="og:image" content={article.coverImage} />}
+                <meta property="og:type" content="article" />
+                <meta property="article:published_time" content={article.createdAt?.toDate ? article.createdAt.toDate().toISOString() : new Date(article.createdAt).toISOString()} />
+                <meta property="article:author" content={article.author || 'Admin'} />
+                <meta property="article:section" content={article.category || 'General'} />
+            </Helmet>
+
             <Link to="/news" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-500 transition-colors mb-6 group">
                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
                 Back to News
@@ -157,7 +164,7 @@ function ArticlePage() {
 
             {/* Cover Image */}
             {article.coverImage && (
-                <div className="w-full rounded-2xl overflow-hidden mb-10 shadow-lg border border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-900 flex justify-center items-center">
+                <div className="w-full rounded-2xl overflow-hidden mb-10 shadow-lg border border-black bg-gray-100 dark:bg-gray-900 flex justify-center items-center">
                     <img 
                         src={article.coverImage} 
                         alt={article.title} 
@@ -177,7 +184,7 @@ function ArticlePage() {
                 <div className="flex items-center gap-2 mb-16 flex-wrap border-t border-gray-200 dark:border-gray-800 pt-8 mt-8">
                     <Tag size={18} className="text-gray-400" />
                     {article.tags.map(tag => (
-                        <span key={tag} className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-sm rounded-full font-medium border border-gray-200 dark:border-gray-700">
+                        <span key={tag} className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-sm rounded-full font-medium border border-black">
                             #{tag.replace(/\s+/g, '')}
                         </span>
                     ))}

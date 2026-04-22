@@ -7,7 +7,7 @@ function MatchCard({ match }) {
   const wrapperProps = match.isApiMatch ? {} : { to: `/match/${match.id}` };
 
   return (
-    <CardWrapper {...wrapperProps} className={`block group bg-white dark:bg-[#1a1a1a] border border-gray-200/80 dark:border-gray-800 rounded-sm p-4 sm:p-5 transition-all duration-300 relative flex flex-col h-full ${!match.isApiMatch ? 'hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] hover:border-gray-300 dark:hover:border-gray-700 cursor-pointer' : 'opacity-90 grayscale-[10%]'}`}>
+    <CardWrapper {...wrapperProps} className={`block group dark:bg-[#1a1a1a] border border-black rounded-sm p-4 sm:p-5 transition-all duration-300 relative flex flex-col h-full ${!match.isApiMatch ? 'hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] hover:border-black dark:hover:border-black cursor-pointer' : 'opacity-90 grayscale-[10%]'}`}>
 
       {/* Header: Status and League */}
       <div className="flex justify-between items-center mb-4 relative z-10">
@@ -63,7 +63,7 @@ function MatchCard({ match }) {
       </div>
 
       {/* Footer: Time + Date */}
-      <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center relative z-10">
+      <div className="mt-4 pt-3 border-t border-black flex justify-between items-center relative z-10">
         <div className="flex flex-col gap-0.5">
           <div className="text-gray-500 dark:text-gray-400 text-sm font-medium flex items-center gap-1.5">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">

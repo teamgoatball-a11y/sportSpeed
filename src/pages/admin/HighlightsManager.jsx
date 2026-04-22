@@ -87,7 +87,7 @@ const HighlightsManager = () => {
     return (
         <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-8 animate-fade-in">
             {/* Header */}
-            <div className="flex items-center justify-between gap-4 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
+            <div className="flex items-center justify-between gap-4 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-black shadow-sm">
                 <div className="flex items-center gap-4">
                     <Link to="/admin/dashboard" className="p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white bg-gray-100 dark:bg-gray-800 rounded-xl transition-colors">
                         <ArrowLeft size={20} />
@@ -97,7 +97,7 @@ const HighlightsManager = () => {
             </div>
 
             {/* Add Form */}
-            <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
+            <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-black shadow-sm">
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-lg font-bold flex items-center gap-2 tracking-tight">
                         <Plus size={20} className="text-red-600" /> New Highlight
@@ -185,7 +185,7 @@ const HighlightsManager = () => {
             {/* List */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {highlights.map(h => (
-                    <div key={h.id} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm group">
+                    <div key={h.id} className="bg-white dark:bg-gray-900 rounded-2xl border border-black overflow-hidden shadow-sm group">
                         <div className="relative aspect-video">
                             <img src={h.thumbnail} className="w-full h-full object-cover" alt="" />
                             <div className="absolute top-2 left-2 bg-black/60 px-2 py-1 rounded text-[9px] text-white font-black uppercase tracking-widest border border-white/10">

@@ -164,7 +164,7 @@ ${leagueHashtag} ${team1Hashtag} ${team2Hashtag} ⚽`;
         <div className="space-y-6 animate-fade-in">
 
             {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-black shadow-sm">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Match Management</h1>
                     <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Manage all live streams and schedules</p>
@@ -198,7 +198,7 @@ ${leagueHashtag} ${team1Hashtag} ${team2Hashtag} ⚽`;
             </div>
 
             {/* Matches List */}
-            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-black shadow-sm overflow-hidden">
 
                 {loading ? (
                     <div className="p-12 text-center text-gray-500 dark:text-gray-400">
@@ -217,7 +217,7 @@ ${leagueHashtag} ${team1Hashtag} ${team2Hashtag} ⚽`;
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-800 text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-black text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                                     <th className="px-6 py-4 w-10">
                                         <input
                                             type="checkbox"
@@ -234,7 +234,7 @@ ${leagueHashtag} ${team1Hashtag} ${team2Hashtag} ⚽`;
                                     <th className="px-6 py-4 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+                            <tbody className="divide-y divide-black">
                                 {matches.map((match) => (
                                     <tr key={match.id} className={`hover:bg-gray-50 dark:hover:bg-gray-800/20 transition-colors group ${selectedIds.has(match.id) ? 'bg-red-50/30 dark:bg-red-500/5' : ''}`}>
                                         <td className="px-6 py-4">
@@ -256,7 +256,7 @@ ${leagueHashtag} ${team1Hashtag} ${team2Hashtag} ⚽`;
                                         </td>
 
                                         <td className="px-6 py-4">
-                                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 border border-black">
                                                 {match.league}
                                             </span>
                                         </td>
@@ -264,12 +264,12 @@ ${leagueHashtag} ${team1Hashtag} ${team2Hashtag} ⚽`;
                                         <td className="px-6 py-4">
                                             <div className="flex flex-col gap-1.5">
                                                 {match.status === "LIVE" ? (
-                                                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-bold bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-500 border border-red-200 dark:border-red-500/20 w-fit">
+                                                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-bold bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-500 border border-black w-fit">
                                                         <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
                                                         LIVE
                                                     </span>
                                                 ) : (
-                                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 w-fit">
+                                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-black w-fit">
                                                         UPCOMING
                                                     </span>
                                                 )}

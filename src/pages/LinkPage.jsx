@@ -70,7 +70,7 @@ function LinkPage() {
         <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in transition-colors duration-300">
 
             {/* Header Area */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-black shadow-sm transition-colors duration-300">
                 <div>
                     <Link to={`/match/${match.id}`} className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 font-medium mb-3 transition-colors group">
                         <svg className="w-4 h-4 mr-1 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,13 +88,13 @@ function LinkPage() {
                 {/* Indicators */}
                 <div className="flex flex-col sm:items-end gap-2">
                     {/* Views indicator */}
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 dark:bg-gray-800/50 rounded-full border border-gray-200 dark:border-gray-700 w-fit">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 dark:bg-gray-800/50 rounded-full border border-black w-fit">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500 dark:text-gray-400"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
                         <span className="text-gray-600 dark:text-gray-400 text-xs font-bold tracking-wide">{match.views || 0} VIEWS</span>
                     </div>
 
                     {/* Status indicator */}
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-500/10 rounded-full border border-green-200 dark:border-green-500/20 w-fit">
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-500/10 rounded-full border border-black w-fit">
                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
                         <span className="text-green-700 dark:text-green-500 text-xs font-bold tracking-wide">SERVERS ONLINE</span>
                     </div>
@@ -122,9 +122,9 @@ function LinkPage() {
                             <React.Fragment key={server.name || index}>
                                 <button
                                     onClick={() => navigate(`/go/${match.id}/${index}`)}
-                                className={`block w-full text-left group relative overflow-hidden rounded-2xl border transition-all duration-300 transform hover:-translate-y-1 ${isBest
-                                    ? 'bg-red-50 dark:bg-gray-900 border-red-200 dark:border-red-900/50 hover:border-red-400 dark:hover:border-red-500 shadow-md shadow-red-100 dark:shadow-red-900/20'
-                                    : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600 shadow-sm hover:shadow-md'
+                                className={`block w-full text-left group relative overflow-hidden rounded-2xl border border-black transition-all duration-300 transform hover:-translate-y-1 ${isBest
+                                    ? 'bg-red-50 dark:bg-gray-900 shadow-md shadow-red-100 dark:shadow-red-900/20'
+                                    : 'bg-white dark:bg-gray-900 shadow-sm hover:shadow-md'
                                     }`}
                             >
                                 {/* Best Server Badge */}
@@ -191,7 +191,7 @@ function LinkPage() {
                 </div>
                 
             ) : (
-                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-12 text-center transition-colors duration-300">
+                <div className="bg-white dark:bg-gray-900 border border-black rounded-2xl p-12 text-center transition-colors duration-300">
                     <svg className="w-16 h-16 mx-auto text-gray-300 dark:text-gray-700 mb-4 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>

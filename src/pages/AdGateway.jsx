@@ -74,7 +74,7 @@ function AdGateway() {
 
             {/* Match Info Header */}
             {match && (
-                <div className="text-center bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800 shadow-sm">
+                <div className="text-center bg-white dark:bg-gray-900 rounded-2xl p-6 border border-black shadow-sm">
                     <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Now Loading Stream</p>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                         {match.team1} <span className="text-red-500 italic">vs</span> {match.team2}
@@ -94,7 +94,7 @@ function AdGateway() {
             <MediumBanner />
 
             {/* Countdown / Watch Button */}
-            <div className="flex flex-col items-center gap-4 py-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800">
+            <div className="flex flex-col items-center gap-4 py-6 bg-white dark:bg-gray-900 rounded-2xl border border-black">
                 {!ready ? (
                     <>
                         {/* Circular countdown ring */}

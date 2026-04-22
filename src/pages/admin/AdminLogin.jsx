@@ -60,10 +60,10 @@ const AdminLogin = () => {
                     </p>
                 </div>
 
-                <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 border border-gray-200 dark:border-gray-800 shadow-xl shadow-gray-200/50 dark:shadow-2xl transition-colors duration-300">
+                <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 border border-black shadow-xl shadow-gray-200/50 dark:shadow-2xl transition-colors duration-300">
 
                     {error && (
-                        <div className="mb-6 p-4 bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 rounded-xl border border-red-200 dark:border-red-500/20 flex items-center gap-3 text-sm">
+                        <div className="mb-6 p-4 bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 rounded-xl border border-black flex items-center gap-3 text-sm">
                             <AlertCircle size={18} />
                             <span>{error}</span>
                         </div>

@@ -1,6 +1,6 @@
 function MatchCardSkeleton() {
     return (
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 h-full flex flex-col relative overflow-hidden animate-pulse">
+        <div className="bg-white dark:bg-gray-900 border border-black rounded-xl p-5 h-full flex flex-col relative overflow-hidden animate-pulse">
 
             {/* Header: Status and League */}
             <div className="flex justify-between items-center mb-4">
@@ -32,7 +32,7 @@ function MatchCardSkeleton() {
             </div>
 
             {/* Footer: Time */}
-            <div className="mt-5 pt-4 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center">
+            <div className="mt-5 pt-4 border-t border-black flex justify-between items-center">
                 <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-20 flex items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-800"></div>
                 </div>

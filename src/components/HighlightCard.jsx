@@ -6,7 +6,7 @@ function HighlightCard({ highlight }) {
     return (
         <Link 
             to={`/highlights/${highlight.slug}`} 
-            className="group block bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 hover:border-red-500/50 dark:hover:border-red-500/50 transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-1"
+            className="group block bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-black hover:border-red-500/50 dark:hover:border-red-500/50 transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-1"
         >
             <div className="relative aspect-video overflow-hidden">
                 <img 

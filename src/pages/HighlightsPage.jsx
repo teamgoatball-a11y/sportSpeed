@@ -43,7 +43,7 @@ function HighlightsPage() {
                     <input 
                         type="text" 
                         placeholder="Search highlights..."
-                        className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-red-500 outline-none transition-all dark:text-white"
+                        className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-900 border border-black rounded-2xl focus:ring-2 focus:ring-red-500 outline-none transition-all dark:text-white"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -63,7 +63,7 @@ function HighlightsPage() {
                     ))}
                 </div>
             ) : (
-                <div className="text-center py-32 bg-gray-50 dark:bg-gray-900/50 rounded-[3rem] border-2 border-dashed border-gray-200 dark:border-gray-800">
+                <div className="text-center py-32 bg-gray-50 dark:bg-gray-900/50 rounded-[3rem] border-2 border-dashed border-black">
                     <Film size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white uppercase tracking-tight italic">No Highlights Added Yet</h3>
                     <p className="text-gray-500 text-sm mt-2">Check back later or explore our Live Matches.</p>

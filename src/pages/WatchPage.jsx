@@ -241,7 +241,7 @@ function WatchPage() {
     return (
         <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8 animate-fade-in transition-colors duration-300">
             {/* Header Area */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-black shadow-sm transition-colors duration-300">
                 <div>
                     <Link to={`/link/${match.id}`} className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 font-medium mb-3 transition-colors group">
                         <svg className="w-4 h-4 mr-1 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -263,7 +263,7 @@ function WatchPage() {
             <SmartLinkAd />
 
             {/* Video Player Area */}
-            <div ref={playerWrapperRef} className="w-full bg-black rounded-[2rem] overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-800/50 relative group">
+            <div ref={playerWrapperRef} className="w-full bg-black rounded-[2rem] overflow-hidden shadow-2xl border border-black relative group">
                 {isYoutube || server.url.includes('<iframe') ? (
                     <div className={`w-full aspect-video flex items-center justify-center ${isYoutube ? 'pointer-events-none' : 'pointer-events-auto'}`}>
                         <iframe 
@@ -296,7 +296,7 @@ function WatchPage() {
             </div>
 
             {/* Premium Control Bar (Replicated from Highlights) */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-4 p-2 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm mx-2">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 p-2 bg-white dark:bg-gray-900 rounded-3xl border border-black shadow-sm mx-2">
                 <button 
                     onClick={togglePlay}
                     className="flex flex-col items-center justify-center h-14 bg-red-600 text-white rounded-2xl hover:bg-red-700 transition-all font-black text-[9px] uppercase tracking-tighter shadow-lg shadow-red-600/20"

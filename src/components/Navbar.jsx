@@ -1,6 +1,8 @@
 import { Link, useLocation } from "react-router-dom"
+import { useUI } from "../context/UIContext"
 
-function Navbar({ searchQuery, setSearchQuery, isDarkMode, toggleTheme }) {
+function Navbar() {
+    const { searchQuery, setSearchQuery, isDarkMode, toggleTheme } = useUI()
     const location = useLocation()
     const isHome = location.pathname === "/"
 
@@ -80,9 +82,6 @@ function Navbar({ searchQuery, setSearchQuery, isDarkMode, toggleTheme }) {
                     </div>
 
                 </div>
-
-
-
             </div>
         </nav>
     )

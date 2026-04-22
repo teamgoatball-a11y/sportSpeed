@@ -58,7 +58,7 @@ const ArticleManager = () => {
         <div className="space-y-6 animate-fade-in">
 
             {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-black shadow-sm">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Article Management</h1>
                     <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Manage your blog posts and sports news</p>
@@ -82,7 +82,7 @@ const ArticleManager = () => {
             </div>
 
             {/* Articles Table */}
-            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-black shadow-sm overflow-hidden">
                 {loading ? (
                     <div className="p-12 text-center text-gray-500 dark:text-gray-400">
                         <RefreshCw size={32} className="animate-spin mx-auto mb-4 text-gray-400 dark:text-gray-600" />
@@ -100,7 +100,7 @@ const ArticleManager = () => {
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-800 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-black text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                                     <th className="px-6 py-4">Title</th>
                                     <th className="px-6 py-4">Category</th>
                                     <th className="px-6 py-4">Status</th>
@@ -109,13 +109,13 @@ const ArticleManager = () => {
                                     <th className="px-6 py-4 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+                            <tbody className="divide-y divide-black">
                                 {articles.map((article) => (
                                     <tr key={article.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/20 transition-colors group">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 {article.coverImage && (
-                                                    <img src={article.coverImage} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-gray-200 dark:border-gray-700" />
+                                                    <img src={article.coverImage} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-black" />
                                                 )}
                                                 <div>
                                                     <p className="font-semibold text-gray-900 dark:text-white text-sm line-clamp-1">{article.title}</p>
@@ -124,18 +124,18 @@ const ArticleManager = () => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 border border-black">
                                                 {article.category || 'General'}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">
                                             {article.published ? (
-                                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-bold bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+                                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-bold bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border border-black">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                                     Published
                                                 </span>
                                             ) : (
-                                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-bold bg-yellow-50 text-yellow-600 dark:bg-yellow-500/10 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-500/20">
+                                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-bold bg-yellow-50 text-yellow-600 dark:bg-yellow-500/10 dark:text-yellow-400 border border-black">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
                                                     Draft
                                                 </span>

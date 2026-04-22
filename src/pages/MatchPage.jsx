@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
+import { Helmet } from "react-helmet-async"
 import { doc, onSnapshot, updateDoc, increment } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import siteSettings from '../config/siteSettings'
 import AdBanner from "../components/AdBanner"
 import SmartLinkAd from "../components/SmartLinkAd"
 import MediumBanner from "../components/MediumBanner"
@@ -45,9 +47,6 @@ function MatchPage() {
             if (docSnap.exists()) {
                 const data = { id: docSnap.id, ...docSnap.data() };
                 setMatch(data);
-                if (data.team1 && data.team2) {
-                    document.title = `${data.team1} vs ${data.team2} - Live Stream | GOATBALL`;
-                }
             } else {
                 setMatch(null);
             }
@@ -59,7 +58,6 @@ function MatchPage() {
 
         return () => {
             unsubscribe();
-            document.title = "GOATBALL — Live Sports, Highlights & News";
         };
     }, [id])
 
@@ -100,6 +98,14 @@ function MatchPage() {
 
     return (
         <div className="max-w-5xl mx-auto space-y-6 sm:space-y-8 animate-fade-in transition-colors duration-300">
+            <Helmet>
+                <title>{match.team1} vs {match.team2} - Live Stream | {siteSettings.name}</title>
+                <meta name="description" content={`Watch ${match.team1} vs ${match.team2} live stream. Get real-time updates and highlights for the ${match.league} match.`} />
+                <meta property="og:title" content={`${match.team1} vs ${match.team2} - Live Stream | ${siteSettings.name}`} />
+                <meta property="og:description" content={`Watch ${match.team1} vs ${match.team2} live on ${siteSettings.name}. Kick-off at ${match.time}.`} />
+                {match.team1Logo && <meta property="og:image" content={match.team1Logo} />}
+                <meta property="og:type" content="video.other" />
+            </Helmet>
 
             {/* Back Navigation */}
             <div className="pt-2 px-4 sm:px-0">
@@ -114,10 +120,10 @@ function MatchPage() {
             <AdBanner />
 
             {/* Hero Banner Area */}
-            <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl p-6 sm:p-12 border border-gray-200 dark:border-gray-800 shadow-xl shadow-gray-200/50 dark:shadow-2xl relative overflow-hidden transition-colors duration-300">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl p-6 sm:p-12 border border-black shadow-xl shadow-gray-200/50 dark:shadow-2xl relative overflow-hidden transition-colors duration-300">
 
                 {/* Dynamic Background Effect */}
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-red-500/5 via-transparent to-red-500/5 dark:from-red-500/10 dark:via-transparent dark:to-orange-500/5 z-0"></div>
+                <div className="absolute top-0  border-red-500 left-0 w-full h-full bg-gradient-to-br from-red-500/5 via-transparent to-red-500/5 dark:from-red-500/10 dark:via-transparent dark:to-orange-500/5 z-0"></div>
 
                 <div className="relative z-10 flex flex-col items-center">
 
@@ -132,7 +138,7 @@ function MatchPage() {
                                 <span className="text-red-600 dark:text-red-500 font-bold tracking-widest text-sm">LIVE NOW</span>
                             </div>
                         ) : (
-                            <span className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-bold tracking-widest text-sm rounded-full border border-gray-200 dark:border-gray-700">
+                            <span className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-bold tracking-widest text-sm rounded-full border border-black dark:border-gray-700">
                                 UPCOMING
                             </span>
                         )}
@@ -178,7 +184,7 @@ function MatchPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
                 {/* Detail Card 1: League */}
-                <div className="bg-white/60 dark:bg-gray-900/40 backdrop-blur-md rounded-2xl p-6 border border-gray-200/50 dark:border-gray-800/50 text-center transition-colors duration-300">
+                <div className="bg-white/60 dark:bg-gray-900/40 backdrop-blur-md rounded-2xl p-6 border border-black text-center transition-colors duration-300">
                     <div className="w-10 h-10 mx-auto bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-3">
                         <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
                     </div>
@@ -187,7 +193,7 @@ function MatchPage() {
                 </div>
 
                 {/* Detail Card 2: Time */}
-                <div className="bg-white/60 dark:bg-gray-900/40 backdrop-blur-md rounded-2xl p-6 border border-gray-200/50 dark:border-gray-800/50 text-center transition-colors duration-300">
+                <div className="bg-white/60 dark:bg-gray-900/40 backdrop-blur-md rounded-2xl p-6 border border-black text-center transition-colors duration-300">
                     <div className="w-10 h-10 mx-auto bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-3">
                         <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
@@ -196,7 +202,7 @@ function MatchPage() {
                 </div>
 
                 {/* Detail Card 3: Venue */}
-                <div className="bg-white/60 dark:bg-gray-900/40 backdrop-blur-md rounded-2xl p-6 border border-gray-200/50 dark:border-gray-800/50 text-center transition-colors duration-300">
+                <div className="bg-white/60 dark:bg-gray-900/40 backdrop-blur-md rounded-2xl p-6 border border-black text-center transition-colors duration-300">
                     <div className="w-10 h-10 mx-auto bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-3">
                         <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     </div>
@@ -205,7 +211,7 @@ function MatchPage() {
                 </div>
 
                 {/* Detail Card 4: Views */}
-                <div className="bg-white/60 dark:bg-gray-900/40 backdrop-blur-md rounded-2xl p-6 border border-gray-200/50 dark:border-gray-800/50 text-center transition-colors duration-300">
+                <div className="bg-white/60 dark:bg-gray-900/40 backdrop-blur-md rounded-2xl p-6 border border-black text-center transition-colors duration-300">
                     <div className="w-10 h-10 mx-auto bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-3">
                         <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
                     </div>
@@ -231,7 +237,7 @@ function MatchPage() {
                         Watch Live Stream Now
                     </Link>
                 ) : (
-                    <div className="inline-block p-6 rounded-2xl bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 transition-colors duration-300">
+                    <div className="inline-block p-6 rounded-2xl bg-gray-100 dark:bg-gray-900 border border-black transition-colors duration-300">
                         <svg className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>

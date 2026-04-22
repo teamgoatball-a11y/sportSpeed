@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, RefreshCw } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
+import { useUI } from '../context/UIContext';
+import siteSettings from '../config/siteSettings';
 import ArticleCard from '../components/ArticleCard';
 import { useArticles } from '../hooks/useArticles';
 
 const CATEGORIES = ['All', 'Football', 'Cricket', 'IPL', 'General'];
 
 function NewsPage() {
+    const { searchQuery, setSearchQuery } = useUI();
     const [activeCategory, setActiveCategory] = useState('All');
-    const [search, setSearch] = useState('');
 
     const { articles, loading } = useArticles({
         category: activeCategory === 'All' ? null : activeCategory,
@@ -16,14 +19,20 @@ function NewsPage() {
     });
 
     const filtered = articles.filter(a =>
-        !search ||
-        a.title?.toLowerCase().includes(search.toLowerCase()) ||
-        a.excerpt?.toLowerCase().includes(search.toLowerCase()) ||
-        a.category?.toLowerCase().includes(search.toLowerCase())
+        !searchQuery ||
+        a.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        a.excerpt?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        a.category?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
         <div className="p-4 sm:p-6 transition-colors duration-300">
+            <Helmet>
+                <title>Latest Sports News | {siteSettings.name}</title>
+                <meta name="description" content="Stay updated with the latest sports news, match reports, and transfers." />
+                <meta property="og:title" content={`Latest Sports News | ${siteSettings.name}`} />
+                <meta property="og:description" content="Latest football, cricket, and international sports updates." />
+            </Helmet>
 
             {/* Page Header Area */}
             <div className="mb-6 mt-4">
@@ -40,8 +49,8 @@ function NewsPage() {
                 <input
                     type="text"
                     placeholder="Search articles..."
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
                     className="block w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-300 placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-sm shadow-sm transition-colors"
                 />
             </div>
@@ -88,7 +97,7 @@ function NewsPage() {
                             ))}
                         </div>
                     ) : (
-                         <div className="text-center py-16 bg-gray-50 dark:bg-[#111] border border-gray-100 dark:border-gray-800">
+                         <div className="text-center py-16 bg-gray-50 dark:bg-[#111] border border-black">
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No Articles Found</h3>
                             <p className="text-gray-500 text-sm">No articles match your criteria.</p>
                         </div>
@@ -105,55 +114,45 @@ function NewsPage() {
 
                     <div className="flex flex-col gap-2">
                         {/* Facebook */}
-                        <a href="#" className="flex justify-between items-center px-4 py-3 bg-[#3b5998] hover:bg-[#2d4373] text-white text-sm font-bold transition-colors">
+                        <a href={siteSettings.social.facebook.url} target="_blank" rel="noopener noreferrer" className="flex justify-between items-center px-4 py-3 bg-[#3b5998] hover:bg-[#2d4373] text-white text-sm font-bold transition-colors">
                             <span className="flex items-center gap-3">
                                 <span className="text-lg">f</span>
                                 <span>Facebook</span>
                             </span>
-                            <span className="text-xs font-normal">2,530 Fans</span>
+                            <span className="text-xs font-normal">{siteSettings.social.facebook.fans}</span>
                         </a>
                         {/* Twitter */}
-                        <a href="#" className="flex justify-between items-center px-4 py-3 bg-[#55acee] hover:bg-[#2795e9] text-white text-sm font-bold transition-colors">
+                        <a href={siteSettings.social.twitter.url} target="_blank" rel="noopener noreferrer" className="flex justify-between items-center px-4 py-3 bg-[#55acee] hover:bg-[#2795e9] text-white text-sm font-bold transition-colors">
                             <span className="flex items-center gap-3">
-                                <span className="text-lg">t</span>
+                                <span className="text-lg text-xs">𝕏</span>
                                 <span>Twitter</span>
                             </span>
-                            <span className="text-xs font-normal">2,046 Fans</span>
+                            <span className="text-xs font-normal">{siteSettings.social.twitter.fans}</span>
                         </a>
-                        {/* Google/YouTube */}
-                        <a href="#" className="flex justify-between items-center px-4 py-3 bg-[#dd4b39] hover:bg-[#c23321] text-white text-sm font-bold transition-colors">
+                        {/* YouTube */}
+                        <a href={siteSettings.social.youtube.url} target="_blank" rel="noopener noreferrer" className="flex justify-between items-center px-4 py-3 bg-[#dd4b39] hover:bg-[#c23321] text-white text-sm font-bold transition-colors">
                             <span className="flex items-center gap-3">
-                                <span className="text-lg">G</span>
-                                <span>Google</span>
+                                <span className="text-lg">▶</span>
+                                <span>YouTube</span>
                             </span>
-                            <span className="text-xs font-normal">1,170 Fans</span>
+                            <span className="text-xs font-normal">{siteSettings.social.youtube.fans}</span>
                         </a>
                     </div>
 
-                    {/* Poll Widget Mockup (from screenshot) */}
-                    <div className="mt-8 bg-gray-900 border border-gray-800 p-6 relative overflow-hidden group">
+                    {/* Poll Widget Mockup */}
+                    <div className="mt-8 bg-gray-900 border border-black p-6 relative overflow-hidden group rounded-xl">
                         <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1518605368461-1b203c9ebc57?auto=format&fit=crop&q=80')] bg-cover bg-center"></div>
                         <div className="absolute inset-0 bg-gradient-to-t from-[#111] via-[#111]/80 to-transparent"></div>
                         
                         <div className="relative z-10">
-                            <h3 className="text-white font-bold mb-6 text-[15px] leading-snug">In your opinion, which country will win this year</h3>
+                            <h3 className="text-white font-bold mb-6 text-[15px] leading-snug">{siteSettings.activePoll.question}</h3>
                             <div className="space-y-3 text-gray-300 text-sm font-medium">
-                                <label className="flex items-center gap-3 cursor-pointer hover:text-white transition-colors">
-                                    <input type="radio" name="poll" className="accent-[#f00000]" />
-                                    Germany
-                                </label>
-                                <label className="flex items-center gap-3 cursor-pointer hover:text-white transition-colors">
-                                    <input type="radio" name="poll" className="accent-[#f00000]" />
-                                    Brazil
-                                </label>
-                                <label className="flex items-center gap-3 cursor-pointer hover:text-white transition-colors">
-                                    <input type="radio" name="poll" className="accent-[#f00000]" />
-                                    Myanmar
-                                </label>
-                                <label className="flex items-center gap-3 cursor-pointer hover:text-white transition-colors">
-                                    <input type="radio" name="poll" className="accent-[#f00000]" />
-                                    Argentina
-                                </label>
+                                {siteSettings.activePoll.options.map(option => (
+                                    <label key={option.value} className="flex items-center gap-3 cursor-pointer hover:text-white transition-colors">
+                                        <input type="radio" name="poll" className="accent-[#f00000]" />
+                                        {option.label}
+                                    </label>
+                                ))}
                             </div>
                         </div>
                     </div> {/* End Poll Widget */}
