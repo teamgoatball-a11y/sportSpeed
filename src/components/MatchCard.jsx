@@ -43,7 +43,6 @@ function MatchCard({ match }) {
             />
             <span className="font-bold text-gray-900 dark:text-gray-100 text-[15px] line-clamp-1">{match.team1}</span>
           </div>
-          {isLive && <span className="font-black text-[#f00000] text-lg">0</span>}
         </div>
 
         {/* Team 2 */}
@@ -57,7 +56,6 @@ function MatchCard({ match }) {
             />
             <span className="font-bold text-gray-900 dark:text-gray-100 text-[15px] line-clamp-1">{match.team2}</span>
           </div>
-          {isLive && <span className="font-black text-[#f00000] text-lg">0</span>}
         </div>
 
       </div>

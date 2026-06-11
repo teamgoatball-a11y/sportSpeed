@@ -4,8 +4,10 @@ import { db } from '../../config/firebase';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Edit2, Trash2, RefreshCw, Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useSettings } from '../../hooks/useSettings';
 
 const MatchManager = () => {
+    const { settings } = useSettings();
     const [matches, setMatches] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedIds, setSelectedIds] = useState(new Set());
@@ -133,30 +135,73 @@ const MatchManager = () => {
             const uaeTime = new Date(istTime.getTime() - (1.5 * 60 * 60 * 1000));
             // KSA is IST - 2.5 hours
             const ksaTime = new Date(istTime.getTime() - (2.5 * 60 * 60 * 1000));
-
             const shareUrl = `https://goatball.online/match/${match.id}`;
-            const leagueHashtag = generateHashtag(match.league);
-            const team1Hashtag = generateHashtag(match.team1);
-            const team2Hashtag = generateHashtag(match.team2);
 
-            const message = `🚨 **MATCHDAY** 🚨
-🔴 **${match.team1.toUpperCase()} 🆚 ${match.team2.toUpperCase()} 🟡**
-⚽**${match.league.toUpperCase()}**
+            const message = `🏆 ${match.league}
 
-**IND** | ${match.time} **UAE** | ${formatTime(uaeTime)} | **KSA** | ${formatTime(ksaTime)}
+Ⓜ️ ${match.team1} 🆚 ${match.team2} 
+🇮🇳 IND | ${match.time}
+🇦🇪 UAE | ${formatTime(uaeTime)}
+🇸🇦 KSA | ${formatTime(ksaTime)}
+🖥️ Live Link: ${shareUrl}
 
-📺 **LIVE LINK 👇🏻**
-${shareUrl}
-━━━━━━━━━━━━━━
-
-Visit : goatball.online for more .
-${leagueHashtag} ${team1Hashtag} ${team2Hashtag} ⚽`;
+${settings?.whatsappLink ? `🟢 JOIN WHATSAPP GROUP 👇🏻\n${settings.whatsappLink}\n━━━━━━━━━━━━━━\n\n` : ''}🚨 More Matches: 
+👉🏻 https://goatball.online/`;
 
             navigator.clipboard.writeText(message);
             toast.success("Share link copied to clipboard!");
         } catch (error) {
             console.error("Error sharing match:", error);
             toast.error("Failed to generate share link");
+        }
+    };
+
+    const handleBulkShare = () => {
+        if (selectedIds.size === 0) return;
+
+        const parseTime = (timeStr) => {
+            const [time, modifier] = timeStr.split(' ');
+            let [hours, minutes] = time.split(':');
+            if (hours === '12') hours = '00';
+            if (modifier === 'PM') hours = parseInt(hours, 10) + 12;
+            const date = new Date();
+            date.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+            return date;
+        };
+
+        const formatTime = (date) => {
+            return date.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+        };
+
+        try {
+            const idsArray = Array.from(selectedIds);
+            const selectedMatches = idsArray.map(id => matches.find(m => m.id === id)).filter(Boolean);
+
+            if (selectedMatches.length === 0) return;
+
+            let finalMessage = '';
+
+            selectedMatches.forEach((match, index) => {
+                const istTime = parseTime(match.time);
+                const uaeTime = new Date(istTime.getTime() - (1.5 * 60 * 60 * 1000));
+                const ksaTime = new Date(istTime.getTime() - (2.5 * 60 * 60 * 1000));
+
+                const shareUrl = `https://goatball.online/match/${match.id}`;
+
+                finalMessage += `🏆 ${match.league}\n\nⓂ️ ${match.team1} 🆚 ${match.team2} \n🇮🇳 IND | ${match.time}\n🇦🇪 UAE | ${formatTime(uaeTime)}\n🇸🇦 KSA | ${formatTime(ksaTime)}\n🖥️ Live Link: ${shareUrl}\n\n`;
+            });
+
+            if (settings?.whatsappLink) {
+                finalMessage += `🟢 JOIN WHATSAPP GROUP 👇🏻\n${settings.whatsappLink}\n━━━━━━━━━━━━━━\n\n`;
+            }
+
+            finalMessage += `🚨 More Matches: \n👉🏻 https://goatball.online/`;
+
+            navigator.clipboard.writeText(finalMessage);
+            toast.success(`Share link for ${selectedMatches.length} matches copied!`);
+        } catch (error) {
+            console.error("Error bulk sharing:", error);
+            toast.error("Failed to generate bulk share link");
         }
     };
 
@@ -171,14 +216,23 @@ ${leagueHashtag} ${team1Hashtag} ${team2Hashtag} ⚽`;
                 </div>
                 <div className="flex gap-3">
                     {selectedIds.size > 0 && (
-                        <button
-                            onClick={handleBulkDelete}
-                            disabled={isBulkDeleting}
-                            className="flex items-center gap-2 px-4 py-2.5 bg-orange-100 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-500/20 rounded-xl font-medium transition-colors border border-orange-200 dark:border-orange-500/30"
-                        >
-                            <Trash2 size={20} />
-                            {isBulkDeleting ? 'Deleting...' : `Delete ${selectedIds.size} Selected`}
-                        </button>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={handleBulkShare}
+                                className="flex items-center gap-2 px-4 py-2.5 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-500/20 rounded-xl font-medium transition-colors border border-emerald-200 dark:border-emerald-500/30"
+                            >
+                                <Share2 size={20} />
+                                Share Selected
+                            </button>
+                            <button
+                                onClick={handleBulkDelete}
+                                disabled={isBulkDeleting}
+                                className="flex items-center gap-2 px-4 py-2.5 bg-orange-100 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-500/20 rounded-xl font-medium transition-colors border border-orange-200 dark:border-orange-500/30"
+                            >
+                                <Trash2 size={20} />
+                                {isBulkDeleting ? 'Deleting...' : `Delete Selected`}
+                            </button>
+                        </div>
                     )}
                     <button
                         onClick={fetchMatches}

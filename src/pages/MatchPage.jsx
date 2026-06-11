@@ -83,10 +83,10 @@ function MatchPage() {
             if (isNaN(kickOff.getTime())) return m.status;
 
             const msSinceKickOff = now.getTime() - kickOff.getTime();
-            if (msSinceKickOff > 0 && msSinceKickOff < 2 * 60 * 60 * 1000) {
+            if (msSinceKickOff >= -15 * 60 * 1000 && msSinceKickOff < 150 * 60 * 1000) {
                 return 'LIVE';
             }
-            if (msSinceKickOff >= 2 * 60 * 60 * 1000) {
+            if (msSinceKickOff >= 150 * 60 * 1000) {
                 return 'FINISHED';
             }
             return 'UPCOMING';
@@ -231,7 +231,7 @@ function MatchPage() {
                 {/* WhatsApp Group Prompt */}
                 <WhatsAppPrompt />
 
-                {isLive ? (
+                {isLive || (match.servers && match.servers.some(s => s.name?.trim() || s.url?.trim())) ? (
                     <Link
                         to={`/link/${match.id}`}
                         className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-500 hover:to-orange-400 text-white font-bold text-lg rounded-full shadow-lg shadow-red-600/30 hover:shadow-red-500/40 transform hover:-translate-y-1 transition-all duration-300 ring-2 ring-transparent focus:ring-red-400 outline-none"

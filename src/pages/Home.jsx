@@ -82,11 +82,11 @@ function Home() {
         let kickOff = new Date(`${match.date} ${match.time}`);
         if (isNaN(kickOff.getTime())) return match.status;
         const msSinceKickOff = now.getTime() - kickOff.getTime();
-        if (msSinceKickOff > 0 && msSinceKickOff < 2 * 60 * 60 * 1000) {
-          return 'LIVE'; // Within 2 hours of kick-off → LIVE
+        if (msSinceKickOff >= -15 * 60 * 1000 && msSinceKickOff < 150 * 60 * 1000) {
+          return 'LIVE'; // From 15 mins before until 150 minutes after kick-off → LIVE
         }
-        if (msSinceKickOff >= 2 * 60 * 60 * 1000) {
-          return 'FINISHED'; // More than 2 hours past → FINISHED
+        if (msSinceKickOff >= 150 * 60 * 1000) {
+          return 'FINISHED'; // More than 150 minutes past → FINISHED
         }
         return 'UPCOMING';
       } catch { return match.status; }
