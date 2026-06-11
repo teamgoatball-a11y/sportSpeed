@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import { Helmet } from 'react-helmet-async'
+import { siteSettings } from '../config/siteSettings'
 import MediumBanner from '../components/MediumBanner'
 import SmartLinkAd from '../components/SmartLinkAd'
 import AdBanner from '../components/AdBanner'
@@ -58,7 +61,7 @@ function AdGateway() {
         if (!server) return
         const isIframe = server.url?.includes('<iframe')
         const isM3u8 = server.url?.includes('.m3u8')
-        const isWatchable = isIframe || isM3u8
+        const isWatchable = !server.openInNewTab && (isIframe || isM3u8)
 
         if (isWatchable) {
             navigate(`/watch/${matchId}/${serverIndex}`)
@@ -71,6 +74,10 @@ function AdGateway() {
 
     return (
         <div className="max-w-2xl mx-auto space-y-6 py-6 px-4 animate-fade-in">
+            <Helmet>
+                <title>Loading Stream: {match?.team1 || 'Match'} vs {match?.team2 || 'Match'} | {siteSettings.name}</title>
+                <meta name="description" content="Loading live stream..." />
+            </Helmet>
 
             {/* Match Info Header */}
             {match && (

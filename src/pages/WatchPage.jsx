@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
 import { doc, getDoc, onSnapshot } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import { Helmet } from 'react-helmet-async'
+import { siteSettings } from '../config/siteSettings'
 import AdBanner from "../components/AdBanner"
 import SmartLinkAd from "../components/SmartLinkAd"
 import MediumBanner from "../components/MediumBanner"
@@ -262,6 +264,10 @@ function WatchPage() {
 
     return (
         <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8 animate-fade-in transition-colors duration-300">
+            <Helmet>
+                <title>Watching {match.team1} vs {match.team2} Live | {siteSettings.name}</title>
+                <meta name="description" content={`Watching ${match.team1} vs ${match.team2} live stream on ${siteSettings.name}.`} />
+            </Helmet>
             {/* Header Area */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-black shadow-sm transition-colors duration-300">
                 <div>

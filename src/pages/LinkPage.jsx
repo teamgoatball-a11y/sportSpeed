@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
 import { doc, getDoc, updateDoc, increment } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import { Helmet } from 'react-helmet-async'
+import { siteSettings } from '../config/siteSettings'
 import AdBanner from "../components/AdBanner"
 import SmartLinkAd from "../components/SmartLinkAd"
 import WhatsAppPrompt from "../components/WhatsAppPrompt"
@@ -69,6 +71,10 @@ function LinkPage() {
 
     return (
         <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in transition-colors duration-300">
+            <Helmet>
+                <title>{match.team1} vs {match.team2} - Live Stream Links | {siteSettings.name}</title>
+                <meta name="description" content={`Available streaming links for ${match.team1} vs ${match.team2} live.`} />
+            </Helmet>
 
             {/* Header Area */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-black shadow-sm transition-colors duration-300">
@@ -121,7 +127,7 @@ function LinkPage() {
 
                         const isIframe = server.url?.includes('<iframe');
                         const isM3u8 = server.url?.includes('.m3u8');
-                        const isWatchable = isIframe || isM3u8;
+                        const isWatchable = !server.openInNewTab && (isIframe || isM3u8);
 
                         return (
                             <React.Fragment key={server.name || index}>

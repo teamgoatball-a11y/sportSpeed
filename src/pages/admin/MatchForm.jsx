@@ -28,7 +28,7 @@ const MatchForm = () => {
 
     const [formData, setFormData] = useState({
         ...INITIAL_STATE,
-        servers: isEditing ? [] : [{ name: '', url: '' }]
+        servers: isEditing ? [] : [{ name: '', url: '', openInNewTab: false }]
     });
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(isEditing);
@@ -199,7 +199,7 @@ const MatchForm = () => {
     const addServer = () => {
         setFormData(prev => ({
             ...prev,
-            servers: [...prev.servers, { name: '', url: '' }]
+            servers: [...prev.servers, { name: '', url: '', openInNewTab: false }]
         }));
     };
 
@@ -453,6 +453,17 @@ const MatchForm = () => {
                                                 className="w-full pl-9 pr-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none text-sm text-gray-900 dark:text-white"
                                             />
                                         </div>
+                                        
+                                        {/* Force Open In New Tab Option */}
+                                        <label className="flex items-center gap-2 mt-2 pt-1 pl-1 cursor-pointer w-max">
+                                            <input
+                                                type="checkbox"
+                                                checked={server.openInNewTab || false}
+                                                onChange={(e) => handleServerChange(index, 'openInNewTab', e.target.checked)}
+                                                className="w-4 h-4 text-red-600 bg-white border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 cursor-pointer"
+                                            />
+                                            <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">Force open in new tab (Ignore internal player)</span>
+                                        </label>
                                     </div>
 
                                     <button

@@ -5,8 +5,8 @@
 
 export const siteSettings = {
     name: 'GoatBall',
-    tagline: 'Stream Live Sports Anytime, Anywhere',
-    description: 'GoatBall is your ultimate destination for live sports streaming, news, and match highlights. Follow your favorite teams and never miss a goal.',
+    tagline: 'Stream Live Football, Cricket & World Cup Anytime, Anywhere',
+    description: 'GoatBall is your ultimate destination for live football streaming, live cricket, World Cup coverage, news, and match highlights. Follow your favorite teams and never miss a goal or wicket.',
     url: window.location.origin,
     logo: '/logo.png', // Update with actual paths
     
@@ -32,10 +32,10 @@ export const siteSettings = {
     
     // SEO Defaults
     seo: {
-        defaultTitle: 'GoatBall - Live Sports Streaming & News',
+        defaultTitle: 'GoatBall - Live Football, Cricket & World Cup 2026',
         titleTemplate: '%s | GoatBall',
-        defaultDescription: 'Watch live football, cricket, and more on GoatBall. Get the latest sports news, match previews, and highlights.',
-        keywords: 'live sports, football streaming, cricket live, match highlights, sports news, world cup, premier league',
+        defaultDescription: 'Watch the FIFA World Cup 2026, Football, and Cricket live in HD! Free sports streaming. Get the latest match previews, scores, and highlights.',
+        keywords: 'world cup 2026 live stream, free football streaming, live cricket streaming, IPL live, watch world cup free, soccer streams, live sports, cricket live, match highlights, goatball',
     },
     
     // Poll Mockup Data

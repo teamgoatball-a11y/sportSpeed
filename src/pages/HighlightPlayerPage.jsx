@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { collection, query, where, getDocs, limit, orderBy, onSnapshot } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import { Helmet } from 'react-helmet-async';
+import { siteSettings } from '../config/siteSettings';
 import HighlightCard from '../components/HighlightCard';
 import { ArrowLeft, Share2, Trophy, Play, Pause, Volume2, VolumeX, Maximize, Loader2, RotateCcw, RotateCw } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -160,6 +162,10 @@ function HighlightPlayerPage() {
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+            <Helmet>
+                <title>{currentHighlight.title} - Video Highlights | {siteSettings.name}</title>
+                <meta name="description" content={currentHighlight.description?.substring(0, 150) || `Watch ${currentHighlight.title} highlights on GoatBall.`} />
+            </Helmet>
             {/* Header / Meta */}
             <div className="mb-6 flex items-center justify-between">
                 <Link to="/highlights" className="flex items-center gap-2 text-gray-400 hover:text-red-500 font-bold uppercase text-[10px] tracking-widest transition-colors group">

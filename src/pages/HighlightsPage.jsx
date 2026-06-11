@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import { Helmet } from 'react-helmet-async';
+import { siteSettings } from '../config/siteSettings';
 import HighlightCard from '../components/HighlightCard';
 import { Play, Search, Film, Loader2 } from 'lucide-react';
 
@@ -25,6 +27,10 @@ function HighlightsPage() {
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fade-in min-h-[80vh]">
+            <Helmet>
+                <title>Football, Cricket & World Cup Highlights | {siteSettings.name}</title>
+                <meta name="description" content="Watch the latest football, cricket, and sports highlights on GoatBall." />
+            </Helmet>
             {/* Header */}
             <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
