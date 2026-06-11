@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { doc, getDoc } from 'firebase/firestore'
-import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { Helmet } from 'react-helmet-async'
 import { siteSettings } from '../config/siteSettings'
