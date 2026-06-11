@@ -1,7 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import './App.css'
 import { Toaster } from 'react-hot-toast'
+import { doc, setDoc, increment } from 'firebase/firestore'
+import { db } from './config/firebase'
 
 // Context & Auth
 import { AuthProvider } from './context/AuthContext'
@@ -16,6 +18,7 @@ import ScrollToTop from './components/ScrollToTop'
 import SocialBarAd from './components/SocialBarAd'
 import ErrorBoundary from './components/ErrorBoundary'
 import MatchCardSkeleton from './components/MatchCardSkeleton'
+import InstallPrompt from './components/InstallPrompt'
 
 // Lazy Pages
 const Home = lazy(() => import('./pages/Home'))
@@ -51,6 +54,20 @@ const PageLoader = () => (
 
 function AppContent() {
   const { isDarkMode } = useUI()
+
+  useEffect(() => {
+    // Track standalone (installed) app opens
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    
+    if (isStandalone && !sessionStorage.getItem('standalone_tracked')) {
+      sessionStorage.setItem('standalone_tracked', 'true');
+      const statsRef = doc(db, 'stats', 'pwa');
+      setDoc(statsRef, {
+        standaloneOpens: increment(1),
+        lastOpenedAt: new Date().toISOString()
+      }, { merge: true }).catch(err => console.error("Error tracking open:", err));
+    }
+  }, []);
 
   return (
     <div className={`min-h-screen font-sans flex flex-col flex-1 transition-colors duration-500 ${isDarkMode ? 'dark bg-[#111] text-slate-50' : 'bg-[#f8f9fa] text-gray-900'}`}>
@@ -101,6 +118,7 @@ function AppContent() {
                 </Suspense>
               </ErrorBoundary>
             </main>
+            <InstallPrompt />
             <Footer />
           </>
         } />

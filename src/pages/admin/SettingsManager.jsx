@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import toast from 'react-hot-toast';
+import { Download, Smartphone } from 'lucide-react';
 
 function SettingsManager() {
     const [whatsappLink, setWhatsappLink] = useState('');
+    const [pwaStats, setPwaStats] = useState({ totalInstalls: 0, standaloneOpens: 0 });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
@@ -18,6 +20,16 @@ function SettingsManager() {
                     if (data.whatsappLink) {
                         setWhatsappLink(data.whatsappLink);
                     }
+                }
+
+                const statsRef = doc(db, 'stats', 'pwa');
+                const statsSnap = await getDoc(statsRef);
+                if (statsSnap.exists()) {
+                    const stats = statsSnap.data();
+                    setPwaStats({
+                        totalInstalls: stats.totalInstalls || 0,
+                        standaloneOpens: stats.standaloneOpens || 0
+                    });
                 }
             } catch (error) {
                 console.error("Error fetching settings:", error);
@@ -59,7 +71,30 @@ function SettingsManager() {
             <div className="flex items-center justify-between mb-8">
                 <div>
                     <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">Global Settings</h1>
-                    <p className="text-gray-500 dark:text-gray-400 mt-1">Manage global configurations for the application.</p>
+                    <p className="text-gray-500 dark:text-gray-400 mt-1">Manage global configurations and view app statistics.</p>
+                </div>
+            </div>
+
+            {/* App Statistics Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-black shadow-sm p-6 flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600">
+                        <Download size={24} />
+                    </div>
+                    <div>
+                        <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Total App Installs</p>
+                        <p className="text-3xl font-black text-gray-900 dark:text-white">{pwaStats.totalInstalls}</p>
+                    </div>
+                </div>
+
+                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-black shadow-sm p-6 flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-500">
+                        <Smartphone size={24} />
+                    </div>
+                    <div>
+                        <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Active App Opens</p>
+                        <p className="text-3xl font-black text-gray-900 dark:text-white">{pwaStats.standaloneOpens}</p>
+                    </div>
                 </div>
             </div>
 

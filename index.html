@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#dc2626" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GOATBALL — Live Football & Cricket Streaming, World Cup 2026</title>
     <meta name="description" content="Watch the FIFA World Cup 2026, live Football, and Cricket matches! Free HD streaming for all major sports. Your ultimate destination for live streams and breaking sports news." />
@@ -45,5 +47,16 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('SW registered: ', registration);
+          }).catch(registrationError => {
+            console.log('SW registration failed: ', registrationError);
+          });
+        });
+      }
+    </script>
   </body>
 </html>
