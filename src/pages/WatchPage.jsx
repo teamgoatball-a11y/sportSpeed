@@ -13,6 +13,7 @@ import WhatsAppPrompt from "../components/WhatsAppPrompt"
 
 function WatchPage() {
     const { id, serverIndex } = useParams()
+    const navigate = useNavigate()
     const [match, setMatch] = useState(null)
     const [server, setServer] = useState(null)
     const [loading, setLoading] = useState(true)
