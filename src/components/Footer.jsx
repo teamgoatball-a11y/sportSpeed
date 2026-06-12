@@ -8,108 +8,113 @@ function Footer() {
     const latestArticles = articles.slice(0, 2);
 
     return (
-        <footer className="bg-[#151515] text-gray-400 mt-20 relative overflow-hidden">
-            {/* Optional subtle background map/pattern can go here */}
-            {/* <div className="absolute inset-0 opacity-[0.03] bg-[url('/world-map.png')] bg-center bg-no-repeat bg-cover pointer-events-none"></div> */}
+        <footer className="relative mt-20 border-t border-gray-800/50 overflow-hidden">
+            {/* Background Image & Overlays */}
+            <div className="absolute inset-0 z-0">
+                <img
+                    src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2000&auto=format&fit=crop"
+                    alt="Stadium Lights"
+                    className="w-full h-full object-cover object-center opacity-40"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#111] via-[#111]/90 to-black"></div>
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-red-900/20 via-transparent to-transparent"></div>
+            </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-24">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8">
 
-                    {/* Column 1: Brand & Contact */}
-                    <div>
-                        <Link to="/" className="inline-block mb-6 flex items-center gap-3">
-                             <div className="w-10 h-10 bg-[#f00000] text-white rounded-full flex items-center justify-center font-black italic text-xl">
-                                {siteSettings.name.charAt(0)}
-                             </div>
-                            <span className="text-2xl font-extrabold tracking-widest text-white uppercase">
-                                {siteSettings.name}
-                            </span>
-                        </Link>
-                        
-                        <ul className="space-y-4 text-[13px] mb-8">
-                            <li className="flex items-start gap-4">
-                                <span className="text-[#f00000] mt-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                                </span>
-                                <a href="mailto:info.goatball@gmail.com" className="hover:text-white transition-colors">info.goatball@gmail.com</a>
-                            </li>
-                            <li className="flex items-start gap-4">
-                                <span className="text-[#f00000] mt-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
-                                </span>
-                                <span>+1 (123) 456 789 00</span>
-                            </li>
-                            <li className="flex items-start gap-4">
-                                <span className="text-[#f00000] mt-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                                </span>
-                                <div>
-                                    <p>123 Sports Avenue, Suite 100</p>
-                                    <p>New York City, United States</p>
+                    {/* Column 1: Brand & Contact (Wider) */}
+                    <div className="md:col-span-5 lg:col-span-4 pr-0 lg:pr-8">
+                        <Link to="/" className="inline-block mb-8 group">
+                            <div className="flex items-center gap-3">
+                                <div className="w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center shadow-lg shadow-red-600/20 group-hover:scale-105 transition-transform bg-white/5 border border-white/10 p-1">
+                                    <img src="/logo.png?v=4" alt="GoatBall Logo" className="w-full h-full object-contain rounded-xl" />
                                 </div>
-                            </li>
-                        </ul>
+                                <div className="flex flex-col">
+                                    <span className="text-3xl font-black italic tracking-tighter text-white uppercase font-display leading-none">
+                                        {siteSettings.name}
+                                    </span>
+                                    <span className="text-[10px] text-gray-400 font-bold tracking-[0.3em] uppercase mt-1">
+                                        Elite Sports Hub
+                                    </span>
+                                </div>
+                            </div>
+                        </Link>
 
-                        <div className="flex items-center gap-2">
-                            <a href={siteSettings.social.facebook.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center hover:bg-[#f00000] hover:border-[#f00000] hover:text-white transition-all text-sm">f</a>
-                            <a href={siteSettings.social.twitter.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center hover:bg-[#f00000] hover:border-[#f00000] hover:text-white transition-all text-sm text-[10px]">𝕏</a>
-                            <a href={siteSettings.social.youtube.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center hover:bg-[#f00000] hover:border-[#f00000] hover:text-white transition-all text-sm">yt</a>
-                            <a href={siteSettings.social.instagram.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center hover:bg-[#f00000] hover:border-[#f00000] hover:text-white transition-all text-sm">ig</a>
+                        <p className="text-gray-400 text-sm leading-relaxed mb-8 font-medium">
+                            Your ultimate destination for live sports streaming, real-time scores, and breaking news. Experience the game like never before.
+                        </p>
+
+                        <div className="flex items-center gap-3 mb-8">
+                            <a href={siteSettings.social.facebook.url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-red-600 hover:border-red-500 hover:text-white text-gray-400 transition-all text-sm shadow-sm hover:shadow-red-600/20 hover:-translate-y-1">f</a>
+                            <a href={siteSettings.social.twitter.url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-red-600 hover:border-red-500 hover:text-white text-gray-400 transition-all text-sm font-serif shadow-sm hover:shadow-red-600/20 hover:-translate-y-1">𝕏</a>
+                            <a href={siteSettings.social.youtube.url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-red-600 hover:border-red-500 hover:text-white text-gray-400 transition-all text-sm shadow-sm hover:shadow-red-600/20 hover:-translate-y-1">yt</a>
+                            <a href={siteSettings.social.instagram.url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-red-600 hover:border-red-500 hover:text-white text-gray-400 transition-all text-sm shadow-sm hover:shadow-red-600/20 hover:-translate-y-1">ig</a>
                         </div>
                     </div>
 
                     {/* Column 2: Quick Links */}
-                    <div>
-                        <h3 className="text-white font-bold text-lg mb-6 uppercase tracking-wide">Quick Links</h3>
-                        <div className="flex flex-col gap-y-3 text-[14px]">
-                            <Link to="/" className="hover:text-[#f00000] transition-colors flex items-center gap-2">
-                                <span className="text-gray-600">›</span> Home
+                    <div className="md:col-span-3 lg:col-span-3">
+                        <h3 className="text-white font-bold text-sm mb-6 uppercase tracking-[0.2em] relative inline-block">
+                            Navigation
+                            <span className="absolute -bottom-2 left-0 w-1/2 h-0.5 bg-red-600 rounded-full"></span>
+                        </h3>
+                        <div className="flex flex-col gap-y-4 text-sm font-medium">
+                            <Link to="/" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 group">
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                                <span className="group-hover:translate-x-1 transition-transform">Home</span>
                             </Link>
-                            <Link to="/" className="hover:text-[#f00000] transition-colors flex items-center gap-2">
-                                <span className="text-gray-600">›</span> Live Matches
+                            <Link to="/news" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 group">
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                                <span className="group-hover:translate-x-1 transition-transform">Latest News</span>
                             </Link>
-                            <Link to="/news" className="hover:text-[#f00000] transition-colors flex items-center gap-2">
-                                <span className="text-gray-600">›</span> Latest News
+                            <Link to="/highlights" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 group">
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                                <span className="group-hover:translate-x-1 transition-transform">Video Highlights</span>
                             </Link>
-                            <Link to="/p/terms" className="hover:text-[#f00000] transition-colors flex items-center gap-2">
-                                <span className="text-gray-600">›</span> Terms & Conditions
+                            <Link to="/contact" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 group">
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                                <span className="group-hover:translate-x-1 transition-transform">Contact Us</span>
                             </Link>
-                            <Link to="/p/privacy" className="hover:text-[#f00000] transition-colors flex items-center gap-2">
-                                <span className="text-gray-600">›</span> Privacy Policy
-                            </Link>
-                            <Link to="/p/dmca" className="hover:text-[#f00000] transition-colors flex items-center gap-2">
-                                <span className="text-gray-600">›</span> DMCA Disclaimer
+                            <Link to="/download" className="text-red-400 hover:text-red-300 transition-colors flex items-center gap-2 group font-bold">
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-500 transition-opacity animate-pulse"></span>
+                                <span className="group-hover:translate-x-1 transition-transform">Download App</span>
                             </Link>
                         </div>
                     </div>
 
                     {/* Column 3: Recent News */}
-                    <div>
-                        <h3 className="text-white font-bold text-lg mb-6 uppercase tracking-wide">Recent News</h3>
-                        <ul className="space-y-6">
+                    <div className="md:col-span-4 lg:col-span-5">
+                        <h3 className="text-white font-bold text-sm mb-6 uppercase tracking-[0.2em] relative inline-block">
+                            Latest Updates
+                            <span className="absolute -bottom-2 left-0 w-1/2 h-0.5 bg-red-600 rounded-full"></span>
+                        </h3>
+                        <ul className="space-y-4">
                             {latestArticles.map(article => (
                                 <li key={article.id}>
-                                    <Link to={`/news/${article.slug}`} className="group block">
-                                        <h4 className="text-white font-bold mb-2 group-hover:text-[#f00000] transition-colors leading-snug line-clamp-2">
-                                            {article.title}
-                                        </h4>
-                                        <div className="flex items-center gap-3 text-[12px] font-medium">
-                                            <div className="flex items-center gap-1.5">
-                                                <span className="text-[#f00000]">📅</span> 
-                                                <span className="text-gray-500">
-                                                    {article.createdAt && (article.createdAt.toDate ? article.createdAt.toDate() : new Date(article.createdAt)).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                                </span>
+                                    <Link to={`/news/${article.slug}`} className="group flex gap-4 items-start p-3 rounded-2xl hover:bg-white/5 border border-transparent hover:border-white/5 transition-all">
+                                        {article.imageUrl ? (
+                                            <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
+                                                <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                             </div>
-                                            <div className="flex items-center gap-1.5">
-                                                <span className="text-[#f00000]">👁️</span> 
-                                                <span className="text-gray-500">{article.views || 0} Views</span>
+                                        ) : (
+                                            <div className="w-16 h-16 rounded-xl bg-gray-800 flex flex-shrink-0 items-center justify-center">
+                                                <span className="text-gray-600">News</span>
                                             </div>
+                                        )}
+                                        <div>
+                                            <h4 className="text-gray-200 font-bold mb-1 group-hover:text-red-400 transition-colors leading-snug line-clamp-2 text-sm">
+                                                {article.title}
+                                            </h4>
+                                            <span className="text-xs text-gray-500 font-medium">
+                                                {article.createdAt && (article.createdAt.toDate ? article.createdAt.toDate() : new Date(article.createdAt)).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                            </span>
                                         </div>
                                     </Link>
                                 </li>
                             ))}
                             {latestArticles.length === 0 && (
-                                <li className="text-gray-500 text-sm italic">No recent news available.</li>
+                                <li className="text-gray-500 text-sm italic p-3">No recent news available.</li>
                             )}
                         </ul>
                     </div>
@@ -117,16 +122,16 @@ function Footer() {
                 </div>
             </div>
 
-            {/* Copyright Bar */}
-            <div className="border-t border-gray-800 bg-[#0a0a0a]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[13px]">
+            {/* Copyright & Legal Bar */}
+            <div className="relative z-10 border-t border-white/10 bg-black/50 backdrop-blur-md">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-medium text-gray-500">
                     <p>
-                        Copyright &copy; {currentYear} All rights reserved.
+                        &copy; {currentYear} {siteSettings.name}. All rights reserved.
                     </p>
                     <div className="flex items-center gap-6">
                         <Link to="/p/terms" className="hover:text-white transition-colors">Terms of Use</Link>
                         <Link to="/p/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-                        <Link to="/p/dmca" className="hover:text-white transition-colors">DMCA</Link>
+                        <Link to="/p/dmca" className="hover:text-white transition-colors">DMCA Disclaimer</Link>
                     </div>
                 </div>
             </div>

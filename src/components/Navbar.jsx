@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom"
 import { useUI } from "../context/UIContext"
 
 function Navbar() {
-    const { searchQuery, setSearchQuery, isDarkMode, toggleTheme } = useUI()
+    const { searchQuery, setSearchQuery, isDarkMode, toggleTheme, isAppInstalled } = useUI()
     const location = useLocation()
     const isHome = location.pathname === "/"
 
@@ -60,11 +60,22 @@ function Navbar() {
                         </div>
                     </div>
 
-                    {/* Theme Toggle Button */}
-                    <div className="flex items-center">
+                    {/* Right Actions (Download + Theme) */}
+                    <div className="flex items-center gap-2 sm:gap-3 ml-auto lg:ml-2">
+                        {/* Download Button - Highly visible if not installed, hidden if installed */}
+                        {!isAppInstalled && (
+                            <Link to="/download" className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-red-600 hover:bg-red-700 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-full shadow-[0_0_15px_rgba(220,38,38,0.5)] animate-[pulse_2s_ease-in-out_infinite] border border-red-400 transition-all transform hover:-translate-y-0.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                <span className="hidden sm:inline">App</span>
+                            </Link>
+                        )}
+
+                        {/* Theme Toggle Button */}
                         <button
                             onClick={toggleTheme}
-                            className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                            className="p-1.5 sm:p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
                             aria-label="Toggle Theme"
                         >
                             {isDarkMode ? (

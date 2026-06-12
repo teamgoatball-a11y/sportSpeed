@@ -32,6 +32,8 @@ const StaticPage = lazy(() => import('./pages/StaticPage'))
 const HighlightsPage = lazy(() => import('./pages/HighlightsPage'))
 const HighlightPlayerPage = lazy(() => import('./pages/HighlightPlayerPage'))
 const NotFound = lazy(() => import('./pages/NotFound'))
+const DownloadPage = lazy(() => import('./pages/DownloadPage'))
+const ContactPage = lazy(() => import('./pages/ContactPage'))
 
 // Admin Lazy Pages
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'))
@@ -112,6 +114,8 @@ function AppContent() {
                     <Route path="/highlights" element={<HighlightsPage />} />
                     <Route path="/highlights/:slug" element={<HighlightPlayerPage />} />
                     <Route path="/admin/highlights" element={<HighlightsManager />} />
+                    <Route path="/download" element={<DownloadPage />} />
+                    <Route path="/contact" element={<ContactPage />} />
                     <Route path="/p/:pageId" element={<StaticPage />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>

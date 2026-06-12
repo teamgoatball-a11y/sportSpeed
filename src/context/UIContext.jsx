@@ -18,10 +18,28 @@ export const UIProvider = ({ children }) => {
         if (saved !== null) return JSON.parse(saved);
         return window.matchMedia('(prefers-color-scheme: dark)').matches;
     });
+    const [isAppInstalled, setIsAppInstalled] = useState(false);
 
     const toggleTheme = () => {
         setIsDarkMode(prev => !prev);
     };
+
+    useEffect(() => {
+        const checkInstalled = () => {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            setIsAppInstalled(!!isStandalone);
+        };
+        checkInstalled();
+        const mediaQuery = window.matchMedia('(display-mode: standalone)');
+        if (mediaQuery.addEventListener) {
+            mediaQuery.addEventListener('change', checkInstalled);
+        }
+        return () => {
+            if (mediaQuery.removeEventListener) {
+                mediaQuery.removeEventListener('change', checkInstalled);
+            }
+        };
+    }, []);
 
     useEffect(() => {
         localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
@@ -36,7 +54,8 @@ export const UIProvider = ({ children }) => {
         searchQuery,
         setSearchQuery,
         isDarkMode,
-        toggleTheme
+        toggleTheme,
+        isAppInstalled
     };
 
     return (
