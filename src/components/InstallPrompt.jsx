@@ -49,7 +49,10 @@ function InstallPrompt() {
     }, [deferredPrompt, setDeferredPrompt]);
 
     const handleInstallClick = async () => {
-        if (!deferredPrompt) return;
+        if (!deferredPrompt) {
+            alert("Your browser doesn't support direct installation or the app is already installed. Please follow the manual instructions below.");
+            return;
+        }
         
         // Show the install prompt
         deferredPrompt.prompt();
@@ -69,8 +72,8 @@ function InstallPrompt() {
         sessionStorage.setItem('pwa_prompt_dismissed', 'true');
     };
 
-    // If dismissed or not ready to show, don't render anything (unless on Download page)
-    const shouldShow = deferredPrompt && (isDownloadPage || (!isDismissed && isVisible));
+    // Always show on download page, otherwise only if prompt is ready and not dismissed
+    const shouldShow = isDownloadPage || (deferredPrompt && !isDismissed && isVisible);
     if (!shouldShow) return null;
 
     return (
