@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { collection, query, where, getDocs, limit, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, getDocs, limit, orderBy } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { Helmet } from 'react-helmet-async';
 import { siteSettings } from '../config/siteSettings';
@@ -63,11 +63,16 @@ function HighlightPlayerPage() {
     }, [slug, navigate]);
 
     useEffect(() => {
-        const q = query(collection(db, 'highlights'), orderBy('createdAt', 'desc'), limit(5));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            setOthers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(h => h.slug !== slug));
-        });
-        return () => unsubscribe();
+        const fetchOthers = async () => {
+            try {
+                const q = query(collection(db, 'highlights'), orderBy('createdAt', 'desc'), limit(5));
+                const snapshot = await getDocs(q);
+                setOthers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(h => h.slug !== slug));
+            } catch (error) {
+                console.error("Error loading other highlights:", error);
+            }
+        };
+        fetchOthers();
     }, [slug]);
 
     // Handle YouTube PostMessages (Time Tracking)

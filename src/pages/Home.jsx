@@ -9,9 +9,10 @@ import SmartLinkAd from "../components/SmartLinkAd"
 import ArticleCard from "../components/ArticleCard"
 import HighlightCard from "../components/HighlightCard"
 import { useArticles } from "../hooks/useArticles"
-import { collection, query, orderBy, onSnapshot, limit } from 'firebase/firestore'
+import { collection, query, orderBy, getDocs, limit } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { Link } from 'react-router-dom'
+import { RefreshCw } from 'lucide-react'
 
 const CATEGORIES = ["All", "Live", "Football", "Cricket", "Others"]
 
@@ -36,32 +37,46 @@ function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    const q = query(collection(db, 'matches'), orderBy('createdAt', 'desc'), limit(100));
-
-    // onSnapshot serves from IndexedDB cache instantly (due to enableIndexedDbPersistence),
-    // then fires again when fresh data arrives from Firestore — no waiting for network!
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+  const fetchMatches = async () => {
+    setLoading(true);
+    try {
+      const q = query(collection(db, 'matches'), orderBy('createdAt', 'desc'), limit(100));
+      const snapshot = await getDocs(q);
       const matches = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setAllMatches(matches);
-      setLoading(false); // Hide skeleton as soon as first data arrives (cache or network)
-    }, (error) => {
+    } catch (error) {
       console.error("Error loading matches:", error);
+    } finally {
       setLoading(false);
-    });
+    }
+  };
 
-    return () => unsubscribe(); // Clean up listener on unmount
+  useEffect(() => {
+    fetchMatches();
   }, []);
 
   // Fetch Latest 4 Highlights for Home
-  useEffect(() => {
-    const q = query(collection(db, 'highlights'), orderBy('createdAt', 'desc'), limit(4));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+  const fetchHighlights = async () => {
+    setHighlightsLoading(true);
+    try {
+      const q = query(collection(db, 'highlights'), orderBy('createdAt', 'desc'), limit(4));
+      const snapshot = await getDocs(q);
       setHomeHighlights(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    } catch (error) {
+      console.error("Error loading highlights:", error);
+    } finally {
       setHighlightsLoading(false);
-    });
-    return () => unsubscribe();
+    }
+  };
+
+  useEffect(() => {
+    fetchHighlights();
   }, []);
+
+  const handleManualRefresh = () => {
+    fetchMatches();
+    fetchHighlights();
+  };
 
 
   // Filter and sort matches based on search and category
@@ -176,7 +191,7 @@ function Home() {
 
       {/* Category Pills Slider */}
       <div className="mb-8 pb-4 border-b border-gray-200 dark:border-gray-800 overflow-x-auto hide-scrollbar transition-colors duration-300">
-        <div className="flex space-x-3 min-w-max p-1">
+        <div className="flex items-center space-x-3 min-w-max p-1">
           {CATEGORIES.map(category => (
             <button
               key={category}
@@ -190,6 +205,16 @@ function Home() {
               {category}
             </button>
           ))}
+          <div className="pl-4 ml-2 border-l border-gray-300 dark:border-gray-700">
+            <button
+              onClick={handleManualRefresh}
+              className="flex items-center gap-2 px-3 py-1.5 text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-red-600 transition-colors"
+              title="Refresh Matches"
+            >
+              <RefreshCw size={16} className={loading ? "animate-spin text-red-600" : ""} />
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
+          </div>
         </div>
       </div>
 

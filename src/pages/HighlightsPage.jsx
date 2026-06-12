@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { Helmet } from 'react-helmet-async';
 import { siteSettings } from '../config/siteSettings';
@@ -12,12 +12,18 @@ function HighlightsPage() {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        const q = query(collection(db, 'highlights'), orderBy('createdAt', 'desc'));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            setHighlights(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-            setLoading(false);
-        });
-        return () => unsubscribe();
+        const fetchHighlights = async () => {
+            try {
+                const q = query(collection(db, 'highlights'), orderBy('createdAt', 'desc'));
+                const snapshot = await getDocs(q);
+                setHighlights(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+            } catch (error) {
+                console.error("Error loading highlights:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchHighlights();
     }, []);
 
     const filtered = highlights.filter(h => 

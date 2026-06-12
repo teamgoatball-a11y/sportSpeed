@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { Helmet } from "react-helmet-async"
-import { doc, onSnapshot, updateDoc, increment } from 'firebase/firestore'
+import { doc, getDoc, updateDoc, increment } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import siteSettings from '../config/siteSettings'
 import AdBanner from "../components/AdBanner"
@@ -42,24 +42,24 @@ function MatchPage() {
             });
         }
 
-        // onSnapshot returns data from IndexedDB local cache instantly,
-        // then updates if server has a newer version.
-        const unsubscribe = onSnapshot(docRef, (docSnap) => {
-            if (docSnap.exists()) {
-                const data = { id: docSnap.id, ...docSnap.data() };
-                setMatch(data);
-            } else {
+        const fetchMatch = async () => {
+            try {
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = { id: docSnap.id, ...docSnap.data() };
+                    setMatch(data);
+                } else {
+                    setMatch(null);
+                }
+            } catch (error) {
+                console.error("Error fetching match:", error);
                 setMatch(null);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
-        }, (error) => {
-            console.error("Error listening to match:", error);
-            setLoading(false);
-        });
-
-        return () => {
-            unsubscribe();
         };
+
+        fetchMatch();
     }, [id])
 
     if (loading) {

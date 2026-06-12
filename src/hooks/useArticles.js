@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, orderBy, where, onSnapshot, limit } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 /**
@@ -22,9 +22,9 @@ export function useArticles({ category = null, publishedOnly = true, limitCount 
 
         // To avoid Firebase demanding a composite index for where() + orderBy() on different fields,
         // we'll fetch ordered by date and apply the filters locally on the client.
-        const unsubscribe = onSnapshot(
-            q,
-            (snapshot) => {
+        const fetchArticles = async () => {
+            try {
+                const snapshot = await getDocs(q);
                 let data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
                 if (publishedOnly) {
@@ -40,16 +40,15 @@ export function useArticles({ category = null, publishedOnly = true, limitCount 
                 }
 
                 setArticles(data);
-                setLoading(false);
-            },
-            (err) => {
+            } catch (err) {
                 console.error('useArticles error:', err);
                 setError(err.message);
+            } finally {
                 setLoading(false);
             }
-        );
+        };
 
-        return () => unsubscribe();
+        fetchArticles();
     }, [category, publishedOnly, limitCount]);
 
     return { articles, loading, error };

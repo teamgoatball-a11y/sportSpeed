@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 export function useSettings() {
@@ -7,20 +7,24 @@ export function useSettings() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const docRef = doc(db, 'settings', 'general');
-        const unsubscribe = onSnapshot(docRef, (docSnap) => {
-            if (docSnap.exists()) {
-                setSettings(docSnap.data());
-            } else {
+        const fetchSettings = async () => {
+            const docRef = doc(db, 'settings', 'general');
+            try {
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    setSettings(docSnap.data());
+                } else {
+                    setSettings({});
+                }
+            } catch (error) {
+                console.error("Error fetching settings:", error);
                 setSettings({});
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
-        }, (error) => {
-            console.error("Error fetching settings:", error);
-            setLoading(false);
-        });
+        };
 
-        return () => unsubscribe();
+        fetchSettings();
     }, []);
 
     return { settings, loading };
