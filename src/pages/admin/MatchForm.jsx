@@ -96,6 +96,7 @@ const MatchForm = () => {
             league: match.league,
             time: match.time,
             date: match.date || '',  // ← save match date so Home.jsx can use it
+            venue: match.venue || '',
             category: match.category,
         }));
         setShowApiModal(false);
@@ -130,6 +131,7 @@ const MatchForm = () => {
                     league: match.league,
                     time: match.time,
                     date: match.date || '',
+                    venue: match.venue || '',
                     category: match.category,
                     createdAt: serverTimestamp(),
                     updatedAt: serverTimestamp()
