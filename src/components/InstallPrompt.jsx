@@ -9,6 +9,7 @@ function InstallPrompt() {
     const { deferredPrompt, setDeferredPrompt } = useUI();
     const [isVisible, setIsVisible] = useState(false);
     const [isDismissed, setIsDismissed] = useState(false);
+    const [isClosedLocally, setIsClosedLocally] = useState(false);
     const location = useLocation();
     const isDownloadPage = location.pathname === '/download';
 
@@ -69,11 +70,13 @@ function InstallPrompt() {
     const handleDismiss = () => {
         setIsVisible(false);
         setIsDismissed(true);
+        setIsClosedLocally(true);
         sessionStorage.setItem('pwa_prompt_dismissed', 'true');
     };
 
-    // Always show on download page, otherwise only if prompt is ready and not dismissed
-    const shouldShow = isDownloadPage || (deferredPrompt && !isDismissed && isVisible);
+    // On download page, show it unless explicitly closed by the user right now.
+    // Otherwise only if prompt is ready and not dismissed globally.
+    const shouldShow = (isDownloadPage && !isClosedLocally) || (deferredPrompt && !isDismissed && isVisible);
     if (!shouldShow) return null;
 
     return (
