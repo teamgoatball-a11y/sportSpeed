@@ -139,6 +139,10 @@ function MatchPage() {
                                 </span>
                                 <span className="text-red-600 dark:text-red-500 font-bold tracking-widest text-sm">LIVE NOW</span>
                             </div>
+                        ) : getEffectiveStatus(match) === "FINISHED" ? (
+                            <span className="px-4 py-1.5 bg-gray-500 text-white font-bold tracking-widest text-sm rounded-full border border-black dark:border-gray-700">
+                                FINISHED
+                            </span>
                         ) : (
                             <span className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-bold tracking-widest text-sm rounded-full border border-black dark:border-gray-700">
                                 UPCOMING

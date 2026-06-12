@@ -21,6 +21,10 @@ function MatchCard({ match }) {
               </span>
               <span className="text-[10px] font-bold tracking-widest uppercase">LIVE</span>
             </div>
+          ) : match.status === "FINISHED" ? (
+            <span className="px-2 py-0.5 bg-gray-500 text-white text-[10px] font-bold tracking-widest uppercase rounded-[2px] dark:bg-gray-700">
+              FINISHED
+            </span>
           ) : (
             <span className="px-2 py-0.5 bg-black text-white text-[10px] font-bold tracking-widest uppercase rounded-[2px] dark:bg-gray-800">
               UPCOMING
@@ -71,7 +75,11 @@ function MatchCard({ match }) {
             {match.time}
           </div>
           {match.date && (() => {
-            const today = new Date().toISOString().slice(0, 10);
+            const dNow = new Date();
+            const year = dNow.getFullYear();
+            const month = String(dNow.getMonth() + 1).padStart(2, '0');
+            const day = String(dNow.getDate()).padStart(2, '0');
+            const today = `${year}-${month}-${day}`;
             if (match.date === today) {
               return <span className="text-xs text-green-500 dark:text-green-400 font-semibold pl-0.5">Today</span>;
             }
