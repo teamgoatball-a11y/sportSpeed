@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"
 import TeamLogo from "./TeamLogo"
+import { getDisplayViews } from "../utils/viewUtils"
 
 function MatchCard({ match }) {
   const isLive = match.status === "LIVE"
@@ -87,7 +88,7 @@ function MatchCard({ match }) {
         ) : (
           <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 px-2.5 py-1 rounded-full">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
-            <span className="text-xs font-semibold">{match.views || 0}</span>
+            <span className="text-xs font-semibold">{getDisplayViews(match.id, match.views)}</span>
           </div>
         )}
       </div>
