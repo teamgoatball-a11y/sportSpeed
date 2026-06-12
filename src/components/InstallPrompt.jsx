@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { doc, setDoc, increment } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { X, Download } from 'lucide-react';
+import { useUI } from '../context/UIContext';
 
 function InstallPrompt() {
-    const [deferredPrompt, setDeferredPrompt] = useState(null);
+    const { deferredPrompt, setDeferredPrompt } = useUI();
     const [isVisible, setIsVisible] = useState(false);
     const [isDismissed, setIsDismissed] = useState(false);
 
@@ -14,14 +15,9 @@ function InstallPrompt() {
             setIsDismissed(true);
         }
 
-        const handleBeforeInstallPrompt = (e) => {
-            // Prevent the mini-infobar from appearing on mobile
-            e.preventDefault();
-            // Stash the event so it can be triggered later.
-            setDeferredPrompt(e);
-            // Update UI notify the user they can install the PWA
+        if (deferredPrompt) {
             setIsVisible(true);
-        };
+        }
 
         const handleAppInstalled = async () => {
             // Hide the app-provided install promotion
@@ -42,14 +38,12 @@ function InstallPrompt() {
             }
         };
 
-        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
         window.addEventListener('appinstalled', handleAppInstalled);
 
         return () => {
-            window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
             window.removeEventListener('appinstalled', handleAppInstalled);
         };
-    }, []);
+    }, [deferredPrompt, setDeferredPrompt]);
 
     const handleInstallClick = async () => {
         if (!deferredPrompt) return;

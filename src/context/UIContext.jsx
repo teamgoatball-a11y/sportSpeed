@@ -19,6 +19,7 @@ export const UIProvider = ({ children }) => {
         return window.matchMedia('(prefers-color-scheme: dark)').matches;
     });
     const [isAppInstalled, setIsAppInstalled] = useState(false);
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
 
     const toggleTheme = () => {
         setIsDarkMode(prev => !prev);
@@ -42,6 +43,15 @@ export const UIProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
+        const handleBeforeInstallPrompt = (e) => {
+            e.preventDefault();
+            setDeferredPrompt(e);
+        };
+        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    }, []);
+
+    useEffect(() => {
         localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
         if (isDarkMode) {
             document.documentElement.classList.add('dark');
@@ -55,7 +65,9 @@ export const UIProvider = ({ children }) => {
         setSearchQuery,
         isDarkMode,
         toggleTheme,
-        isAppInstalled
+        isAppInstalled,
+        deferredPrompt,
+        setDeferredPrompt
     };
 
     return (

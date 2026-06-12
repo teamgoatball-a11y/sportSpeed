@@ -2,19 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Download, Monitor, Smartphone, Share, PlusSquare, Apple } from 'lucide-react';
 import { siteSettings } from '../config/siteSettings';
+import { useUI } from '../context/UIContext';
 
 function DownloadPage() {
-    const [deferredPrompt, setDeferredPrompt] = useState(null);
-
-    useEffect(() => {
-        const handleBeforeInstallPrompt = (e) => {
-            e.preventDefault();
-            setDeferredPrompt(e);
-        };
-
-        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-        return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    }, []);
+    const { deferredPrompt, setDeferredPrompt } = useUI();
 
     const handleInstallClick = async () => {
         if (!deferredPrompt) {
