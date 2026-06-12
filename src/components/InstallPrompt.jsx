@@ -3,11 +3,14 @@ import { doc, setDoc, increment } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { X, Download } from 'lucide-react';
 import { useUI } from '../context/UIContext';
+import { useLocation } from 'react-router-dom';
 
 function InstallPrompt() {
     const { deferredPrompt, setDeferredPrompt } = useUI();
     const [isVisible, setIsVisible] = useState(false);
     const [isDismissed, setIsDismissed] = useState(false);
+    const location = useLocation();
+    const isDownloadPage = location.pathname === '/download';
 
     useEffect(() => {
         // Check if already dismissed in this session
@@ -66,8 +69,9 @@ function InstallPrompt() {
         sessionStorage.setItem('pwa_prompt_dismissed', 'true');
     };
 
-    // If dismissed or not ready to show, don't render anything
-    if (!isVisible || isDismissed) return null;
+    // If dismissed or not ready to show, don't render anything (unless on Download page)
+    const shouldShow = deferredPrompt && (isDownloadPage || (!isDismissed && isVisible));
+    if (!shouldShow) return null;
 
     return (
         <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-96 bg-white dark:bg-gray-900 border-2 border-black rounded-2xl shadow-2xl p-4 z-50 animate-fade-in flex items-center justify-between gap-4">
