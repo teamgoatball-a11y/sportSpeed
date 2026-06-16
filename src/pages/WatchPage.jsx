@@ -295,6 +295,15 @@ function WatchPage() {
             <AdBanner />
             <SmartLinkAd />
 
+            {/* Live Streaming Load Notice */}
+            <div className="mx-2 p-3.5 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-center gap-2.5 text-red-500 text-xs sm:text-sm font-black uppercase tracking-wider animate-pulse">
+                <span className="flex h-2 w-2 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                </span>
+                <span>Please wait 20 seconds to load the live streaming.</span>
+            </div>
+
             {/* Video Player Area */}
             <div ref={playerWrapperRef} className="w-full bg-black rounded-[2rem] overflow-hidden shadow-2xl border border-black relative group">
                 {settings?.channelLink && (
