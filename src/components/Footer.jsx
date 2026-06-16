@@ -27,9 +27,6 @@ function Footer() {
                     <div className="md:col-span-5 lg:col-span-4 pr-0 lg:pr-8">
                         <Link to="/" className="inline-block mb-8 group">
                             <div className="flex items-center gap-3">
-                                <div className="w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center shadow-lg shadow-red-600/20 group-hover:scale-105 transition-transform bg-white/5 border border-white/10 p-1">
-                                    <img src="/logo.png?v=4" alt={`${siteSettings.name} Logo`} className="w-full h-full object-contain rounded-xl" />
-                                </div>
                                 <div className="flex flex-col">
                                     <span className="text-3xl font-black italic tracking-tighter text-white uppercase font-display leading-none">
                                         {siteSettings.name}
