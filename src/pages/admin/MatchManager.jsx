@@ -135,7 +135,7 @@ const MatchManager = () => {
             const uaeTime = new Date(istTime.getTime() - (1.5 * 60 * 60 * 1000));
             // KSA is IST - 2.5 hours
             const ksaTime = new Date(istTime.getTime() - (2.5 * 60 * 60 * 1000));
-            const shareUrl = `https://goatball.online/match/${match.id}`;
+            const shareUrl = `${window.location.origin}/match/${match.id}`;
 
             const message = `🏆 ${match.league}
 
@@ -146,7 +146,7 @@ const MatchManager = () => {
 🖥️ Live Link: ${shareUrl}
 
 ${settings?.whatsappLink ? `🟢 JOIN WHATSAPP GROUP 👇🏻\n${settings.whatsappLink}\n━━━━━━━━━━━━━━\n\n` : ''}🚨 More Matches: 
-👉🏻 https://goatball.online/`;
+👉🏻 ${window.location.origin}/`;
 
             navigator.clipboard.writeText(message);
             toast.success("Share link copied to clipboard!");
@@ -186,7 +186,7 @@ ${settings?.whatsappLink ? `🟢 JOIN WHATSAPP GROUP 👇🏻\n${settings.whatsa
                 const uaeTime = new Date(istTime.getTime() - (1.5 * 60 * 60 * 1000));
                 const ksaTime = new Date(istTime.getTime() - (2.5 * 60 * 60 * 1000));
 
-                const shareUrl = `https://goatball.online/match/${match.id}`;
+                const shareUrl = `${window.location.origin}/match/${match.id}`;
 
                 finalMessage += `🏆 ${match.league}\n\nⓂ️ ${match.team1} 🆚 ${match.team2} \n🇮🇳 IND | ${match.time}\n🇦🇪 UAE | ${formatTime(uaeTime)}\n🇸🇦 KSA | ${formatTime(ksaTime)}\n🖥️ Live Link: ${shareUrl}\n\n`;
             });
@@ -195,7 +195,7 @@ ${settings?.whatsappLink ? `🟢 JOIN WHATSAPP GROUP 👇🏻\n${settings.whatsa
                 finalMessage += `🟢 JOIN WHATSAPP GROUP 👇🏻\n${settings.whatsappLink}\n━━━━━━━━━━━━━━\n\n`;
             }
 
-            finalMessage += `🚨 More Matches: \n👉🏻 https://goatball.online/`;
+            finalMessage += `🚨 More Matches: \n👉🏻 ${window.location.origin}/`;
 
             navigator.clipboard.writeText(finalMessage);
             toast.success(`Share link for ${selectedMatches.length} matches copied!`);

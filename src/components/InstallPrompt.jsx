@@ -4,6 +4,7 @@ import { db } from '../config/firebase';
 import { X, Download } from 'lucide-react';
 import { useUI } from '../context/UIContext';
 import { useLocation } from 'react-router-dom';
+import siteSettings from '../config/siteSettings';
 
 function InstallPrompt() {
     const { deferredPrompt, setDeferredPrompt } = useUI();
@@ -86,7 +87,7 @@ function InstallPrompt() {
                     <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" onError={(e) => e.target.src = 'https://ui-avatars.com/api/?name=GB&background=dc2626&color=fff'} />
                 </div>
                 <div>
-                    <h4 className="text-sm font-bold text-gray-900 dark:text-white leading-tight">Install GOATBALL</h4>
+                    <h4 className="text-sm font-bold text-gray-900 dark:text-white leading-tight">Install {siteSettings.name.toUpperCase()}</h4>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Stream faster & get quick access</p>
                 </div>
             </div>

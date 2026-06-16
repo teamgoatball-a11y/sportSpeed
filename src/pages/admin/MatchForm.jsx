@@ -96,7 +96,6 @@ const MatchForm = () => {
             league: match.league,
             time: match.time,
             date: match.date || '',  // ← save match date so Home.jsx can use it
-            venue: match.venue || '',
             category: match.category,
         }));
         setShowApiModal(false);
@@ -131,7 +130,6 @@ const MatchForm = () => {
                     league: match.league,
                     time: match.time,
                     date: match.date || '',
-                    venue: match.venue || '',
                     category: match.category,
                     createdAt: serverTimestamp(),
                     updatedAt: serverTimestamp()
@@ -455,7 +453,7 @@ const MatchForm = () => {
                                                 className="w-full pl-9 pr-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none text-sm text-gray-900 dark:text-white"
                                             />
                                         </div>
-                                        
+
                                         {/* Force Open In New Tab Option */}
                                         <label className="flex items-center gap-2 mt-2 pt-1 pl-1 cursor-pointer w-max">
                                             <input

@@ -34,7 +34,7 @@ function DownloadPage() {
                     Get The <span className="text-red-600">Official App</span>
                 </h1>
                 <p className="text-lg text-gray-500 dark:text-gray-400 font-medium max-w-xl mx-auto">
-                    Install GOATBALL directly to your device for a faster, ad-free-like experience with instant access to live streams.
+                    Install {siteSettings.name.toUpperCase()} directly to your device for a faster, ad-free-like experience with instant access to live streams.
                 </p>
 
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">

@@ -9,6 +9,8 @@ import { db } from './config/firebase'
 import { AuthProvider } from './context/AuthContext'
 import { UIProvider, useUI } from './context/UIContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import { Helmet } from 'react-helmet-async'
+import siteSettings from './config/siteSettings'
 
 // Shared Components
 import Navbar from './components/Navbar'
@@ -58,6 +60,12 @@ function AppContent() {
   const { isDarkMode } = useUI()
 
   useEffect(() => {
+    // Dynamically switch PWA manifest link
+    const manifestLink = document.querySelector('link[rel="manifest"]');
+    if (manifestLink) {
+      manifestLink.setAttribute('href', siteSettings.isSportSpeed ? '/manifest-sportspeed.json?v=2' : '/manifest.json?v=2');
+    }
+
     // Track standalone (installed) app opens
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
     
@@ -73,6 +81,18 @@ function AppContent() {
 
   return (
     <div className={`min-h-screen font-sans flex flex-col flex-1 transition-colors duration-500 ${isDarkMode ? 'dark bg-[#111] text-slate-50' : 'bg-[#f8f9fa] text-gray-900'}`}>
+      <Helmet>
+        <title>{siteSettings.seo.defaultTitle}</title>
+        <meta name="description" content={siteSettings.seo.defaultDescription} />
+        <meta name="keywords" content={siteSettings.seo.keywords} />
+        <meta name="author" content={siteSettings.name} />
+        <meta property="og:url" content={siteSettings.url} />
+        <meta property="og:title" content={siteSettings.seo.defaultTitle} />
+        <meta property="og:description" content={siteSettings.seo.defaultDescription} />
+        <meta property="twitter:url" content={siteSettings.url} />
+        <meta property="twitter:title" content={siteSettings.seo.defaultTitle} />
+        <meta property="twitter:description" content={siteSettings.seo.defaultDescription} />
+      </Helmet>
       <Routes>
         {/* Admin Routes (No public Navbar/Footer) */}
         <Route path="/admin/login" element={<Suspense fallback={<PageLoader />}><AdminLogin /></Suspense>} />

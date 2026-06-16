@@ -35,7 +35,7 @@ function HighlightsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fade-in min-h-[80vh]">
             <Helmet>
                 <title>Football, Cricket & World Cup Highlights | {siteSettings.name}</title>
-                <meta name="description" content="Watch the latest football, cricket, and sports highlights on GoatBall." />
+                <meta name="description" content={`Watch the latest football, cricket, and sports highlights on ${siteSettings.name}.`} />
             </Helmet>
             {/* Header */}
             <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -44,7 +44,7 @@ function HighlightsPage() {
                         Match <span className="text-red-600">Highlights</span>
                     </h1>
                     <p className="text-gray-500 dark:text-gray-400 font-medium max-w-xl">
-                        Official goals and match recaps manually curated for the GOATBALL community.
+                        Official goals and match recaps manually curated for the {siteSettings.name.toUpperCase()} community.
                     </p>
                 </div>
 

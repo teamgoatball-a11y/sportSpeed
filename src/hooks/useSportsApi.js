@@ -137,7 +137,6 @@ export const useSportsApi = () => {
                     leagueLogo: league.logo || null,
                     time: formatLocalTime(fix.date),
                     date: dateStr,
-                    venue: fix.venue?.name || '',
                     status,
                     category: 'Football',
                     isApiMatch: true,

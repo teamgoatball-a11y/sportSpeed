@@ -45,7 +45,7 @@ function HighlightPlayerPage() {
                 if (!snap.empty) {
                     const data = snap.docs[0].data();
                     setCurrentHighlight({ id: snap.docs[0].id, ...data });
-                    document.title = `${data.title} - Highlights | GOATBALL`;
+                    document.title = `${data.title} - Highlights | ${siteSettings.name.toUpperCase()}`;
                 } else {
                     toast.error("Highlight not found");
                     navigate('/highlights');
@@ -59,7 +59,7 @@ function HighlightPlayerPage() {
         };
 
         fetchHighlight();
-        return () => { document.title = "GOATBALL"; };
+        return () => { document.title = siteSettings.name.toUpperCase(); };
     }, [slug, navigate]);
 
     useEffect(() => {
@@ -169,7 +169,7 @@ function HighlightPlayerPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
             <Helmet>
                 <title>{currentHighlight.title} - Video Highlights | {siteSettings.name}</title>
-                <meta name="description" content={currentHighlight.description?.substring(0, 150) || `Watch ${currentHighlight.title} highlights on GoatBall.`} />
+                <meta name="description" content={currentHighlight.description?.substring(0, 150) || `Watch ${currentHighlight.title} highlights on ${siteSettings.name}.`} />
             </Helmet>
             {/* Header / Meta */}
             <div className="mb-6 flex items-center justify-between">

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Lock, Mail, AlertCircle, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
+import siteSettings from '../../config/siteSettings';
 
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
@@ -53,7 +54,11 @@ const AdminLogin = () => {
             <div className="max-w-md w-full animate-fade-in">
                 <div className="text-center mb-8">
                     <h2 className="text-4xl font-black italic tracking-tighter text-gray-900 dark:text-white mb-2">
-                        GOAT<span className="text-red-600 dark:text-red-500">BALL</span>
+                        {siteSettings.isSportSpeed ? (
+                            <>SPORT<span className="text-red-600 dark:text-red-500">SPEED</span></>
+                        ) : (
+                            <>GOAT<span className="text-red-600 dark:text-red-500">BALL</span></>
+                        )}
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 font-medium tracking-wide uppercase text-sm">
                         Admin Portal Access
@@ -85,7 +90,7 @@ const AdminLogin = () => {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-900 dark:text-white outline-none transition-all duration-300 placeholder-gray-400"
-                                    placeholder="admin@goatball.online"
+                                    placeholder={`admin@${siteSettings.domain}`}
                                     required
                                 />
                             </div>

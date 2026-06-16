@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom"
 import { useUI } from "../context/UIContext"
+import siteSettings from "../config/siteSettings"
 
 function Navbar() {
     const { searchQuery, setSearchQuery, isDarkMode, toggleTheme, isAppInstalled } = useUI()
@@ -14,7 +15,11 @@ function Navbar() {
                     <div className="flex-shrink-0 flex items-center">
                         <Link to="/" className="flex flex-col justify-center group">
                             <span className="text-2xl sm:text-3xl font-black italic tracking-tighter text-gray-900 dark:text-white transition-colors duration-300 font-display">
-                                GOAT<span className="text-red-600 group-hover:text-red-500 transition-colors">BALL</span>
+                                {siteSettings.isSportSpeed ? (
+                                    <>SPORT<span className="text-red-600 group-hover:text-red-500 transition-colors">SPEED</span></>
+                                ) : (
+                                    <>GOAT<span className="text-red-600 group-hover:text-red-500 transition-colors">BALL</span></>
+                                )}
                             </span>
                             <span className="text-[10px] sm:text-xs text-gray-400 dark:text-gray-500 font-bold tracking-widest uppercase mt-0.5 ml-0.5">
                                 Elite Sports Hub

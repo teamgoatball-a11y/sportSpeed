@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import siteSettings from '../config/siteSettings';
 
 function NotFound() {
     return (
@@ -8,7 +9,11 @@ function NotFound() {
                 <span className="text-9xl font-black text-gray-100 dark:text-gray-900 select-none">404</span>
                 <div className="absolute inset-0 flex items-center justify-center">
                     <span className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter italic">
-                        GOAT<span className="text-red-600">BALL</span>
+                        {siteSettings.isSportSpeed ? (
+                            <>SPORT<span className="text-red-600">SPEED</span></>
+                        ) : (
+                            <>GOAT<span className="text-red-600">BALL</span></>
+                        )}
                     </span>
                 </div>
             </div>

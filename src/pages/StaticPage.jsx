@@ -66,15 +66,19 @@ function StaticPage() {
         );
     }
 
+    const processedContent = page.content
+        ?.replaceAll('GOATBALL', siteSettings.name.toUpperCase())
+        ?.replaceAll('GoatBall', siteSettings.name);
+
     return (
         <div className="max-w-4xl mx-auto py-12 px-6 animate-fade-in w-full min-h-[50vh]">
             <Helmet>
                 <title>{page.title} | {siteSettings.name}</title>
-                <meta name="description" content={page.content?.replace(/<[^>]+>/g, '').substring(0, 150) || "GoatBall Static Page"} />
+                <meta name="description" content={processedContent?.replace(/<[^>]+>/g, '').substring(0, 150) || `${siteSettings.name} Static Page`} />
             </Helmet>
             <h1 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-8 italic tracking-tight">{page.title}</h1>
             <div className="prose prose-lg dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-wrap font-medium">
-                {page.content}
+                {processedContent}
             </div>
         </div>
     );

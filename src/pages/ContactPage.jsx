@@ -23,14 +23,14 @@ function ContactPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
                 {/* Email Option */}
                 <a 
-                    href="mailto:teamgoatball@gmail.com" 
+                    href={`mailto:${siteSettings.contactEmail}`} 
                     className="bg-white dark:bg-gray-900 rounded-[2rem] p-8 border border-gray-200 dark:border-gray-800 shadow-lg relative overflow-hidden group hover:border-red-500/50 hover:shadow-red-600/10 transition-all flex flex-col items-center justify-center text-center transform hover:-translate-y-1"
                 >
                     <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                         <Mail size={32} />
                     </div>
                     <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2 uppercase tracking-tight">Email Us</h3>
-                    <p className="text-gray-600 dark:text-gray-400 font-medium mb-4">teamgoatball@gmail.com</p>
+                    <p className="text-gray-600 dark:text-gray-400 font-medium mb-4">{siteSettings.contactEmail}</p>
                     <span className="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-500">Send an Email &rarr;</span>
                 </a>
 
