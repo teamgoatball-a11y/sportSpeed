@@ -6,6 +6,7 @@ import { Download, Smartphone } from 'lucide-react';
 
 function SettingsManager() {
     const [whatsappLink, setWhatsappLink] = useState('');
+    const [channelLink, setChannelLink] = useState('');
     const [pwaStats, setPwaStats] = useState({ totalInstalls: 0, standaloneOpens: 0 });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -19,6 +20,9 @@ function SettingsManager() {
                     const data = docSnap.data();
                     if (data.whatsappLink) {
                         setWhatsappLink(data.whatsappLink);
+                    }
+                    if (data.channelLink) {
+                        setChannelLink(data.channelLink);
                     }
                 }
 
@@ -48,7 +52,7 @@ function SettingsManager() {
 
         try {
             const docRef = doc(db, 'settings', 'general');
-            await setDoc(docRef, { whatsappLink }, { merge: true });
+            await setDoc(docRef, { whatsappLink, channelLink }, { merge: true });
             toast.success("Settings saved successfully!");
         } catch (error) {
             console.error("Error saving settings:", error);
@@ -119,6 +123,29 @@ function SettingsManager() {
                                 onChange={(e) => setWhatsappLink(e.target.value)}
                                 className="pl-10 w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 outline-none"
                                 placeholder="https://chat.whatsapp.com/..."
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2">
+                            WhatsApp Channel Link
+                        </label>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                            Set the WhatsApp channel link that will appear as a "Join Channel" button on all video player pages. Leave blank to hide the button.
+                        </p>
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg className="h-5 w-5 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-1-.65-.35-1 .22-1.62.15-.15 2.7-2.48 2.75-2.7.01-.03.01-.14-.06-.2-.07-.06-.17-.04-.25-.02-.11.02-1.78 1.13-5.03 3.33-.48.33-.91.49-1.3.48-.43-.01-1.26-.24-1.88-.45-.76-.25-1.37-.39-1.32-.82.03-.22.33-.45.92-.69 3.6-1.57 6-2.61 7.2-3.11 3.42-1.42 4.12-1.67 4.59-1.68.1 0 .33.02.48.15.12.1.16.23.17.33 0 .07.01.2.01.29z"/>
+                                </svg>
+                            </div>
+                            <input
+                                type="url"
+                                value={channelLink}
+                                onChange={(e) => setChannelLink(e.target.value)}
+                                className="pl-10 w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 outline-none"
+                                placeholder="https://whatsapp.com/channel/..."
                             />
                         </div>
                     </div>
