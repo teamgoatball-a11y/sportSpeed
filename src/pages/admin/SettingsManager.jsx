@@ -17,7 +17,14 @@ function SettingsManager() {
             try {
                 const brand = siteSettings.brand || 'goatball';
                 const docRef = doc(db, 'settings', brand);
-                const docSnap = await getDoc(docRef);
+                let docSnap = await getDoc(docRef);
+                
+                // Fallback to settings/general if brand-specific settings don't exist yet
+                if (!docSnap.exists()) {
+                    const generalRef = doc(db, 'settings', 'general');
+                    docSnap = await getDoc(generalRef);
+                }
+
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     if (data.whatsappLink) {

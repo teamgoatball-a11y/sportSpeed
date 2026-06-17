@@ -12,13 +12,21 @@ export function SettingsProvider({ children }) {
     useEffect(() => {
         const fetchSettings = async () => {
             const brand = siteSettings.brand || 'goatball';
-            const docRef = doc(db, 'settings', brand);
             try {
+                // Try fetching brand-specific settings first
+                const docRef = doc(db, 'settings', brand);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     setSettings(docSnap.data());
                 } else {
-                    setSettings({});
+                    // Fallback to settings/general if brand-specific settings don't exist yet
+                    const generalRef = doc(db, 'settings', 'general');
+                    const generalSnap = await getDoc(generalRef);
+                    if (generalSnap.exists()) {
+                        setSettings(generalSnap.data());
+                    } else {
+                        setSettings({});
+                    }
                 }
             } catch (error) {
                 console.error(`Error fetching settings for brand ${brand}:`, error);
