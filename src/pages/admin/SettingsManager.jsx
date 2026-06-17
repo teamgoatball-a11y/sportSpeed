@@ -3,6 +3,7 @@ import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import toast from 'react-hot-toast';
 import { Download, Smartphone } from 'lucide-react';
+import siteSettings from '../../config/siteSettings';
 
 function SettingsManager() {
     const [whatsappLink, setWhatsappLink] = useState('');
@@ -14,7 +15,8 @@ function SettingsManager() {
     useEffect(() => {
         const fetchSettings = async () => {
             try {
-                const docRef = doc(db, 'settings', 'general');
+                const brand = siteSettings.brand || 'goatball';
+                const docRef = doc(db, 'settings', brand);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
@@ -51,7 +53,8 @@ function SettingsManager() {
         setSaving(true);
 
         try {
-            const docRef = doc(db, 'settings', 'general');
+            const brand = siteSettings.brand || 'goatball';
+            const docRef = doc(db, 'settings', brand);
             await setDoc(docRef, { whatsappLink, channelLink }, { merge: true });
             toast.success("Settings saved successfully!");
         } catch (error) {

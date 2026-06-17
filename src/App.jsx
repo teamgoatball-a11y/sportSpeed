@@ -8,6 +8,7 @@ import { db } from './config/firebase'
 // Context & Auth
 import { AuthProvider } from './context/AuthContext'
 import { UIProvider, useUI } from './context/UIContext'
+import { SettingsProvider } from './hooks/useSettings'
 import ProtectedRoute from './components/ProtectedRoute'
 import { Helmet } from 'react-helmet-async'
 import siteSettings from './config/siteSettings'
@@ -155,11 +156,13 @@ function App() {
   return (
     <AuthProvider>
       <UIProvider>
-        <BrowserRouter>
-          <ScrollToTop />
-          <Toaster position="top-right" />
-          <AppContent />
-        </BrowserRouter>
+        <SettingsProvider>
+          <BrowserRouter>
+            <ScrollToTop />
+            <Toaster position="top-right" />
+            <AppContent />
+          </BrowserRouter>
+        </SettingsProvider>
       </UIProvider>
     </AuthProvider>
   )
