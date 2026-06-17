@@ -24,8 +24,8 @@ const commonPoll = {
 const goatBallSettings = {
     brand: 'goatball',
     name: 'GoatBall',
-    whatsappLink: 'https://chat.whatsapp.com/your-goatball-group-link',
-    channelLink: 'https://whatsapp.com/channel/your-goatball-channel-link',
+    whatsappLink: '',
+    channelLink: '',
     tagline: 'Stream Live Football, Cricket & World Cup Anytime, Anywhere',
     description: 'GoatBall is your ultimate destination for live football streaming, live cricket, World Cup coverage, news, and match highlights. Follow your favorite teams and never miss a goal or wicket.',
     url: typeof window !== 'undefined' ? window.location.origin : 'https://goatball.online',
@@ -62,8 +62,8 @@ const goatBallSettings = {
 const sportSpeedSettings = {
     brand: 'sportspeed',
     name: 'SportSpeed',
-    whatsappLink: 'https://chat.whatsapp.com/your-sportspeed-group-link',
-    channelLink: 'https://whatsapp.com/channel/your-sportspeed-channel-link',
+    whatsappLink: '',
+    channelLink: '',
     tagline: 'Stream Live Football, Cricket & World Cup with Sports Speed',
     description: 'SportSpeed is your ultimate destination for live football streaming, live cricket, World Cup coverage, news, and match highlights. Follow your favorite teams at maximum speed.',
     url: typeof window !== 'undefined' ? window.location.origin : 'https://sportspeed.online',
