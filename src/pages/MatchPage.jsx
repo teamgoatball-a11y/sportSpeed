@@ -8,6 +8,7 @@ import AdBanner from "../components/AdBanner"
 import SmartLinkAd from "../components/SmartLinkAd"
 import MediumBanner from "../components/MediumBanner"
 import WhatsAppPrompt from "../components/WhatsAppPrompt"
+import MatchPrediction from "../components/MatchPrediction"
 import { getDisplayViews } from "../utils/viewUtils"
 
 function MatchPage() {
@@ -185,6 +186,9 @@ function MatchPage() {
 
                 </div>
             </div>
+
+            {/* Match Prediction Section */}
+            <MatchPrediction match={match} />
 
             {/* Match Details Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

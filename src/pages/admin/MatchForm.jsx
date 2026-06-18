@@ -18,7 +18,8 @@ const INITIAL_STATE = {
     status: 'UPCOMING',
     venue: '',
     views: 0,
-    servers: []
+    servers: [],
+    predictions: { team1: 0, team2: 0, draw: 0 }
 };
 
 const MatchForm = () => {
@@ -168,7 +169,8 @@ const MatchForm = () => {
                         setFormData({
                             ...INITIAL_STATE, // ensure fields exist
                             ...data,
-                            servers: data.servers || []
+                            servers: data.servers || [],
+                            predictions: data.predictions || { team1: 0, team2: 0, draw: 0 }
                         });
                     } else {
                         toast.error("Match not found");
@@ -188,6 +190,17 @@ const MatchForm = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handlePredictionChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            predictions: {
+                ...prev.predictions,
+                [name]: parseInt(value) || 0
+            }
+        }));
     };
 
     const handleServerChange = (index, field, value) => {
@@ -405,6 +418,47 @@ const MatchForm = () => {
                             </div>
 
                         </div>
+
+                        {/* Match Predictions (Admin Seeding) */}
+                        <div className="p-6 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+                            <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-wider">Vote Management (Predictions)</h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Team 1 Votes</label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        name="team1"
+                                        value={formData.predictions?.team1 || 0}
+                                        onChange={handlePredictionChange}
+                                        className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-gray-900 dark:text-white"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Draw Votes</label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        name="draw"
+                                        value={formData.predictions?.draw || 0}
+                                        onChange={handlePredictionChange}
+                                        className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-gray-900 dark:text-white"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Team 2 Votes</label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        name="team2"
+                                        value={formData.predictions?.team2 || 0}
+                                        onChange={handlePredictionChange}
+                                        className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-gray-900 dark:text-white"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                     {/* Server Links Section */}
