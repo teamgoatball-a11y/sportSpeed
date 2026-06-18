@@ -190,18 +190,18 @@ function Home() {
       </div>
 
       {/* Category Pills Slider */}
-      <div className="mb-8 pb-4 border-b border-gray-200 dark:border-gray-800 overflow-x-auto hide-scrollbar transition-colors duration-300">
+      <div className="mb-8 pb-4 overflow-x-auto hide-scrollbar transition-colors duration-300">
         <div className="flex items-center space-x-3 min-w-max p-1">
           {CATEGORIES.map(category => (
             <button
               key={category}
               onClick={() => setActiveTab(category)}
-              className={`px-4 py-1.5 text-sm font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap ${activeTab === category
-                ? "bg-white text-[#111] shadow-[0_2px_10px_rgba(0,0,0,0.05)] border-b-2 border-[#f00000]"
-                : "bg-transparent text-gray-500 hover:text-gray-900 border-b-2 border-transparent"
+              className={`px-5 py-2 rounded-full text-sm font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap ${activeTab === category
+                ? "bg-red-600 text-white shadow-lg shadow-red-600/20 transform -translate-y-0.5"
+                : "bg-white dark:bg-[#1a1a1a] text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white border border-gray-200 dark:border-gray-800"
                 }`}
             >
-              {category === "Live" && <span className="mr-2 text-red-500">•</span>}
+              {category === "Live" && <span className={`mr-2 ${activeTab === 'Live' ? 'text-white' : 'text-red-500'} animate-pulse`}>•</span>}
               {category}
             </button>
           ))}
@@ -237,20 +237,22 @@ function Home() {
         </div>
       ) : (
         /* Empty State */
-        <div className="text-center py-20 bg-gray-100 dark:bg-gray-900/50 rounded-2xl border border-black animate-fade-in transition-colors duration-300">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4 transition-colors duration-300">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-          </svg>
-          <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2 transition-colors duration-300">No Matches Found</h3>
-          <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto transition-colors duration-300">
+        <div className="text-center py-20 bg-white dark:bg-[#1a1a1a] rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm animate-fade-in transition-all duration-300">
+          <div className="w-20 h-20 mx-auto bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6 shadow-inner">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10 text-gray-400 dark:text-gray-500">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-tight">No Matches Found</h3>
+          <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
             {searchQuery
               ? `We couldn't find any matches matching "${searchQuery}".`
               : "There are no matches currently scheduled for this category."}
           </p>
           {(searchQuery || activeTab !== "All") && (
             <button
-              onClick={() => setActiveTab("All")}
-              className="mt-6 bg-red-600 hover:bg-red-500 text-white px-6 py-2 rounded-full text-sm font-medium transition-colors shadow-sm"
+              onClick={() => { setActiveTab("All"); setSearchQuery(""); }}
+              className="mt-8 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 px-8 py-3 rounded-full text-sm font-bold tracking-wider uppercase transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
             >
               Clear Filters
             </button>
@@ -281,8 +283,8 @@ function Home() {
       {/* Highlights Hub Banner (Always show if no highlights yet or as secondary CTA) */}
       {!searchQuery && activeTab === "All" && homeHighlights.length === 0 && (
         <div className="mt-16 animate-fade-in">
-          <Link to="/highlights" className="group block relative overflow-hidden rounded-[2rem] bg-gray-900 border border-black shadow-2xl transition-all hover:border-red-500/50">
-            <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 to-transparent z-10 group-hover:from-red-600/30 transition-colors"></div>
+          <Link to="/highlights" className="group block relative overflow-hidden rounded-3xl bg-gray-900 border border-gray-800 shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1">
+            <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 to-transparent z-10 group-hover:from-red-600/30 transition-colors duration-500"></div>
             
             <div className="relative z-20 p-8 sm:p-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
               <div className="space-y-4">
