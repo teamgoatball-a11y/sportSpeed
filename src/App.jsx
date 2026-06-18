@@ -81,7 +81,7 @@ function AppContent() {
   }, []);
 
   return (
-    <div className={`min-h-screen font-sans flex flex-col flex-1 transition-colors duration-500 ${isDarkMode ? 'dark bg-[#111] text-slate-50' : 'bg-[#f8f9fa] text-gray-900'}`}>
+    <div className={`min-h-screen font-sans flex flex-col flex-1 transition-colors duration-500 ${isDarkMode ? 'dark bg-[#111] text-slate-50' : 'bg-[#ffffff] text-gray-00'}`}>
       <Helmet>
         <title>{siteSettings.seo.defaultTitle}</title>
         <meta name="description" content={siteSettings.seo.defaultDescription} />
