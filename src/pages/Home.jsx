@@ -231,8 +231,16 @@ function Home() {
       ) : filteredMatches.length > 0 ? (
         // Flat Match Results Grid
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fade-in">
-          {filteredMatches.map((match) => (
-            <MatchCard key={match.id} match={match} />
+          {filteredMatches.map((match, index) => (
+            <React.Fragment key={match.id}>
+              <MatchCard match={match} />
+              {/* Insert AdBanner after every 4th match to look like native content */}
+              {(index + 1) % 4 === 0 && (index + 1) !== filteredMatches.length && (
+                <div className="col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-4 flex justify-center my-2">
+                  <AdBanner />
+                </div>
+              )}
+            </React.Fragment>
           ))}
         </div>
       ) : (

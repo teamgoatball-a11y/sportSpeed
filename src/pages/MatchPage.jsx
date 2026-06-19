@@ -241,15 +241,20 @@ function MatchPage() {
                 <WhatsAppPrompt />
 
                 {isLive || (match.servers && match.servers.some(s => s.name?.trim() || s.url?.trim())) ? (
-                    <Link
-                        to={`/link/${match.id}`}
-                        className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-500 hover:to-orange-400 text-white font-bold text-lg rounded-full shadow-lg shadow-red-600/30 hover:shadow-red-500/40 transform hover:-translate-y-1 transition-all duration-300 ring-2 ring-transparent focus:ring-red-400 outline-none"
-                    >
-                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z" />
-                        </svg>
-                        Watch Live Stream Now
-                    </Link>
+                    <div className="flex flex-col items-center gap-6 w-full">
+                        <Link
+                            to={`/link/${match.id}`}
+                            className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-500 hover:to-orange-400 text-white font-bold text-lg rounded-full shadow-lg shadow-red-600/30 hover:shadow-red-500/40 transform hover:-translate-y-1 transition-all duration-300 ring-2 ring-transparent focus:ring-red-400 outline-none"
+                        >
+                            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                            Watch Live Stream Now
+                        </Link>
+                        <div className="w-full mt-2">
+                            <SmartLinkAd link="https://omg10.com/4/11172877" label="Backup Server (HD)" />
+                        </div>
+                    </div>
                 ) : (
                     <div className="inline-block p-6 rounded-2xl bg-gray-100 dark:bg-gray-900 border border-black transition-colors duration-300">
                         <svg className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

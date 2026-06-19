@@ -18,11 +18,11 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ScoreTicker from './components/ScoreTicker'
 import ScrollToTop from './components/ScrollToTop'
-import SocialBarAd from './components/SocialBarAd'
 import ErrorBoundary from './components/ErrorBoundary'
 import MatchCardSkeleton from './components/MatchCardSkeleton'
 import InstallPrompt from './components/InstallPrompt'
-
+import MonetagAd from './components/MonetagAd'
+import StickyFooterAd from './components/StickyFooterAd'
 // Lazy Pages
 const Home = lazy(() => import('./pages/Home'))
 const MatchPage = lazy(() => import('./pages/MatchPage'))
@@ -119,7 +119,7 @@ function AppContent() {
         <Route path="/*" element={
           <>
             <ScoreTicker />
-            <SocialBarAd />
+            <MonetagAd scriptUrl="https://nap5k.com/tag.min.js" zoneId="11172894" />
             <Navbar />
             <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex-1 w-full flex flex-col">
               <ErrorBoundary>
@@ -144,6 +144,7 @@ function AppContent() {
               </ErrorBoundary>
             </main>
             <InstallPrompt />
+            <StickyFooterAd />
             <Footer />
           </>
         } />

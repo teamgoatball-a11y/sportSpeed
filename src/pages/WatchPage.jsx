@@ -289,10 +289,10 @@ function WatchPage() {
                     </p>
                 </div>
             </div>
-
+            <AdBanner autoRefresh={true} refreshInterval={60000} />
             <WhatsAppPrompt />
 
-            <AdBanner />
+            <AdBanner autoRefresh={true} refreshInterval={60000} />
             <SmartLinkAd />
 
             {/* Live Streaming Load Notice */}
@@ -393,8 +393,9 @@ function WatchPage() {
                 </div>
             )}
             
-            <AdBanner />
+            <AdBanner autoRefresh={true} refreshInterval={60000} />
             <MediumBanner />
+              <MediumBanner />
         </div>
     )
 }
