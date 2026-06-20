@@ -18,8 +18,9 @@ export const syncAggregatedMatches = async () => {
             ...doc.data() 
         }));
 
-        // 2. Save them into a single cache document
-        const cacheRef = doc(db, 'cache', 'home_matches');
+        // 2. Save them into a single cache document inside the 'matches' collection
+        // We use the matches collection so it automatically inherits your public read rules!
+        const cacheRef = doc(db, 'matches', 'aggregate_cache');
         
         // We stringify the payload if we want, but Firestore can store arrays of objects natively
         // As long as it's under 1MB, which 100 matches easily is.

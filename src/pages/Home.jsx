@@ -59,7 +59,8 @@ function Home() {
 
     try {
       // 2. Fetch Aggregated Document instead of 100 individual docs
-      const docRef = doc(db, 'cache', 'home_matches');
+      // We use the matches collection so it automatically inherits public read rules
+      const docRef = doc(db, 'matches', 'aggregate_cache');
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
