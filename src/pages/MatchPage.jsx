@@ -81,8 +81,14 @@ function MatchPage() {
 
         try {
             const now = currentTime;
-            let kickOff = new Date(`${now.toDateString()} ${m.time}`);
-            if (isNaN(kickOff.getTime())) return m.status;
+            let kickOff = m.date 
+                ? new Date(`${m.date} ${m.time}`) 
+                : new Date(`${now.toDateString()} ${m.time}`);
+                
+            if (isNaN(kickOff.getTime())) {
+                kickOff = new Date(`${now.toDateString()} ${m.time}`);
+                if (isNaN(kickOff.getTime())) return m.status;
+            }
 
             const msSinceKickOff = now.getTime() - kickOff.getTime();
             if (msSinceKickOff >= -15 * 60 * 1000 && msSinceKickOff < 150 * 60 * 1000) {

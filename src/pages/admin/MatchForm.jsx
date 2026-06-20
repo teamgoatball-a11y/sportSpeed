@@ -4,6 +4,8 @@ import { collection, doc, getDoc, addDoc, updateDoc, serverTimestamp } from 'fir
 import { db } from '../../config/firebase';
 import { ArrowLeft, Save, Plus, Trash2, Link as LinkIcon, Search, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { Helmet } from 'react-helmet-async';
+import { syncAggregatedMatches } from '../../utils/firebaseSync';
 import { useSportsApi } from '../../hooks/useSportsApi';
 
 const INITIAL_STATE = {
@@ -146,6 +148,7 @@ const MatchForm = () => {
             }
 
             if (successCount > 0) {
+                await syncAggregatedMatches();
                 toast.success(`Successfully imported ${successCount} matches!`);
                 navigate('/admin/dashboard');
             }
@@ -240,12 +243,12 @@ const MatchForm = () => {
         try {
             if (isEditing) {
                 await updateDoc(doc(db, 'matches', id), matchData);
+                await syncAggregatedMatches();
                 toast.success("Match updated successfully!");
             } else {
                 matchData.createdAt = serverTimestamp();
-                // Fallback for ID if needed by frontend before firestore generates one, though firestore auto gen id is best.
-                // The old matches.js used integer IDs. Let's just use firestore strings.
                 await addDoc(collection(db, 'matches'), matchData);
+                await syncAggregatedMatches();
                 toast.success("Match created successfully!");
             }
             navigate('/admin/dashboard');

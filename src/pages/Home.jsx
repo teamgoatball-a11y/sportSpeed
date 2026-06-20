@@ -9,7 +9,7 @@ import SmartLinkAd from "../components/SmartLinkAd"
 import ArticleCard from "../components/ArticleCard"
 import HighlightCard from "../components/HighlightCard"
 import { useArticles } from "../hooks/useArticles"
-import { collection, query, orderBy, getDocs, limit } from 'firebase/firestore'
+import { collection, query, orderBy, getDocs, limit, doc, getDoc } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { Link } from 'react-router-dom'
 import { RefreshCw } from 'lucide-react'
@@ -37,13 +37,41 @@ function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  const fetchMatches = async () => {
+  const fetchMatches = async (forceBypassCache = false) => {
     setLoading(true);
+
+    if (!forceBypassCache) {
+        // 1. Check SessionStorage Cache (Valid for 5 mins)
+        const cachedData = sessionStorage.getItem('home_matches_cache');
+        const cacheTimestamp = sessionStorage.getItem('home_matches_timestamp');
+        
+        if (cachedData && cacheTimestamp) {
+            const now = new Date().getTime();
+            const diff = now - parseInt(cacheTimestamp, 10);
+            // 5 minutes = 300,000 ms
+            if (diff < 300000) {
+                setAllMatches(JSON.parse(cachedData));
+                setLoading(false);
+                return;
+            }
+        }
+    }
+
     try {
-      const q = query(collection(db, 'matches'), orderBy('createdAt', 'desc'), limit(100));
-      const snapshot = await getDocs(q);
-      const matches = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setAllMatches(matches);
+      // 2. Fetch Aggregated Document instead of 100 individual docs
+      const docRef = doc(db, 'cache', 'home_matches');
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+          const data = docSnap.data();
+          setAllMatches(data.matches || []);
+          
+          // 3. Save to SessionStorage
+          sessionStorage.setItem('home_matches_cache', JSON.stringify(data.matches || []));
+          sessionStorage.setItem('home_matches_timestamp', new Date().getTime().toString());
+      } else {
+          setAllMatches([]);
+      }
     } catch (error) {
       console.error("Error loading matches:", error);
     } finally {
@@ -52,7 +80,15 @@ function Home() {
   };
 
   useEffect(() => {
-    fetchMatches();
+    fetchMatches(); // Initial fetch on load
+
+    // Auto-refresh fresh data from Firebase every 3 minutes
+    const autoRefreshTimer = setInterval(() => {
+        console.log("Auto-refreshing matches in background...");
+        fetchMatches(true); 
+    }, 180000); // 3 minutes
+
+    return () => clearInterval(autoRefreshTimer);
   }, []);
 
   // Fetch Latest 4 Highlights for Home
@@ -74,7 +110,7 @@ function Home() {
   }, []);
 
   const handleManualRefresh = () => {
-    fetchMatches();
+    fetchMatches(true);
     fetchHighlights();
   };
 

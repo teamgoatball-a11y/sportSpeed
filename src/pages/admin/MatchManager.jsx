@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Edit2, Trash2, RefreshCw, Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useSettings } from '../../hooks/useSettings';
+import { syncAggregatedMatches } from '../../utils/firebaseSync';
 
 const MatchManager = () => {
     const { settings } = useSettings();
@@ -46,6 +47,7 @@ const MatchManager = () => {
                     next.delete(matchId);
                     return next;
                 });
+                await syncAggregatedMatches();
                 fetchMatches(); // Refresh list
             } catch (error) {
                 console.error("Error deleting match: ", error);
@@ -92,6 +94,7 @@ const MatchManager = () => {
                 }
 
                 if (successCount > 0) {
+                    await syncAggregatedMatches();
                     toast.success(`Successfully deleted ${successCount} matches`);
                     fetchMatches();
                 }

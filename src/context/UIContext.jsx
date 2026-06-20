@@ -13,10 +13,10 @@ export const useUI = () => {
 export const UIProvider = ({ children }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isDarkMode, setIsDarkMode] = useState(() => {
-        // Check local storage or system preference
+        // Check local storage or default to dark mode
         const saved = localStorage.getItem('darkMode');
         if (saved !== null) return JSON.parse(saved);
-        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return true; // Default to dark mode
     });
     const [isAppInstalled, setIsAppInstalled] = useState(false);
     const [deferredPrompt, setDeferredPrompt] = useState(null);
