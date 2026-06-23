@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Edit2, Trash2, RefreshCw, Share2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, RefreshCw, Share2, CloudLightning } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useSettings } from '../../hooks/useSettings';
 import { syncAggregatedMatches } from '../../utils/firebaseSync';
@@ -13,6 +13,7 @@ const MatchManager = () => {
     const [loading, setLoading] = useState(true);
     const [selectedIds, setSelectedIds] = useState(new Set());
     const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+    const [isSyncing, setIsSyncing] = useState(false);
     const navigate = useNavigate();
 
     const fetchMatches = async () => {
@@ -36,6 +37,18 @@ const MatchManager = () => {
     useEffect(() => {
         fetchMatches();
     }, []);
+
+    const handleSyncViews = async () => {
+        setIsSyncing(true);
+        try {
+            await syncAggregatedMatches();
+            toast.success("Views synced to user side successfully");
+        } catch (error) {
+            toast.error("Failed to sync views");
+        } finally {
+            setIsSyncing(false);
+        }
+    };
 
     const handleDelete = async (matchId) => {
         if (window.confirm("Are you sure you want to delete this match? This action cannot be undone.")) {
@@ -237,6 +250,15 @@ ${settings?.whatsappLink ? `🟢 JOIN WHATSAPP GROUP 👇🏻\n${settings.whatsa
                             </button>
                         </div>
                     )}
+                    <button
+                        onClick={handleSyncViews}
+                        disabled={isSyncing}
+                        className="flex items-center gap-2 px-4 py-2.5 bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-500/20 rounded-xl font-medium transition-colors border border-blue-200 dark:border-blue-500/30 disabled:opacity-50"
+                        title="Sync views to user side"
+                    >
+                        <CloudLightning size={20} className={isSyncing ? 'animate-pulse' : ''} />
+                        <span className="hidden sm:inline">{isSyncing ? 'Syncing...' : 'Sync Views'}</span>
+                    </button>
                     <button
                         onClick={fetchMatches}
                         className="p-2.5 text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
