@@ -306,6 +306,17 @@ function WatchPage() {
 
             {/* Video Player Area */}
             <div ref={playerWrapperRef} className="w-full bg-black rounded-[2rem] overflow-hidden shadow-2xl border border-black relative group">
+                {(server.url?.includes('<iframe') || server.url?.includes('.m3u8')) && !isYoutube && (
+                    <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 z-20 pointer-events-none select-none opacity-60">
+                        <span className="text-white font-black text-xl sm:text-2xl tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                            {siteSettings.isSportSpeed ? (
+                                <>SPORT<span className="text-red-600">SPEED</span>.online</>
+                            ) : (
+                                <>GOAT<span className="text-red-600">BALL</span>.online</>
+                            )}
+                        </span>
+                    </div>
+                )}
                 {settings?.channelLink && (
                     <a 
                         href={settings.channelLink} 

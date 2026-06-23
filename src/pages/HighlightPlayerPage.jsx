@@ -201,6 +201,18 @@ function HighlightPlayerPage() {
                                 Join Channel
                             </a>
                         )}
+                        {/* Watermark for non-YouTube embeds */}
+                        {!isYoutube && (
+                            <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 z-20 pointer-events-none select-none opacity-60">
+                                <span className="text-white font-black text-xl sm:text-2xl tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                                    {siteSettings.isSportSpeed ? (
+                                        <>SPORT<span className="text-red-600">SPEED</span>.online</>
+                                    ) : (
+                                        <>GOAT<span className="text-red-600">BALL</span>.online</>
+                                    )}
+                                </span>
+                            </div>
+                        )}
                         {/* Video Layer - Pointer Events None to disable native interactions */}
                         <div className="aspect-video w-full flex items-center justify-center pointer-events-none">
                             {isYoutube ? (
