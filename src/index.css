@@ -60,3 +60,19 @@ body {
   min-height: 100vh;
   width: 100%;
 }
+
+/* Hide ads and push notifications when in fullscreen mode */
+body.is-fullscreen > *:not(#root) {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+body.is-fullscreen .monetag-ad-container,
+body.is-fullscreen div[style*="z-index: 2147483647"],
+body.is-fullscreen div[style*="z-index: 2147483646"],
+body.is-fullscreen div[style*="z-index: 999999"] {
+  display: none !important;
+  pointer-events: none !important;
+}

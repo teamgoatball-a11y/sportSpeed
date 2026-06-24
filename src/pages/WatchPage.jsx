@@ -152,6 +152,9 @@ function WatchPage() {
                 if (window.screen && window.screen.orientation && window.screen.orientation.unlock) {
                     window.screen.orientation.unlock();
                 }
+                document.body.classList.remove('is-fullscreen');
+            } else {
+                document.body.classList.add('is-fullscreen');
             }
         }
 
@@ -165,6 +168,7 @@ function WatchPage() {
             document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
             document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
             document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+            document.body.classList.remove('is-fullscreen');
         }
     }, [])
 
